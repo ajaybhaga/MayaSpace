@@ -1,0 +1,1 @@
+/home/bhagabot/dev/Urho3D/bin/Editor.sh
