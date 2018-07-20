@@ -33,6 +33,8 @@
 #include <Urho3D/UI/UI.h>
 
 #include <Urho3D/DebugNew.h>
+#include "GameController.h"
+
 
 #include "Character2D.h"
 
@@ -101,12 +103,31 @@ void Character2D::Update(float timeStep)
     // Set direction
     Vector2 moveDir = Vector2::ZERO; // Reset
 
-    if (input->GetKeyDown('A') || input->GetKeyDown(KEY_LEFT))
+           // Jump. Must release jump control between jumps
+        if (controls_.IsDown(BUTTON_A))
+        {
+            jump = true;
+        }
+
+        // Dpad
+        if (controls_.IsDown(BUTTON_DPAD_UP))
+        {
+        }
+
+        if (controls_.IsDown(BUTTON_DPAD_DOWN))
+        {
+        }
+
+        if (controls_.IsDown(BUTTON_DPAD_RIGHT))
+        {
+        }
+
+    if (input->GetKeyDown('A') || input->GetKeyDown(KEY_LEFT) || controls_.IsDown(BUTTON_DPAD_LEFT))
     {
         moveDir = moveDir + Vector2::LEFT;
         animatedSprite->SetFlipX(false); // Flip sprite (reset to default play on the X axis)
     }
-    if (input->GetKeyDown('D') || input->GetKeyDown(KEY_RIGHT))
+    if (input->GetKeyDown('D') || input->GetKeyDown(KEY_RIGHT) || controls_.IsDown(BUTTON_DPAD_RIGHT))
     {
         moveDir = moveDir + Vector2::RIGHT;
         animatedSprite->SetFlipX(true); // Flip sprite (flip animation on the X axis)

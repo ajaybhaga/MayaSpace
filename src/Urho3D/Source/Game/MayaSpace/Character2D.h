@@ -22,6 +22,7 @@
 
 #pragma once
 
+#include <Urho3D/Input/Controls.h>
 #include <Urho3D/Scene/LogicComponent.h>
 
 // All Urho3D classes reside in namespace Urho3D
@@ -48,6 +49,9 @@ public:
     void HandleWoundedState(float timeStep);
     /// Handle death of the player.
     void HandleDeath();
+
+    /// Movement controls. Assigned by the main program each frame.
+    Controls controls_;
 
     /// Flag when player is wounded.
     bool wounded_;

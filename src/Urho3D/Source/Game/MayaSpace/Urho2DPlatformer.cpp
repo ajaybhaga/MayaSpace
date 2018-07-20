@@ -55,6 +55,7 @@
 
 #include <Urho3D/DebugNew.h>
 
+#include "GameController.h"
 #include "Character2D.h"
 #include "Utilities2D/Sample2D.h"
 #include "Utilities2D/Mover.h"
@@ -88,11 +89,13 @@ void Urho2DPlatformer::Start()
     // Set filename for load/save functions
     sample2D_->demoFilename_ = "Platformer2D";
 
+    context_->RegisterSubsystem(new GameController(context_));
+
     // Create the scene content
     CreateScene();
 
     // Create the UI content
-    sample2D_->CreateUIContent("MayaSpace v0.1", character2D_->remainingLifes_, character2D_->remainingCoins_);
+    sample2D_->CreateUIContent("MayaSpace v0.1 Test", character2D_->remainingLifes_, character2D_->remainingCoins_);
     auto* ui = GetSubsystem<UI>();
     Button* playButton = static_cast<Button*>(ui->GetRoot()->GetChild("PlayButton", true));
     SubscribeToEvent(playButton, E_RELEASED, URHO3D_HANDLER(Urho2DPlatformer, HandlePlayButton));
@@ -159,7 +162,7 @@ void Urho2DPlatformer::CreateScene()
     sample2D_->PopulateTriggers(tileMap->GetLayer(tileMap->GetNumLayers() - 4));
 
     // Create background
-    sample2D_->CreateBackgroundSprite(info, 3.5, "Textures/HeightMap.png", true);
+    //sample2D_->CreateBackgroundSprite(info, 3.5, "Textures/HeightMap.png", true);
 
     // Check when scene is rendered
     SubscribeToEvent(E_ENDRENDERING, URHO3D_HANDLER(Urho2DPlatformer, HandleSceneRendered));
@@ -359,6 +362,30 @@ void Urho2DPlatformer::HandleUpdate(StringHash eventType, VariantMap& eventData)
         sample2D_->SaveScene(false);
     if (input->GetKeyPress(KEY_F7))
         ReloadScene(false);
+
+    GameController* gameController = GetSubsystem<GameController>();
+
+    if (character2D_)
+    {
+        gameController->UpdateControlInputs(character2D_->controls_);
+
+        // **note** the buttons controls are handled in the character class update fn.
+
+        // right stick - camera
+        Variant rStick = character2D_->controls_.extraData_[VAR_AXIS_1];
+
+        if (!rStick.IsEmpty())
+        {
+            Vector2 axisInput = rStick.GetVector2();
+        //    character2D_->controls_.yaw_ += axisInput.x_ * YAW_SENSITIVITY;
+        //    character2D_->controls_.pitch_ += axisInput.y_ * YAW_SENSITIVITY;
+        }
+
+        // Limit pitch
+        character2D_->controls_.pitch_ = Clamp(character2D_->controls_.pitch_, -80.0f, 80.0f);
+        // Set rotation already here so that it's updated every rendering frame instead of every physics frame
+        character2D_->GetNode()->SetRotation(Quaternion(character2D_->controls_.yaw_, Vector3::UP));
+    }
 }
 
 void Urho2DPlatformer::HandlePostUpdate(StringHash eventType, VariantMap& eventData)
