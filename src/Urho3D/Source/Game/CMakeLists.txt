@@ -29,15 +29,15 @@ setup_lint ()
 find_package (Urho3D REQUIRED)
 include_directories (${URHO3D_INCLUDE_DIRS})
 
-# Include common to all samples
-set (COMMON_SAMPLE_H_FILES "${CMAKE_CURRENT_SOURCE_DIR}/Sample.h" "${CMAKE_CURRENT_SOURCE_DIR}/Sample.inl")
+# Include common to all game components
+set (COMMON_GAME_H_FILES "${CMAKE_CURRENT_SOURCE_DIR}/Game.h" "${CMAKE_CURRENT_SOURCE_DIR}/Game.inl")
 
 # Define dependency libs
 set (INCLUDE_DIRS ${CMAKE_CURRENT_SOURCE_DIR})
 
-# Macro for adding sample subdirectory
-macro (add_sample_subdirectory SOURCE_DIR)
-    if (DEFINED ENV{included_sample})
+# Macro for adding game subdirectory
+macro (add_game_subdirectory SOURCE_DIR)
+    if (DEFINED ENV{included_game})
         if (DEFINED ENV{INCLUDED_SAMPLE_${SOURCE_DIR}})
             add_subdirectory (${SOURCE_DIR} ${ARGN})
         endif ()
@@ -46,12 +46,12 @@ macro (add_sample_subdirectory SOURCE_DIR)
     endif ()
 endmacro ()
 
-# Add samples
+# Add Game 
 file (GLOB_RECURSE DIRS RELATIVE ${CMAKE_CURRENT_SOURCE_DIR} CMakeLists.txt)
 list (SORT DIRS)
 foreach (DIR ${DIRS})
     get_filename_component (DIR ${DIR} PATH)
     if (DIR)
-        add_sample_subdirectory (${DIR})
+        add_game_subdirectory (${DIR})
     endif ()
 endforeach ()

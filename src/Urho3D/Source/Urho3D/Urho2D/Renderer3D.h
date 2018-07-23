@@ -69,7 +69,7 @@ class URHO3D_API Renderer3D : public Drawable
 {
     URHO3D_OBJECT(Renderer3D, Drawable);
 
-    friend void CheckDrawableVisibilityWork(const WorkItem* item, unsigned threadIndex);
+    friend void CheckDrawableVisibilityWork3D(const WorkItem* item, unsigned threadIndex);
 
 public:
     /// Construct.

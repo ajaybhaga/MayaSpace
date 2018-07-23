@@ -81,12 +81,16 @@ void StaticSprite3D::RegisterObject(Context* context)
     URHO3D_ACCESSOR_ATTRIBUTE("Use Texture Rectangle", GetUseTextureRect, SetUseTextureRect, bool, false, AM_DEFAULT);
 }
 
-void StaticSprite3D::SetSprite(Sprite3D* sprite)
+void StaticSprite3D::SetSprite(Sprite2D* sprite)
 {
-    if (sprite == sprite_)
+    if (sprite == sprite2d_)
         return;
 
-    sprite_ = sprite;
+    // TODO: AB - convert Sprite2D sprite to Sprite3D for rendering.
+
+    sprite2d_ = sprite;
+    // TODO: Need to set sprite_
+    //sprite_ = sprite;
     UpdateMaterial();
 
     sourceBatchesDirty_ = true;
@@ -247,14 +251,14 @@ Material* StaticSprite3D::GetCustomMaterial() const
 
 void StaticSprite3D::SetSpriteAttr(const ResourceRef& value)
 {
-    Sprite3D* sprite = Sprite3D::LoadFromResourceRef(this, value);
+    Sprite2D* sprite = Sprite3D::LoadFromResourceRef(this, value);
     if (sprite)
         SetSprite(sprite);
 }
 
 ResourceRef StaticSprite3D::GetSpriteAttr() const
 {
-    return Sprite3D::SaveToResourceRef(sprite_);
+    return Sprite3D::SaveToResourceRef(sprite2d_);
 }
 
 void StaticSprite3D::SetCustomMaterialAttr(const ResourceRef& value)

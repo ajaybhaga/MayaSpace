@@ -48,6 +48,8 @@
 #include <Urho3D/Graphics/Texture2D.h>
 #include <Urho3D/Urho2D/TileMap2D.h>
 #include <Urho3D/Urho2D/TileMapLayer2D.h>
+#include <Urho3D/Urho2D/TileMap3D.h>
+#include <Urho3D/Urho2D/TileMapLayer3D.h>
 #include <Urho3D/Urho2D/TmxFile2D.h>
 #include <Urho3D/UI/UI.h>
 #include <Urho3D/UI/UIEvents.h>
@@ -63,7 +65,7 @@ Sample2D::Sample2D(Context* context) :
 {
 }
 
-void Sample2D::CreateCollisionShapesFromTMXObjects(Node* tileMapNode, TileMapLayer2D* tileMapLayer, TileMapInfo2D info)
+void Sample2D::CreateCollisionShapesFromTMXObjects(Node* tileMapNode, TileMapLayer3D* tileMapLayer, TileMapInfo2D info)
 {
     // Create rigid body to the root node
     auto* body = tileMapNode->CreateComponent<RigidBody2D>();
@@ -261,7 +263,7 @@ Node* Sample2D::CreateMovingPlatform()
     return node;
 }
 
-void Sample2D::PopulateMovingEntities(TileMapLayer2D* movingEntitiesLayer)
+void Sample2D::PopulateMovingEntities(TileMapLayer3D* movingEntitiesLayer)
 {
     // Create enemy (will be cloned at each placeholder)
     Node* enemyNode = CreateEnemy();
@@ -310,7 +312,7 @@ void Sample2D::PopulateMovingEntities(TileMapLayer2D* movingEntitiesLayer)
     platformNode->Remove();
 }
 
-void Sample2D::PopulateCoins(TileMapLayer2D* coinsLayer)
+void Sample2D::PopulateCoins(TileMapLayer3D* coinsLayer)
 {
     // Create coin (will be cloned at each placeholder)
     Node* coinNode = CreateCoin();
@@ -328,7 +330,7 @@ void Sample2D::PopulateCoins(TileMapLayer2D* coinsLayer)
     coinNode->Remove();
 }
 
-void Sample2D::PopulateTriggers(TileMapLayer2D* triggersLayer)
+void Sample2D::PopulateTriggers(TileMapLayer3D* triggersLayer)
 {
     // Create trigger node (will be cloned at each placeholder)
     Node* triggerNode = CreateTrigger();

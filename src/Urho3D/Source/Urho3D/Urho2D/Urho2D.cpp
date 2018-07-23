@@ -51,6 +51,8 @@
 #include "../Urho2D/SpriteSheet2D.h"
 #include "../Urho2D/TileMap2D.h"
 #include "../Urho2D/TileMapLayer2D.h"
+#include "../Urho2D/TileMap3D.h"
+#include "../Urho2D/TileMapLayer3D.h"
 #include "../Urho2D/TmxFile2D.h"
 #include "../Urho2D/Urho2D.h"
 
@@ -83,6 +85,9 @@ void RegisterUrho2DLibrary(Context* context)
     TmxFile2D::RegisterObject(context);
     TileMap2D::RegisterObject(context);
     TileMapLayer2D::RegisterObject(context);
+
+    TileMap3D::RegisterObject(context);
+    TileMapLayer3D::RegisterObject(context);
 
     PhysicsWorld2D::RegisterObject(context);
     RigidBody2D::RegisterObject(context);

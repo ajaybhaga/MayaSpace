@@ -23,6 +23,7 @@
 #pragma once
 
 #include "../Graphics/Drawable.h"
+#include "./Drawable2D.h"
 #include "../Graphics/GraphicsDefs.h"
 
 namespace Urho3D
@@ -32,17 +33,6 @@ class Drawable3D;
 class Renderer3D;
 class Texture2D;
 class VertexBuffer;
-
-/// 2D vertex.
-struct Vertex2D
-{
-    /// Position.
-    Vector3 position_;
-    /// Color.
-    unsigned color_;
-    /// UV.
-    Vector2 uv_;
-};
 
 /// 3D source batch.
 struct SourceBatch3D

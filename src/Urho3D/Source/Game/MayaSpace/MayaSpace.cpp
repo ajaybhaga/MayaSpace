@@ -36,6 +36,7 @@
 #include <Urho3D/Graphics/Graphics.h>
 #include <Urho3D/Graphics/GraphicsEvents.h>
 #include <Urho3D/Input/Input.h>
+#include <Urho3D/IO/Log.h>
 #include <Urho3D/Graphics/Octree.h>
 #include <Urho3D/Urho2D/PhysicsEvents2D.h>
 #include <Urho3D/Urho2D/PhysicsWorld2D.h>
@@ -48,6 +49,8 @@
 #include <Urho3D/UI/Text.h>
 #include <Urho3D/Urho2D/TileMap2D.h>
 #include <Urho3D/Urho2D/TileMapLayer2D.h>
+#include <Urho3D/Urho2D/TileMap3D.h>
+#include <Urho3D/Urho2D/TileMapLayer3D.h>
 #include <Urho3D/Urho2D/TmxFile2D.h>
 #include <Urho3D/UI/UI.h>
 #include <Urho3D/UI/UIEvents.h>
@@ -59,13 +62,13 @@
 #include "Character2D.h"
 #include "Utilities2D/Sample2D.h"
 #include "Utilities2D/Mover.h"
-#include "Urho2DPlatformer.h"
+#include "MayaSpace.h"
 
 
-URHO3D_DEFINE_APPLICATION_MAIN(Urho2DPlatformer)
+URHO3D_DEFINE_APPLICATION_MAIN(MayaSpace)
 
-Urho2DPlatformer::Urho2DPlatformer(Context* context) :
-    Sample(context)
+MayaSpace::MayaSpace(Context* context) :
+    Game(context)
 {
     // Register factory for the Character2D component so it can be created via CreateComponent
     Character2D::RegisterObject(context);
@@ -73,16 +76,16 @@ Urho2DPlatformer::Urho2DPlatformer(Context* context) :
     Mover::RegisterObject(context);
 }
 
-void Urho2DPlatformer::Setup()
+void MayaSpace::Setup()
 {
-    Sample::Setup();
+    Game::Setup();
     engineParameters_[EP_SOUND] = true;
 }
 
-void Urho2DPlatformer::Start()
+void MayaSpace::Start()
 {
     // Execute base class startup
-    Sample::Start();
+    Game::Start();
 
     sample2D_ = new Sample2D(context_);
 
@@ -98,13 +101,13 @@ void Urho2DPlatformer::Start()
     sample2D_->CreateUIContent("MayaSpace v0.1 Test", character2D_->remainingLifes_, character2D_->remainingCoins_);
     auto* ui = GetSubsystem<UI>();
     Button* playButton = static_cast<Button*>(ui->GetRoot()->GetChild("PlayButton", true));
-    SubscribeToEvent(playButton, E_RELEASED, URHO3D_HANDLER(Urho2DPlatformer, HandlePlayButton));
+    SubscribeToEvent(playButton, E_RELEASED, URHO3D_HANDLER(MayaSpace, HandlePlayButton));
 
     // Hook up to the frame update events
     SubscribeToEvents();
 }
 
-void Urho2DPlatformer::CreateScene()
+void MayaSpace::CreateScene()
 {
     scene_ = new Scene(context_);
     sample2D_->scene_ = scene_;
@@ -135,7 +138,13 @@ void Urho2DPlatformer::CreateScene()
     // Create tile map from tmx file
     auto* cache = GetSubsystem<ResourceCache>();
     SharedPtr<Node> tileMapNode(scene_->CreateChild("TileMap"));
-    auto* tileMap = tileMapNode->CreateComponent<TileMap2D>();
+
+//    auto* tileMap3d = tileMapNode->CreateComponent<TileMap3D>();
+//    tileMap3d->SetTmxFile(cache->GetResource<TmxFile2D>("Urho2D/Tilesets/Ortho.tmx"
+
+    TileMap3D* tileMap = tileMapNode->CreateComponent<TileMap3D>();
+    URHO3D_LOGINFOF("tileMap=%x", tileMap);
+
     tileMap->SetTmxFile(cache->GetResource<TmxFile2D>("Urho2D/Tilesets/Ortho.tmx"));
     const TileMapInfo2D& info = tileMap->GetInfo();
 
@@ -144,31 +153,31 @@ void Urho2DPlatformer::CreateScene()
     character2D_ = spriteNode->CreateComponent<Character2D>(); // Create a logic component to handle character behavior
 
     // Generate physics collision shapes from the tmx file's objects located in "Physics" (top) layer
-    TileMapLayer2D* tileMapLayer = tileMap->GetLayer(tileMap->GetNumLayers() - 1);
+    TileMapLayer3D* tileMapLayer = tileMap->GetLayer(tileMap->GetNumLayers() - 1);
     sample2D_->CreateCollisionShapesFromTMXObjects(tileMapNode, tileMapLayer, info);
 
     // Instantiate enemies and moving platforms at each placeholder of "MovingEntities" layer (placeholders are Poly Line objects defining a path from points)
-    sample2D_->PopulateMovingEntities(tileMap->GetLayer(tileMap->GetNumLayers() - 2));
+    //sample2D_->PopulateMovingEntities(tileMap->GetLayer(tileMap->GetNumLayers() - 2));
 
     // Instantiate coins to pick at each placeholder of "Coins" layer (placeholders for coins are Rectangle objects)
-    TileMapLayer2D* coinsLayer = tileMap->GetLayer(tileMap->GetNumLayers() - 3);
-    sample2D_->PopulateCoins(coinsLayer);
+    //TileMapLayer3D* coinsLayer = tileMap->GetLayer(tileMap->GetNumLayers() - 3);
+    //sample2D_->PopulateCoins(coinsLayer);
 
     // Init coins counters
-    character2D_->remainingCoins_ = coinsLayer->GetNumObjects();
-    character2D_->maxCoins_ = coinsLayer->GetNumObjects();
+    //character2D_->remainingCoins_ = coinsLayer->GetNumObjects();
+    //character2D_->maxCoins_ = coinsLayer->GetNumObjects();
 
     //Instantiate triggers (for ropes, ladders, lava, slopes...) at each placeholder of "Triggers" layer (placeholders for triggers are Rectangle objects)
-    sample2D_->PopulateTriggers(tileMap->GetLayer(tileMap->GetNumLayers() - 4));
+    //sample2D_->PopulateTriggers(tileMap->GetLayer(tileMap->GetNumLayers() - 4));
 
     // Create background
     //sample2D_->CreateBackgroundSprite(info, 3.5, "Textures/HeightMap.png", true);
 
     // Check when scene is rendered
-    SubscribeToEvent(E_ENDRENDERING, URHO3D_HANDLER(Urho2DPlatformer, HandleSceneRendered));
+    SubscribeToEvent(E_ENDRENDERING, URHO3D_HANDLER(MayaSpace, HandleSceneRendered));
 }
 
-void Urho2DPlatformer::HandleSceneRendered(StringHash eventType, VariantMap& eventData)
+void MayaSpace::HandleSceneRendered(StringHash eventType, VariantMap& eventData)
 {
     UnsubscribeFromEvent(E_ENDRENDERING);
     // Save the scene so we can reload it later
@@ -177,26 +186,26 @@ void Urho2DPlatformer::HandleSceneRendered(StringHash eventType, VariantMap& eve
     scene_->SetUpdateEnabled(false);
 }
 
-void Urho2DPlatformer::SubscribeToEvents()
+void MayaSpace::SubscribeToEvents()
 {
     // Subscribe HandleUpdate() function for processing update events
-    SubscribeToEvent(E_UPDATE, URHO3D_HANDLER(Urho2DPlatformer, HandleUpdate));
+    SubscribeToEvent(E_UPDATE, URHO3D_HANDLER(MayaSpace, HandleUpdate));
 
     // Subscribe HandlePostUpdate() function for processing post update events
-    SubscribeToEvent(E_POSTUPDATE, URHO3D_HANDLER(Urho2DPlatformer, HandlePostUpdate));
+    SubscribeToEvent(E_POSTUPDATE, URHO3D_HANDLER(MayaSpace, HandlePostUpdate));
 
     // Subscribe to PostRenderUpdate to draw debug geometry
-    SubscribeToEvent(E_POSTRENDERUPDATE, URHO3D_HANDLER(Urho2DPlatformer, HandlePostRenderUpdate));
+    SubscribeToEvent(E_POSTRENDERUPDATE, URHO3D_HANDLER(MayaSpace, HandlePostRenderUpdate));
 
     // Subscribe to Box2D contact listeners
-    SubscribeToEvent(E_PHYSICSBEGINCONTACT2D, URHO3D_HANDLER(Urho2DPlatformer, HandleCollisionBegin));
-    SubscribeToEvent(E_PHYSICSENDCONTACT2D, URHO3D_HANDLER(Urho2DPlatformer, HandleCollisionEnd));
+    SubscribeToEvent(E_PHYSICSBEGINCONTACT2D, URHO3D_HANDLER(MayaSpace, HandleCollisionBegin));
+    SubscribeToEvent(E_PHYSICSENDCONTACT2D, URHO3D_HANDLER(MayaSpace, HandleCollisionEnd));
 
     // Unsubscribe the SceneUpdate event from base class to prevent camera pitch and yaw in 2D sample
     UnsubscribeFromEvent(E_SCENEUPDATE);
 }
 
-void Urho2DPlatformer::HandleCollisionBegin(StringHash eventType, VariantMap& eventData)
+void MayaSpace::HandleCollisionBegin(StringHash eventType, VariantMap& eventData)
 {
     // Get colliding node
     auto* hitNode = static_cast<Node*>(eventData[PhysicsBeginContact2D::P_NODEA].GetPtr());
@@ -306,7 +315,7 @@ void Urho2DPlatformer::HandleCollisionBegin(StringHash eventType, VariantMap& ev
         character2D_->onSlope_ = true;
 }
 
-void Urho2DPlatformer::HandleCollisionEnd(StringHash eventType, VariantMap& eventData)
+void MayaSpace::HandleCollisionEnd(StringHash eventType, VariantMap& eventData)
 {
     // Get colliding node
     auto* hitNode = static_cast<Node*>(eventData[PhysicsEndContact2D::P_NODEA].GetPtr());
@@ -343,7 +352,7 @@ void Urho2DPlatformer::HandleCollisionEnd(StringHash eventType, VariantMap& even
     }
 }
 
-void Urho2DPlatformer::HandleUpdate(StringHash eventType, VariantMap& eventData)
+void MayaSpace::HandleUpdate(StringHash eventType, VariantMap& eventData)
 {
     using namespace Update;
 
@@ -388,7 +397,7 @@ void Urho2DPlatformer::HandleUpdate(StringHash eventType, VariantMap& eventData)
     }
 }
 
-void Urho2DPlatformer::HandlePostUpdate(StringHash eventType, VariantMap& eventData)
+void MayaSpace::HandlePostUpdate(StringHash eventType, VariantMap& eventData)
 {
     if (!character2D_)
         return;
@@ -397,7 +406,7 @@ void Urho2DPlatformer::HandlePostUpdate(StringHash eventType, VariantMap& eventD
     cameraNode_->SetPosition(Vector3(character2DNode->GetPosition().x_, character2DNode->GetPosition().y_, -10.0f)); // Camera tracks character
 }
 
-void Urho2DPlatformer::HandlePostRenderUpdate(StringHash eventType, VariantMap& eventData)
+void MayaSpace::HandlePostRenderUpdate(StringHash eventType, VariantMap& eventData)
 {
     if (drawDebug_)
     {
@@ -405,12 +414,12 @@ void Urho2DPlatformer::HandlePostRenderUpdate(StringHash eventType, VariantMap& 
         physicsWorld->DrawDebugGeometry();
 
         Node* tileMapNode = scene_->GetChild("TileMap", true);
-        auto* map = tileMapNode->GetComponent<TileMap2D>();
+        auto* map = tileMapNode->GetComponent<TileMap3D>();
         map->DrawDebugGeometry(scene_->GetComponent<DebugRenderer>(), false);
     }
 }
 
-void Urho2DPlatformer::ReloadScene(bool reInit)
+void MayaSpace::ReloadScene(bool reInit)
 {
     String filename = sample2D_->demoFilename_;
     if (!reInit)
@@ -443,7 +452,7 @@ void Urho2DPlatformer::ReloadScene(bool reInit)
     coinsText->SetText(String(coins));
 }
 
-void Urho2DPlatformer::HandlePlayButton(StringHash eventType, VariantMap& eventData)
+void MayaSpace::HandlePlayButton(StringHash eventType, VariantMap& eventData)
 {
     // Remove fullscreen UI and unfreeze the scene
     auto* ui = GetSubsystem<UI>();

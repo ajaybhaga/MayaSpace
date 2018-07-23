@@ -27,6 +27,7 @@
 #include "../IO/Deserializer.h"
 #include "../Resource/ResourceCache.h"
 #include "../Urho2D/Drawable3D.h"
+#include "../Urho2D/Sprite2D.h"
 #include "../Urho2D/Sprite3D.h"
 #include "../Urho2D/SpriteSheet2D.h"
 
@@ -187,28 +188,28 @@ bool Sprite3D::GetTextureRectangle(Rect& rect, bool flipX, bool flipY) const
     return true;
 }
 
-ResourceRef Sprite3D::SaveToResourceRef(Sprite3D* sprite)
+ResourceRef Sprite3D::SaveToResourceRef(Sprite2D* sprite)
 {
     SpriteSheet2D* spriteSheet = nullptr;
     if (sprite)
         spriteSheet = sprite->GetSpriteSheet();
 
     if (!spriteSheet)
-        return GetResourceRef(sprite, Sprite3D::GetTypeStatic());
+        return GetResourceRef(sprite, Sprite2D::GetTypeStatic());
 
     // Combine sprite sheet name and sprite name as resource name.
     return ResourceRef(spriteSheet->GetType(), spriteSheet->GetName() + "@" + sprite->GetName());
 }
 
-Sprite3D* Sprite3D::LoadFromResourceRef(Object* object, const ResourceRef& value)
+Sprite2D* Sprite3D::LoadFromResourceRef(Object* object, const ResourceRef& value)
 {
     if (!object)
         return nullptr;
 
     auto* cache = object->GetSubsystem<ResourceCache>();
 
-    if (value.type_ == Sprite3D::GetTypeStatic())
-        return cache->GetResource<Sprite3D>(value.name_);
+    if (value.type_ == Sprite2D::GetTypeStatic())
+        return cache->GetResource<Sprite2D>(value.name_);
 
     if (value.type_ == SpriteSheet2D::GetTypeStatic())
     {
@@ -224,9 +225,7 @@ Sprite3D* Sprite3D::LoadFromResourceRef(Object* object, const ResourceRef& value
         if (!spriteSheet)
             return nullptr;
 
-        // AB TODO: Determine what to do to convert 2d -> 3d.
-        // We need to return a Sprite3D.
-        return nullptr;//spriteSheet->GetSprite(spriteName);
+        return spriteSheet->GetSprite(spriteName);
     }
 
     return nullptr;

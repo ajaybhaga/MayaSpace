@@ -22,7 +22,7 @@
 
 #pragma once
 
-#include "Sample.h"
+#include "Game.h"
 #include "Utilities2D/Sample2D.h"
 
 class Character2D;
@@ -38,13 +38,13 @@ class Sample2D;
 ///    - Using Box2D Contact listeners to handle the gameplay
 ///    - Displaying debug geometry for physics and tile map
 /// Note that this sample uses some functions from Sample2D utility class.
-class Urho2DPlatformer : public Sample
+class MayaSpace : public Game
 {
-    URHO3D_OBJECT(Urho2DPlatformer, Sample);
+    URHO3D_OBJECT(MayaSpace, Game);
 
 public:
     /// Construct.
-    explicit Urho2DPlatformer(Context* context);
+    explicit MayaSpace(Context* context);
 
     /// Setup after engine initialization and before running the main loop.
     void Start() override;

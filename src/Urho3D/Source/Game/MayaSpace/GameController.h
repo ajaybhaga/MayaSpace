@@ -23,7 +23,6 @@
 #pragma once
 
 #include <Urho3D/Core/Object.h>
-#include <SDL/SDL_gamecontroller.h>
 
 using namespace Urho3D;
 

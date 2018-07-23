@@ -27,6 +27,7 @@
 namespace Urho3D
 {
 
+class Sprite2D;
 class Sprite3D;
 
 /// Static sprite component.
@@ -43,7 +44,7 @@ public:
     static void RegisterObject(Context* context);
 
     /// Set sprite.
-    void SetSprite(Sprite3D* sprite);
+    void SetSprite(Sprite2D* sprite);
     /// Set draw rectangle.
     void SetDrawRect(const Rect &rect);
     /// Set texture rectangle.
@@ -140,6 +141,8 @@ protected:
     /// Update drawRect.
     void UpdateDrawRect();
 
+    /// Sprite.
+    SharedPtr<Sprite2D> sprite2d_;
     /// Sprite.
     SharedPtr<Sprite3D> sprite_;
     /// Blend mode.

@@ -304,7 +304,9 @@ SharedPtr<Material> Renderer3D::CreateMaterial(Texture2D* texture, BlendMode ble
     return newMaterial;
 }
 
-void CheckDrawableVisibilityWork(const WorkItem* item, unsigned threadIndex)
+// TODO: AB - does this need to be updated for 3d culling?
+
+void CheckDrawableVisibilityWork3D(const WorkItem* item, unsigned threadIndex)
 {
     auto* renderer = reinterpret_cast<Renderer3D*>(item->aux_);
     auto** start = reinterpret_cast<Drawable3D**>(item->start_);
@@ -347,7 +349,7 @@ void Renderer3D::HandleBeginViewUpdate(StringHash eventType, VariantMap& eventDa
         {
             SharedPtr<WorkItem> item = queue->GetFreeItem();
             item->priority_ = M_MAX_UNSIGNED;
-            item->workFunction_ = CheckDrawableVisibilityWork;
+            item->workFunction_ = CheckDrawableVisibilityWork3D;
             item->aux_ = this;
 
             PODVector<Drawable3D*>::Iterator end = drawables_.End();

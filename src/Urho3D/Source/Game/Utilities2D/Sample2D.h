@@ -61,7 +61,7 @@ public:
     ~Sample2D() override = default;
 
     /// Generate physics collision shapes from the tmx file's objects located in tileMapLayer.
-    void CreateCollisionShapesFromTMXObjects(Node* tileMapNode, TileMapLayer2D* tileMapLayer, TileMapInfo2D info);
+    void CreateCollisionShapesFromTMXObjects(Node* tileMapNode, TileMapLayer3D* tileMapLayer, TileMapInfo2D info);
     /// Build collision shape from Tiled 'Rectangle' objects.
     CollisionBox2D* CreateRectangleShape(Node* node, TileMapObject2D* object, Vector2 size, TileMapInfo2D info);
     /// Build collision shape from Tiled 'Ellipse' objects.
@@ -83,11 +83,11 @@ public:
     /// Create a moving platform (will be cloned at each tmx placeholder).
     Node* CreateMovingPlatform();
     /// Instantiate enemies and moving platforms at each placeholder (placeholders are Poly Line objects defining a path from points).
-    void PopulateMovingEntities(TileMapLayer2D* movingEntitiesLayer);
+    void PopulateMovingEntities(TileMapLayer3D* movingEntitiesLayer);
     /// Instantiate coins to pick at each placeholder.
-    void PopulateCoins(TileMapLayer2D* coinsLayer);
+    void PopulateCoins(TileMapLayer3D* coinsLayer);
     /// Instantiate triggers at each placeholder (Rectangle objects).
-    void PopulateTriggers(TileMapLayer2D* triggersLayer);
+    void PopulateTriggers(TileMapLayer3D* triggersLayer);
     /// Read input and zoom the camera.
     float Zoom(Camera* camera);
     /// Create path from tmx object's points.

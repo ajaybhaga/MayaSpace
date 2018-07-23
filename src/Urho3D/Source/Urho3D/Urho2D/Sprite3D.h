@@ -23,12 +23,14 @@
 #pragma once
 
 #include "../Resource/Resource.h"
+#include "./Sprite2D.h"
 
 namespace Urho3D
 {
 
 class SpriteSheet2D;
 class Texture2D;
+class Sprite2D;
 
 /// Sprite.
 class URHO3D_API Sprite3D : public Resource
@@ -88,9 +90,9 @@ public:
     bool GetTextureRectangle(Rect& rect, bool flipX = false, bool flipY = false) const;
 
     /// Save sprite to ResourceRef.
-    static ResourceRef SaveToResourceRef(Sprite3D* sprite);
+    static ResourceRef SaveToResourceRef(Sprite2D* sprite);
     /// Load sprite from ResourceRef.
-    static Sprite3D* LoadFromResourceRef(Object* object, const ResourceRef& value);
+    static Sprite2D* LoadFromResourceRef(Object* object, const ResourceRef& value);
 
 private:
     /// Texture.
