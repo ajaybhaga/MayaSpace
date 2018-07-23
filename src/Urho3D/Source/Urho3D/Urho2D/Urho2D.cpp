@@ -22,6 +22,7 @@
 #include "../Precompiled.h"
 
 #include "../Core/Context.h"
+#include "../Urho2D/StaticSprite3D.h"
 #include "../Urho2D/StretchableSprite2D.h"
 #include "../Urho2D/AnimatedSprite2D.h"
 #include "../Urho2D/AnimationSet2D.h"
@@ -46,8 +47,10 @@
 #include "../Urho2D/ParticleEmitter2D.h"
 #include "../Urho2D/PhysicsWorld2D.h"
 #include "../Urho2D/Renderer2D.h"
+#include "../Urho2D/Renderer3D.h"
 #include "../Urho2D/RigidBody2D.h"
 #include "../Urho2D/Sprite2D.h"
+#include "../Urho2D/Sprite3D.h"
 #include "../Urho2D/SpriteSheet2D.h"
 #include "../Urho2D/TileMap2D.h"
 #include "../Urho2D/TileMapLayer2D.h"
@@ -66,13 +69,19 @@ const char* URHO2D_CATEGORY = "Urho2D";
 void RegisterUrho2DLibrary(Context* context)
 {
     Renderer2D::RegisterObject(context);
+    Renderer3D::RegisterObject(context);
 
     Sprite2D::RegisterObject(context);
     SpriteSheet2D::RegisterObject(context);
 
+    Sprite3D::RegisterObject(context);
+
     // Must register objects from base to derived order
     Drawable2D::RegisterObject(context);
     StaticSprite2D::RegisterObject(context);
+
+    Drawable3D::RegisterObject(context);
+    StaticSprite3D::RegisterObject(context);
 
     StretchableSprite2D::RegisterObject(context);
 

@@ -437,25 +437,13 @@ void Sample2D::CreateUIContent(const String& demoTitle, int remainingLifes, int 
     titleText->SetFont(font, 24);
     titleText->SetText(demoTitle);
 
+/// TODO: Update later
     // Create the image
     auto* spriteUI = fullUI->CreateChild<BorderImage>("Sprite");
     spriteUI->SetTexture(cache->GetResource<Texture2D>("Urho2D/imp/imp_all.png"));
     spriteUI->SetSize(238, 271);
     spriteUI->SetAlignment(HA_CENTER, VA_CENTER);
     spriteUI->SetPosition(0, - ui->GetRoot()->GetHeight() / 4);
-
-    // Create the 'EXIT' button
-    auto* exitButton = ui->GetRoot()->CreateChild<Button>("ExitButton");
-    exitButton->SetStyleAuto();
-    exitButton->SetFocusMode(FM_RESETFOCUS);
-    exitButton->SetSize(100, 50);
-    exitButton->SetAlignment(HA_CENTER, VA_CENTER);
-    exitButton->SetPosition(-100, 0);
-    auto* exitText = exitButton->CreateChild<Text>("ExitText");
-    exitText->SetAlignment(HA_CENTER, VA_CENTER);
-    exitText->SetFont(font, 24);
-    exitText->SetText("EXIT");
-    SubscribeToEvent(exitButton, E_RELEASED, URHO3D_HANDLER(Sample2D, HandleExitButton));
 
     // Create the 'PLAY' button
     auto* playButton = ui->GetRoot()->CreateChild<Button>("PlayButton");
@@ -470,6 +458,22 @@ void Sample2D::CreateUIContent(const String& demoTitle, int remainingLifes, int 
     playText->SetText("PLAY");
 //  SubscribeToEvent(playButton, E_RELEASED, HANDLER(Urho2DPlatformer, HandlePlayButton));
 
+
+    // Create the 'EXIT' button
+    auto* exitButton = ui->GetRoot()->CreateChild<Button>("ExitButton");
+    exitButton->SetStyleAuto();
+    exitButton->SetFocusMode(FM_RESETFOCUS);
+    exitButton->SetSize(100, 50);
+    exitButton->SetAlignment(HA_CENTER, VA_CENTER);
+    exitButton->SetPosition(-100, 0);
+    auto* exitText = exitButton->CreateChild<Text>("ExitText");
+    exitText->SetAlignment(HA_CENTER, VA_CENTER);
+    exitText->SetFont(font, 24);
+    exitText->SetText("EXIT");
+    SubscribeToEvent(exitButton, E_RELEASED, URHO3D_HANDLER(Sample2D, HandleExitButton));
+
+
+
     // Create the instructions
     auto* instructionText = ui->GetRoot()->CreateChild<Text>("Instructions");
     instructionText->SetText("Use WASD keys or Arrows to move\nPageUp/PageDown/MouseWheel to zoom\nF5/F7 to save/reload scene\n'Z' to toggle debug geometry\nSpace to fight");
@@ -477,6 +481,7 @@ void Sample2D::CreateUIContent(const String& demoTitle, int remainingLifes, int 
     instructionText->SetTextAlignment(HA_CENTER); // Center rows in relation to each other
     instructionText->SetAlignment(HA_CENTER, VA_CENTER);
     instructionText->SetPosition(0, ui->GetRoot()->GetHeight() / 4);
+
 
     // Show mouse cursor
     auto* input = GetSubsystem<Input>();

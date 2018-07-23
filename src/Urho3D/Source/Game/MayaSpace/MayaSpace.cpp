@@ -98,7 +98,7 @@ void MayaSpace::Start()
     CreateScene();
 
     // Create the UI content
-    sample2D_->CreateUIContent("MayaSpace v0.1 Test", character2D_->remainingLifes_, character2D_->remainingCoins_);
+    sample2D_->CreateUIContent("MayaSpace v0.1", character2D_->remainingLifes_, character2D_->remainingCoins_);
     auto* ui = GetSubsystem<UI>();
     Button* playButton = static_cast<Button*>(ui->GetRoot()->GetChild("PlayButton", true));
     SubscribeToEvent(playButton, E_RELEASED, URHO3D_HANDLER(MayaSpace, HandlePlayButton));
@@ -120,10 +120,10 @@ void MayaSpace::CreateScene()
     // Create camera
     cameraNode_ = scene_->CreateChild("Camera");
     auto* camera = cameraNode_->CreateComponent<Camera>();
-    camera->SetOrthographic(true);
+//    camera->SetOrthographic(true);
 
     auto* graphics = GetSubsystem<Graphics>();
-    camera->SetOrthoSize((float)graphics->GetHeight() * PIXEL_SIZE);
+ //   camera->SetOrthoSize((float)graphics->GetHeight() * PIXEL_SIZE);
     camera->SetZoom(2.0f * Min((float)graphics->GetWidth() / 1280.0f, (float)graphics->GetHeight() / 800.0f)); // Set zoom according to user's resolution to ensure full visibility (initial zoom (2.0) is set for full visibility at 1280x800 resolution)
 
     // Setup the viewport for displaying the scene
@@ -171,7 +171,7 @@ void MayaSpace::CreateScene()
     //sample2D_->PopulateTriggers(tileMap->GetLayer(tileMap->GetNumLayers() - 4));
 
     // Create background
-    //sample2D_->CreateBackgroundSprite(info, 3.5, "Textures/HeightMap.png", true);
+    sample2D_->CreateBackgroundSprite(info, 3.5, "Textures/HeightMap.png", true);
 
     // Check when scene is rendered
     SubscribeToEvent(E_ENDRENDERING, URHO3D_HANDLER(MayaSpace, HandleSceneRendered));

@@ -27,6 +27,7 @@
 #include "../Resource/ResourceCache.h"
 #include "../Scene/Node.h"
 #include "../Urho2D/StaticSprite2D.h"
+#include "../Urho2D/StaticSprite3D.h"
 #include "../Urho2D/TileMap3D.h"
 #include "../Urho2D/TileMapLayer3D.h"
 #include "../Urho2D/TmxFile2D.h"
@@ -226,7 +227,7 @@ void TileMapLayer3D::SetDrawOrder(int drawOrder)
         if (!nodes_[i])
             continue;
 
-        auto* staticSprite = nodes_[i]->GetComponent<StaticSprite2D>();
+        auto* staticSprite = nodes_[i]->GetComponent<StaticSprite3D>();
         if (staticSprite)
             staticSprite->SetLayer(drawOrder_);
     }
@@ -355,8 +356,7 @@ void TileMapLayer3D::SetTileLayer(const TmxTileLayer2D* tileLayer)
             SharedPtr<Node> tileNode(GetNode()->CreateTemporaryChild("Tile"));
             tileNode->SetPosition(Vector3(info.TileIndexToPosition(x, y)));
 
-            // TODO: Replace
-            auto* staticSprite = tileNode->CreateComponent<StaticSprite2D>();
+            auto* staticSprite = tileNode->CreateComponent<StaticSprite3D>();
             staticSprite->SetSprite(tile->GetSprite());
             staticSprite->SetFlip(tile->GetFlipX(), tile->GetFlipY(), tile->GetSwapXY());
             staticSprite->SetLayer(drawOrder_);
@@ -385,7 +385,7 @@ void TileMapLayer3D::SetObjectGroup(const TmxObjectGroup2D* objectGroup)
         // If object is tile, create static sprite component
         if (object->GetObjectType() == OT_TILE && object->GetTileGid() && object->GetTileSprite())
         {
-            auto* staticSprite = objectNode->CreateComponent<StaticSprite2D>();
+            auto* staticSprite = objectNode->CreateComponent<StaticSprite3D>();
             staticSprite->SetSprite(object->GetTileSprite());
             staticSprite->SetFlip(object->GetTileFlipX(), object->GetTileFlipY(), object->GetTileSwapXY());
             staticSprite->SetLayer(drawOrder_);
@@ -412,7 +412,7 @@ void TileMapLayer3D::SetImageLayer(const TmxImageLayer2D* imageLayer)
     SharedPtr<Node> imageNode(GetNode()->CreateTemporaryChild("Tile"));
     imageNode->SetPosition(Vector3(imageLayer->GetPosition()));
 
-    auto* staticSprite = imageNode->CreateComponent<StaticSprite2D>();
+    auto* staticSprite = imageNode->CreateComponent<StaticSprite3D>();
     staticSprite->SetSprite(imageLayer->GetSprite());
     staticSprite->SetOrderInLayer(0);
 
