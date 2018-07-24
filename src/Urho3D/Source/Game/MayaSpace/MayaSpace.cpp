@@ -145,7 +145,7 @@ void MayaSpace::CreateScene()
     TileMap3D* tileMap = tileMapNode->CreateComponent<TileMap3D>();
     URHO3D_LOGINFOF("tileMap=%x", tileMap);
 
-    tileMap->SetTmxFile(cache->GetResource<TmxFile2D>("Urho2D/Tilesets/Ortho.tmx"));
+    tileMap->SetTmxFile(cache->GetResource<TmxFile2D>("Urho2D/Tilesets/MayaSpace_Level0.tmx"));
     const TileMapInfo2D& info = tileMap->GetInfo();
 
     // Create Spriter Imp character (from sample 33_SpriterAnimation)

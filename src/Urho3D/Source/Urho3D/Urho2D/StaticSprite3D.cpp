@@ -313,6 +313,9 @@ void StaticSprite3D::UpdateSourceBatches()
             return;
     }
 
+    float minZ = 0.5f;
+    float maxZ = 0.1f;
+
     /*
     V1---------V2
     |         / |
@@ -329,10 +332,12 @@ void StaticSprite3D::UpdateSourceBatches()
 
     // Convert to world space
     const Matrix3x4& worldTransform = node_->GetWorldTransform();
-    vertex0.position_ = worldTransform * Vector3(drawRect_.min_.x_, drawRect_.min_.y_, 0.0f);
-    vertex1.position_ = worldTransform * Vector3(drawRect_.min_.x_, drawRect_.max_.y_, 0.0f);
-    vertex2.position_ = worldTransform * Vector3(drawRect_.max_.x_, drawRect_.max_.y_, 0.0f);
-    vertex3.position_ = worldTransform * Vector3(drawRect_.max_.x_, drawRect_.min_.y_, 0.0f);
+
+    // Face 1
+    vertex0.position_ = worldTransform * Vector3(drawRect_.min_.x_, drawRect_.min_.y_, maxZ);
+    vertex1.position_ = worldTransform * Vector3(drawRect_.min_.x_, drawRect_.max_.y_, maxZ);
+    vertex2.position_ = worldTransform * Vector3(drawRect_.max_.x_, drawRect_.max_.y_, maxZ);
+    vertex3.position_ = worldTransform * Vector3(drawRect_.max_.x_, drawRect_.min_.y_, maxZ);
 
     vertex0.uv_ = textureRect_.min_;
     (swapXY_ ? vertex3.uv_ : vertex1.uv_) = Vector2(textureRect_.min_.x_, textureRect_.max_.y_);
@@ -346,10 +351,12 @@ void StaticSprite3D::UpdateSourceBatches()
     vertices.Push(vertex2);
     vertices.Push(vertex3);
 
-    vertex0.position_ = worldTransform * Vector3(drawRect_.min_.x_, drawRect_.min_.y_, 1.0f);
-    vertex1.position_ = worldTransform * Vector3(drawRect_.min_.x_, drawRect_.max_.y_, 1.0f);
-    vertex2.position_ = worldTransform * Vector3(drawRect_.max_.x_, drawRect_.max_.y_, 1.0f);
-    vertex3.position_ = worldTransform * Vector3(drawRect_.max_.x_, drawRect_.min_.y_, 1.0f);
+
+    // Face 2 (FRONT)
+    vertex0.position_ = worldTransform * Vector3(drawRect_.min_.x_, drawRect_.min_.y_, minZ);
+    vertex1.position_ = worldTransform * Vector3(drawRect_.min_.x_, drawRect_.max_.y_, minZ);
+    vertex2.position_ = worldTransform * Vector3(drawRect_.max_.x_, drawRect_.max_.y_, minZ);
+    vertex3.position_ = worldTransform * Vector3(drawRect_.max_.x_, drawRect_.min_.y_, minZ);
 
     vertex0.uv_ = textureRect_.min_;
     (swapXY_ ? vertex3.uv_ : vertex1.uv_) = Vector2(textureRect_.min_.x_, textureRect_.max_.y_);
@@ -362,6 +369,87 @@ void StaticSprite3D::UpdateSourceBatches()
     vertices.Push(vertex1);
     vertices.Push(vertex2);
     vertices.Push(vertex3);
+
+
+
+    // Face 3
+
+    vertex0.position_ = worldTransform * Vector3(drawRect_.min_.x_, drawRect_.min_.y_, minZ);
+    vertex1.position_ = worldTransform * Vector3(drawRect_.min_.x_, drawRect_.min_.y_, maxZ);
+    vertex2.position_ = worldTransform * Vector3(drawRect_.max_.x_, drawRect_.min_.y_, maxZ);
+    vertex3.position_ = worldTransform * Vector3(drawRect_.max_.x_, drawRect_.min_.y_, minZ);
+
+
+    vertex0.uv_ = textureRect_.min_;
+    (swapXY_ ? vertex3.uv_ : vertex1.uv_) = Vector2(textureRect_.min_.x_, textureRect_.max_.y_);
+    vertex2.uv_ = textureRect_.max_;
+    (swapXY_ ? vertex1.uv_ : vertex3.uv_) = Vector2(textureRect_.max_.x_, textureRect_.min_.y_);
+
+    vertex0.color_ = vertex1.color_ = vertex2.color_ = vertex3.color_ = color_.ToUInt();
+
+    vertices.Push(vertex0);
+    vertices.Push(vertex1);
+    vertices.Push(vertex2);
+    vertices.Push(vertex3);
+
+
+    // Face 4
+    vertex0.position_ = worldTransform * Vector3(drawRect_.min_.x_, drawRect_.max_.y_, minZ);
+    vertex1.position_ = worldTransform * Vector3(drawRect_.min_.x_, drawRect_.max_.y_, maxZ);
+    vertex2.position_ = worldTransform * Vector3(drawRect_.max_.x_, drawRect_.max_.y_, maxZ);
+    vertex3.position_ = worldTransform * Vector3(drawRect_.max_.x_, drawRect_.max_.y_, minZ);
+
+    vertex0.uv_ = textureRect_.min_;
+    (swapXY_ ? vertex3.uv_ : vertex1.uv_) = Vector2(textureRect_.min_.x_, textureRect_.max_.y_);
+    vertex2.uv_ = textureRect_.max_;
+    (swapXY_ ? vertex1.uv_ : vertex3.uv_) = Vector2(textureRect_.max_.x_, textureRect_.min_.y_);
+
+    vertex0.color_ = vertex1.color_ = vertex2.color_ = vertex3.color_ = color_.ToUInt();
+
+    vertices.Push(vertex0);
+    vertices.Push(vertex1);
+    vertices.Push(vertex2);
+    vertices.Push(vertex3);
+
+
+
+
+    // Face 5
+    vertex0.position_ = worldTransform * Vector3(drawRect_.min_.x_, drawRect_.min_.y_, maxZ);
+    vertex1.position_ = worldTransform * Vector3(drawRect_.min_.x_, drawRect_.max_.y_, maxZ);
+    vertex2.position_ = worldTransform * Vector3(drawRect_.min_.x_, drawRect_.max_.y_, minZ);
+    vertex3.position_ = worldTransform * Vector3(drawRect_.min_.x_, drawRect_.min_.y_, minZ);
+
+    vertex0.uv_ = textureRect_.min_;
+    (swapXY_ ? vertex3.uv_ : vertex1.uv_) = Vector2(textureRect_.min_.x_, textureRect_.max_.y_);
+    vertex2.uv_ = textureRect_.max_;
+    (swapXY_ ? vertex1.uv_ : vertex3.uv_) = Vector2(textureRect_.max_.x_, textureRect_.min_.y_);
+
+    vertex0.color_ = vertex1.color_ = vertex2.color_ = vertex3.color_ = color_.ToUInt();
+
+    vertices.Push(vertex0);
+    vertices.Push(vertex1);
+    vertices.Push(vertex2);
+    vertices.Push(vertex3);
+
+    // Face 6
+    vertex0.position_ = worldTransform * Vector3(drawRect_.max_.x_, drawRect_.min_.y_, minZ);
+    vertex1.position_ = worldTransform * Vector3(drawRect_.max_.x_, drawRect_.min_.y_, maxZ);
+    vertex2.position_ = worldTransform * Vector3(drawRect_.max_.x_, drawRect_.max_.y_, maxZ);
+    vertex3.position_ = worldTransform * Vector3(drawRect_.max_.x_, drawRect_.max_.y_, minZ);
+
+    vertex0.uv_ = textureRect_.min_;
+    (swapXY_ ? vertex3.uv_ : vertex1.uv_) = Vector2(textureRect_.min_.x_, textureRect_.max_.y_);
+    vertex2.uv_ = textureRect_.max_;
+    (swapXY_ ? vertex1.uv_ : vertex3.uv_) = Vector2(textureRect_.max_.x_, textureRect_.min_.y_);
+
+    vertex0.color_ = vertex1.color_ = vertex2.color_ = vertex3.color_ = color_.ToUInt();
+
+    vertices.Push(vertex0);
+    vertices.Push(vertex1);
+    vertices.Push(vertex2);
+    vertices.Push(vertex3);
+
 
 
     sourceBatchesDirty_ = false;
@@ -369,15 +457,19 @@ void StaticSprite3D::UpdateSourceBatches()
 
 void StaticSprite3D::UpdateMaterial()
 {
-    if (customMaterial_)
+    if (customMaterial_) {
         sourceBatches_[0].material_ = customMaterial_;
+     //   sourceBatches_[0].material_ ->SetFillMode(FillMode::FILL_WIREFRAME);
+    }
     else
     {
-        if (sprite2d_ && renderer_)
+        if (sprite2d_ && renderer_) {
             sourceBatches_[0].material_ = renderer_->GetMaterial(sprite2d_->GetTexture(), blendMode_);
-        else
+       // sourceBatches_[0].material_ ->SetFillMode(FillMode::FILL_WIREFRAME);
+        } else
             sourceBatches_[0].material_ = nullptr;
     }
+
 }
 
 void StaticSprite3D::UpdateDrawRect()
