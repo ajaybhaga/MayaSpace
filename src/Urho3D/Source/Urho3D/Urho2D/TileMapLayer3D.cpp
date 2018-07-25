@@ -32,6 +32,12 @@
 #include "../Urho2D/TileMapLayer3D.h"
 #include "../Urho2D/TmxFile2D.h"
 
+#include "../Graphics/Material.h"
+#include "../Graphics/Model.h"
+#include "../Graphics/StaticModel.h"
+#include "../Graphics/Octree.h"
+
+
 #include "../DebugNew.h"
 
 namespace Urho3D
@@ -338,6 +344,8 @@ Node* TileMapLayer3D::GetImageNode() const
 
 void TileMapLayer3D::SetTileLayer(const TmxTileLayer2D* tileLayer)
 {
+    auto* cache = GetSubsystem<ResourceCache>();
+
     tileLayer_ = tileLayer;
 
     int width = tileLayer->GetWidth();
@@ -356,12 +364,23 @@ void TileMapLayer3D::SetTileLayer(const TmxTileLayer2D* tileLayer)
             SharedPtr<Node> tileNode(GetNode()->CreateTemporaryChild("Tile"));
             tileNode->SetPosition(Vector3(info.TileIndexToPosition(x, y)));
 
-            auto* staticSprite = tileNode->CreateComponent<StaticSprite3D>();
+            auto* staticObject = tileNode->CreateComponent<StaticModel>();
+            staticObject->SetModel(cache->GetResource<Model>("Models/3dtile01.mdl"));
+//            staticObject->SetMaterial(cache->GetResource<Material>("Models/3dtile01.mtl"));
+
+ //             tileMap->SetTmxFile(cache->GetResource<TmxFile2D>("Models/3dtile01.obj"));
+ 
+
+/*
             staticSprite->SetSprite(tile->GetSprite());
             staticSprite->SetFlip(tile->GetFlipX(), tile->GetFlipY(), tile->GetSwapXY());
             staticSprite->SetLayer(drawOrder_);
-            staticSprite->SetOrderInLayer(y * width + x);
+            staticSprite->SetOrderInLayer(y * width + x);*/
 
+      /*      Node* mushroomNode = scene_->CreateChild("Mushroom");
+            mushroomNode->SetPosition(Vector3(Random(90.0f) - 45.0f, 0.0f, Random(90.0f) - 45.0f));
+            mushroomNode->SetRotation(Quaternion(0.0f, Random(360.0f), 0.0f));
+            mushroomNode->SetScale(0.5f + Random(2.0f));*/
             nodes_[y * width + x] = tileNode;
         }
     }

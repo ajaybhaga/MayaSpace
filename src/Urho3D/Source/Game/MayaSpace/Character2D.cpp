@@ -52,6 +52,7 @@ Character2D::Character2D(Context* context) :
     aboveClimbable_(false),
     onSlope_(false)
 {
+    
 }
 
 void Character2D::RegisterObject(Context* context)

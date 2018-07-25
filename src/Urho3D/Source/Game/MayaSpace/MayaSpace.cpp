@@ -24,7 +24,6 @@
 #include <Urho3D/Urho2D/AnimatedSprite2D.h>
 #include <Urho3D/Urho2D/AnimationSet2D.h>
 #include <Urho3D/UI/Button.h>
-#include <Urho3D/Graphics/Camera.h>
 #include <Urho3D/Urho2D/CollisionBox2D.h>
 #include <Urho3D/Urho2D/CollisionChain2D.h>
 #include <Urho3D/Urho2D/CollisionCircle2D.h>
@@ -33,11 +32,21 @@
 #include <Urho3D/Graphics/DebugRenderer.h>
 #include <Urho3D/Engine/Engine.h>
 #include <Urho3D/UI/Font.h>
-#include <Urho3D/Graphics/Graphics.h>
-#include <Urho3D/Graphics/GraphicsEvents.h>
 #include <Urho3D/Input/Input.h>
 #include <Urho3D/IO/Log.h>
+#include <Urho3D/Graphics/Camera.h>
+#include <Urho3D/Graphics/Graphics.h>
+#include <Urho3D/Graphics/GraphicsEvents.h>
+#include <Urho3D/Graphics/Material.h>
+#include <Urho3D/Graphics/Model.h>
 #include <Urho3D/Graphics/Octree.h>
+#include <Urho3D/Graphics/Renderer.h>
+#include <Urho3D/Resource/ResourceCache.h>
+#include <Urho3D/Scene/Scene.h>
+#include <Urho3D/UI/Font.h>
+#include <Urho3D/UI/Text.h>
+
+
 #include <Urho3D/Urho2D/PhysicsEvents2D.h>
 #include <Urho3D/Urho2D/PhysicsWorld2D.h>
 #include <Urho3D/Graphics/Renderer.h>
@@ -157,6 +166,17 @@ void MayaSpace::CreateScene()
     TileMapLayer3D* tileMapLayer = tileMap->GetLayer(tileMap->GetNumLayers() - 1);
     sample2D_->CreateCollisionShapesFromTMXObjects(tileMapNode, tileMapLayer, info);
 
+        // Create a directional light to the world so that we can see something. The light scene node's orientation controls the
+    // light direction; we will use the SetDirection() function which calculates the orientation from a forward direction vector.
+    // The light will use default settings (white light, no shadows)
+    Node* lightNode = scene_->CreateChild("DirectionalLight");
+    lightNode->SetPosition(Vector3(1.0f, 8.0f, 0.0f));
+    lightNode->SetDirection(Vector3(0.6f, -1.0f, 0.8f)); // The direction vector does not need to be normalized
+    auto* light = lightNode->CreateComponent<Light>();
+    light->SetLightType(LIGHT_DIRECTIONAL);     
+    // Set an initial position for the camera scene node above the plane
+         //   mushroomNode->SetRotation(Quaternion(0.0f, Random(360.0f), 0.0f));
+   // mushroomNode->SetScale(0.5f + Random(2.0f));
     // Instantiate enemies and moving platforms at each placeholder of "MovingEntities" layer (placeholders are Poly Line objects defining a path from points)
     //sample2D_->PopulateMovingEntities(tileMap->GetLayer(tileMap->GetNumLayers() - 2));
 
