@@ -136,7 +136,7 @@ void MayaSpace::CreateScene()
 
     auto* graphics = GetSubsystem<Graphics>();
  //   camera->SetOrthoSize((float)graphics->GetHeight() * PIXEL_SIZE);
-    camera->SetZoom(3.0f * Min((float)graphics->GetWidth() / 1280.0f, (float)graphics->GetHeight() / 800.0f)); // Set zoom according to user's resolution to ensure full visibility (initial zoom (2.0) is set for full visibility at 1280x800 resolution)
+    camera->SetZoom(2.0f * Min((float)graphics->GetWidth() / 1280.0f, (float)graphics->GetHeight() / 800.0f)); // Set zoom according to user's resolution to ensure full visibility (initial zoom (2.0) is set for full visibility at 1280x800 resolution)
     camera->SetFarClip(300.0f);
 
     // Setup the viewport for displaying the scene
@@ -419,8 +419,7 @@ void MayaSpace::HandleUpdate(StringHash eventType, VariantMap& eventData)
        // character2D_->controls_.pitch_ = Clamp(character2D_->controls_.pitch_, -80.0f, 80.0f);
         // Set rotation already here so that it's updated every rendering frame instead of every physics frame
         character2D_->GetNode()->SetRotation(Quaternion(character2D_->controls_.yaw_, Vector3::UP));
-        character2D_->GetNode()->SetRotation(Quaternion(0.0f, 90.0f, 0.0f));
-
+        character2D_->GetNode()->SetRotation(Quaternion(0.0f, character2D_->heading_, 0.0f));
 
     }
 }

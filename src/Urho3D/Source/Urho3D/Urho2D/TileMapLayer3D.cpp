@@ -374,17 +374,26 @@ void TileMapLayer3D::SetTileLayer(const TmxTileLayer2D* tileLayer)
                 filler = ""; 
             else 
                 filler = "0";
-            std::string tileStr = path + terrainType + "Tile" + filler + "%d.mdl";       
+//            std::string tileStr = path + terrainType + "Tile" + filler + "%d.mdl";       
+            std::string tileStr = path + "AssetPack/elephant.mdl";       
+
             const char *cstr = tileStr.c_str();
 
             char buffer[100];
             sprintf(buffer, cstr, tileId);
 
             // Set tile location
-            tileNode->SetPosition(Vector3(info.TileIndexToPosition(x, y))+tile->GetModelOffset());
+//            tileNode->SetPosition(Vector3(info.TileIndexToPosition(x, y))+tile->GetModelOffset()+Vector3(0,0,-1));
+ 
+             tileNode->SetPosition(Vector3(info.TileIndexToPosition(x, y))+Vector3(0,0,0));
+            tileNode->SetScale(Vector3(0.2,0.2,0.2));
+            tileNode->SetRotation(Quaternion(180.0f,90.0f,90.0f));
 
             staticObject->SetModel(cache->GetResource<Model>(buffer));
 
+
+
+            //terrain-world-plain.mdl
 
 //            staticObject->SetMaterial(cache->GetResource<Material>("Models/3dtile01.mtl"));
 

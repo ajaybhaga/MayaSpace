@@ -54,6 +54,10 @@ public:
     /// Movement controls. Assigned by the main program each frame.
     Controls controls_;
 
+    /// Flag when player is facing forward.
+    bool forward_;
+    float heading_;
+
     /// Flag when player is wounded.
     bool wounded_;
     /// Flag when player is dead.

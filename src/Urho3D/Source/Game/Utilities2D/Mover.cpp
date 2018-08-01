@@ -105,6 +105,7 @@ void Mover::Update(float timeStep)
     if (pos.x_ < bounds_.min_.x_ || pos.x_ > bounds_.max_.x_ || pos.z_ < bounds_.min_.z_ || pos.z_ > bounds_.max_.z_)
         node_->Yaw(rotationSpeed_ * timeStep);
 */
+/*
     // Get the model's first (only) animation state and advance its time. Note the convenience accessor to other components
     // in the same scene node
     auto* model = node_->GetComponent<AnimatedModel>(true);
@@ -115,7 +116,7 @@ void Mover::Update(float timeStep)
         AnimationState* state = model->GetAnimationStates()[0];
         state->AddTime(timeStep);
     }
-
+*/
 //    node_->SetRotation(Quaternion(Random(360.0f),Random(360.0f),Random(360.0f)));
 
    // node_->Rotate(Quaternion(Random(360.0f),Random(360.0f),Random(360.0f)));

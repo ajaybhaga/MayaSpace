@@ -91,7 +91,7 @@ void Character2D::Update(float timeStep)
     auto* input = GetSubsystem<Input>();
     auto* body = GetComponent<RigidBody2D>();
 
-    auto* animatedSprite = GetComponent<AnimatedModel>();
+    auto* animatedModel = GetComponent<AnimatedModel>();
     bool onGround = false;
     bool jump = false;
 
@@ -105,7 +105,7 @@ void Character2D::Update(float timeStep)
         onGround = true;
 
     // Set direction
-    Vector2 moveDir = Vector2::ZERO; // Reset
+    Vector3 moveDir = Vector3::ZERO; // Reset
 
            // Jump. Must release jump control between jumps
         if (controls_.IsDown(BUTTON_A))
@@ -128,18 +128,49 @@ void Character2D::Update(float timeStep)
 
     if (input->GetKeyDown('A') || input->GetKeyDown(KEY_LEFT) || controls_.IsDown(BUTTON_DPAD_LEFT))
     {
-     //   moveDir = moveDir + Vector2::LEFT;
-     //   animatedSprite->SetFlipX(false); // Flip sprite (reset to default play on the X axis)
+        moveDir = moveDir + Vector3::FORWARD;
+
+        auto* model = node_->GetComponent<AnimatedModel>(true);
+        if (model->GetNumAnimationStates())
+        {
+            AnimationState* state = model->GetAnimationStates()[0];
+            state->AddTime(timeStep);
+        }
+
+        forward_ = false;
     }
+
     if (input->GetKeyDown('D') || input->GetKeyDown(KEY_RIGHT) || controls_.IsDown(BUTTON_DPAD_RIGHT))
     {
-       // moveDir = moveDir + Vector2::RIGHT;
-       // animatedSprite->SetFlipX(true); // Flip sprite (flip animation on the X axis)
+        moveDir = moveDir + Vector3::FORWARD;
+        auto* model = node_->GetComponent<AnimatedModel>(true);
+        if (model->GetNumAnimationStates())
+        {
+            AnimationState* state = model->GetAnimationStates()[0];
+            state->AddTime(timeStep);
+        }
+
+        forward_ = true;
+    }
+
+    if (forward_) {
+        //  Update rotation of model to forward
+        if (heading_ < 90.0f) { heading_ += 2.4f; };
+        if (heading_ > 90.0f) { heading_ -= 2.4f; };
+
+    } else {
+        //  Update rotation of model to back
+        if (heading_ < 270.0f) { heading_ += 2.4f; };
+        if (heading_ > 270.0f) { heading_ -= 2.4f; };
     }
 
     // Jump
     if ((onGround || aboveClimbable_) && (input->GetKeyPress('W') || input->GetKeyPress(KEY_UP) || controls_.IsDown(BUTTON_A)))
         jump = true;
+
+
+
+       /* 
 
     // Climb
     if (isClimbing_)
@@ -150,18 +181,21 @@ void Character2D::Update(float timeStep)
         if (input->GetKeyDown(KEY_DOWN) || input->GetKeyDown(KEY_S))
             moveDir = moveDir + Vector2(0.0f, -1.0f);
     }
+*/
+
 
     // Move
-    if (!moveDir.Equals(Vector2::ZERO) || jump)
+    if (!moveDir.Equals(Vector3::ZERO) || jump)
     {
-        if (onSlope_)
-            body->ApplyForceToCenter(moveDir * MOVE_SPEED / 2, true); // When climbing a slope, apply force (todo: replace by setting linear velocity to zero when will work)
-        else
-            node_->Translate(Vector3(moveDir.x_, moveDir.y_, 0.0f) * timeStep * 1.8f);
+//        if (onSlope_)
+  //          body->ApplyForceToCenter(moveDir * MOVE_SPEED / 2, true); // When climbing a slope, apply force (todo: replace by setting linear velocity to zero when will work)
+    //    else
+            node_->Translate(Vector3(moveDir.x_, moveDir.y_, moveDir.z_) * timeStep * 1.8f);
         if (jump)
-            body->ApplyLinearImpulse(Vector2(0.0f, 0.01f) * MOVE_SPEED, body->GetMassCenter(), true);
+            body->ApplyLinearImpulse(Vector2(0.0f, 0.005f) * MOVE_SPEED, body->GetMassCenter(), true);
     }
-/*
+
+  /*
     // Animate
     if (input->GetKeyDown(KEY_SPACE))
     {

@@ -196,7 +196,7 @@ void Game::SetWindowTitleAndIcon()
     Graphics* graphics = GetSubsystem<Graphics>();
     Image* icon = cache->GetResource<Image>("Textures/UrhoIcon.png");
     graphics->SetWindowIcon(icon);
-    graphics->SetWindowTitle("MayaSpace v0.1");
+    graphics->SetWindowTitle("MayaSpace v0.1 by Ajay Bhaga");
 }
 
 void Game::CreateConsoleAndDebugHud()
