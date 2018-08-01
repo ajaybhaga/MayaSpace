@@ -20,8 +20,6 @@
 // THE SOFTWARE.
 //
 
-#include <Urho3D/Urho2D/AnimatedSprite2D.h>
-#include <Urho3D/Urho2D/AnimationSet2D.h>
 #include <Urho3D/Core/Context.h>
 #include <Urho3D/Input/Input.h>
 #include <Urho3D/IO/MemoryBuffer.h>
@@ -31,6 +29,10 @@
 #include <Urho3D/Scene/SceneEvents.h>
 #include <Urho3D/UI/Text.h>
 #include <Urho3D/UI/UI.h>
+#include <Urho3D/Graphics/AnimatedModel.h>
+#include <Urho3D/Graphics/Animation.h>
+#include <Urho3D/Graphics/AnimationState.h>
+
 
 #include <Urho3D/DebugNew.h>
 #include "GameController.h"
@@ -88,7 +90,8 @@ void Character2D::Update(float timeStep)
     // Set temporary variables
     auto* input = GetSubsystem<Input>();
     auto* body = GetComponent<RigidBody2D>();
-    auto* animatedSprite = GetComponent<AnimatedSprite2D>();
+
+    auto* animatedSprite = GetComponent<AnimatedModel>();
     bool onGround = false;
     bool jump = false;
 
@@ -125,17 +128,17 @@ void Character2D::Update(float timeStep)
 
     if (input->GetKeyDown('A') || input->GetKeyDown(KEY_LEFT) || controls_.IsDown(BUTTON_DPAD_LEFT))
     {
-        moveDir = moveDir + Vector2::LEFT;
-        animatedSprite->SetFlipX(false); // Flip sprite (reset to default play on the X axis)
+     //   moveDir = moveDir + Vector2::LEFT;
+     //   animatedSprite->SetFlipX(false); // Flip sprite (reset to default play on the X axis)
     }
     if (input->GetKeyDown('D') || input->GetKeyDown(KEY_RIGHT) || controls_.IsDown(BUTTON_DPAD_RIGHT))
     {
-        moveDir = moveDir + Vector2::RIGHT;
-        animatedSprite->SetFlipX(true); // Flip sprite (flip animation on the X axis)
+       // moveDir = moveDir + Vector2::RIGHT;
+       // animatedSprite->SetFlipX(true); // Flip sprite (flip animation on the X axis)
     }
 
     // Jump
-    if ((onGround || aboveClimbable_) && (input->GetKeyPress('W') || input->GetKeyPress(KEY_UP)))
+    if ((onGround || aboveClimbable_) && (input->GetKeyPress('W') || input->GetKeyPress(KEY_UP) || controls_.IsDown(BUTTON_A)))
         jump = true;
 
     // Climb
@@ -154,11 +157,11 @@ void Character2D::Update(float timeStep)
         if (onSlope_)
             body->ApplyForceToCenter(moveDir * MOVE_SPEED / 2, true); // When climbing a slope, apply force (todo: replace by setting linear velocity to zero when will work)
         else
-            node_->Translate(Vector3(moveDir.x_, moveDir.y_, 0) * timeStep * 1.8f);
+            node_->Translate(Vector3(moveDir.x_, moveDir.y_, 0.0f) * timeStep * 1.8f);
         if (jump)
-            body->ApplyLinearImpulse(Vector2(0.0f, 0.17f) * MOVE_SPEED, body->GetMassCenter(), true);
+            body->ApplyLinearImpulse(Vector2(0.0f, 0.01f) * MOVE_SPEED, body->GetMassCenter(), true);
     }
-
+/*
     // Animate
     if (input->GetKeyDown(KEY_SPACE))
     {
@@ -177,17 +180,19 @@ void Character2D::Update(float timeStep)
     {
         animatedSprite->SetAnimation("idle");
     }
+*/
 }
 
 void Character2D::HandleWoundedState(float timeStep)
 {
     auto* body = GetComponent<RigidBody2D>();
-    auto* animatedSprite = GetComponent<AnimatedSprite2D>();
+   // auto* animatedSprite = GetComponent<AnimatedSprite2D>();
 
+/*
     // Play "hit" animation in loop
     if (animatedSprite->GetAnimation() != "hit")
         animatedSprite->SetAnimation("hit", LM_FORCE_LOOPED);
-
+*/
     // Update timer
     timer_ += timeStep;
 
@@ -231,7 +236,7 @@ void Character2D::HandleWoundedState(float timeStep)
 void Character2D::HandleDeath()
 {
     auto* body = GetComponent<RigidBody2D>();
-    auto* animatedSprite = GetComponent<AnimatedSprite2D>();
+   // auto* animatedSprite = GetComponent<AnimatedSprite2D>();
 
     // Set state to 'killed'
     killed_ = true;
@@ -252,6 +257,6 @@ void Character2D::HandleDeath()
     node_->SetScale(1.2f);
 
     // Play death animation once
-    if (animatedSprite->GetAnimation() != "dead2")
-        animatedSprite->SetAnimation("dead2");
+   /* if (animatedSprite->GetAnimation() != "dead2")
+        animatedSprite->SetAnimation("dead2");*/
 }

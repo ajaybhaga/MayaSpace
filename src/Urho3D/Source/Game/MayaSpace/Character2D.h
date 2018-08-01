@@ -29,6 +29,7 @@
 using namespace Urho3D;
 
 const float MOVE_SPEED = 23.0f;
+const float YAW_SENSITIVITY = 0.1f;
 const int LIFES = 3;
 
 /// Character2D component controling Imp behavior.

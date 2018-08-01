@@ -21,8 +21,6 @@
 //
 
 #include <Urho3D/Audio/Audio.h>
-#include <Urho3D/Urho2D/AnimatedSprite2D.h>
-#include <Urho3D/Urho2D/AnimationSet2D.h>
 #include <Urho3D/UI/Button.h>
 #include <Urho3D/Urho2D/CollisionBox2D.h>
 #include <Urho3D/Urho2D/CollisionChain2D.h>
@@ -34,13 +32,18 @@
 #include <Urho3D/UI/Font.h>
 #include <Urho3D/Input/Input.h>
 #include <Urho3D/IO/Log.h>
+#include <Urho3D/Graphics/AnimatedModel.h>
+#include <Urho3D/Graphics/Animation.h>
+#include <Urho3D/Graphics/AnimationState.h>
 #include <Urho3D/Graphics/Camera.h>
 #include <Urho3D/Graphics/Graphics.h>
 #include <Urho3D/Graphics/GraphicsEvents.h>
-#include <Urho3D/Graphics/Material.h>
 #include <Urho3D/Graphics/Model.h>
+#include <Urho3D/Graphics/Light.h>
+#include <Urho3D/Graphics/Material.h>
 #include <Urho3D/Graphics/Octree.h>
 #include <Urho3D/Graphics/Renderer.h>
+#include <Urho3D/Graphics/Zone.h>
 #include <Urho3D/Resource/ResourceCache.h>
 #include <Urho3D/Scene/Scene.h>
 #include <Urho3D/UI/Font.h>
@@ -159,8 +162,8 @@ void MayaSpace::CreateScene()
     const TileMapInfo2D& info = tileMap->GetInfo();
 
     // Create Spriter Imp character (from sample 33_SpriterAnimation)
-    Node* spriteNode = sample2D_->CreateCharacter(info, 0.8f, Vector3(1.0f, 8.0f, 0.0f), 0.2f);
-    character2D_ = spriteNode->CreateComponent<Character2D>(); // Create a logic component to handle character behavior
+    Node* modelNode = sample2D_->CreateCharacter(info, 0.0f, Vector3(4.0f, 16.4f, 0.0f), 0.5f);
+    character2D_ = modelNode->CreateComponent<Character2D>(); // Create a logic component to handle character behavior
 
     // Generate physics collision shapes from the tmx file's objects located in "Physics" (top) layer
     TileMapLayer3D* tileMapLayer = tileMap->GetLayer(tileMap->GetNumLayers() - 1);
@@ -192,7 +195,7 @@ void MayaSpace::CreateScene()
     //sample2D_->PopulateTriggers(tileMap->GetLayer(tileMap->GetNumLayers() - 4));
 
     // Create background
-    sample2D_->CreateBackgroundSprite(info, 3.5, "Textures/HeightMap.png", true);
+//    sample2D_->CreateBackgroundSprite(info, 3.5, "Textures/HeightMap.png", true);
 
     // Check when scene is rendered
     SubscribeToEvent(E_ENDRENDERING, URHO3D_HANDLER(MayaSpace, HandleSceneRendered));
@@ -230,10 +233,10 @@ void MayaSpace::HandleCollisionBegin(StringHash eventType, VariantMap& eventData
 {
     // Get colliding node
     auto* hitNode = static_cast<Node*>(eventData[PhysicsBeginContact2D::P_NODEA].GetPtr());
-    if (hitNode->GetName() == "Imp")
+    if (hitNode->GetName() == "Char")
         hitNode = static_cast<Node*>(eventData[PhysicsBeginContact2D::P_NODEB].GetPtr());
     String nodeName = hitNode->GetName();
-    Node* character2DNode = scene_->GetChild("Imp", true);
+    Node* character2DNode = scene_->GetChild("Char", true);
 
     // Handle ropes and ladders climbing
     if (nodeName == "Climb")
@@ -271,6 +274,7 @@ void MayaSpace::HandleCollisionBegin(StringHash eventType, VariantMap& eventData
         sample2D_->PlaySoundEffect("Powerup.wav");
     }
 
+/*
     // Handle interactions with enemies
     if (nodeName == "Enemy" || nodeName == "Orc")
     {
@@ -303,7 +307,7 @@ void MayaSpace::HandleCollisionBegin(StringHash eventType, VariantMap& eventData
                 sample2D_->PlaySoundEffect("BigExplosion.wav");
             }
         }
-    }
+    }*/
 
     // Handle exiting the level when all coins have been gathered
     if (nodeName == "Exit" && character2D_->remainingCoins_ == 0)
@@ -340,10 +344,10 @@ void MayaSpace::HandleCollisionEnd(StringHash eventType, VariantMap& eventData)
 {
     // Get colliding node
     auto* hitNode = static_cast<Node*>(eventData[PhysicsEndContact2D::P_NODEA].GetPtr());
-    if (hitNode->GetName() == "Imp")
+    if (hitNode->GetName() == "Char")
         hitNode = static_cast<Node*>(eventData[PhysicsEndContact2D::P_NODEB].GetPtr());
     String nodeName = hitNode->GetName();
-    Node* character2DNode = scene_->GetChild("Imp", true);
+    Node* character2DNode = scene_->GetChild("Char", true);
 
     // Handle leaving a rope or ladder
     if (nodeName == "Climb")
@@ -376,16 +380,16 @@ void MayaSpace::HandleCollisionEnd(StringHash eventType, VariantMap& eventData)
 void MayaSpace::HandleUpdate(StringHash eventType, VariantMap& eventData)
 {
     using namespace Update;
+    auto* input = GetSubsystem<Input>();
 
     // Zoom in/out
     if (cameraNode_)
         sample2D_->Zoom(cameraNode_->GetComponent<Camera>());
 
-    auto* input = GetSubsystem<Input>();
-
     // Toggle debug geometry with 'Z' key
     if (input->GetKeyPress(KEY_Z))
         drawDebug_ = !drawDebug_;
+
 
     // Check for loading / saving the scene
     if (input->GetKeyPress(KEY_F5))
@@ -407,14 +411,17 @@ void MayaSpace::HandleUpdate(StringHash eventType, VariantMap& eventData)
         if (!rStick.IsEmpty())
         {
             Vector2 axisInput = rStick.GetVector2();
-        //    character2D_->controls_.yaw_ += axisInput.x_ * YAW_SENSITIVITY;
-        //    character2D_->controls_.pitch_ += axisInput.y_ * YAW_SENSITIVITY;
+            character2D_->controls_.yaw_ += axisInput.x_ * YAW_SENSITIVITY;
+            character2D_->controls_.pitch_ += axisInput.y_ * YAW_SENSITIVITY;
         }
 
         // Limit pitch
-        character2D_->controls_.pitch_ = Clamp(character2D_->controls_.pitch_, -80.0f, 80.0f);
+       // character2D_->controls_.pitch_ = Clamp(character2D_->controls_.pitch_, -80.0f, 80.0f);
         // Set rotation already here so that it's updated every rendering frame instead of every physics frame
         character2D_->GetNode()->SetRotation(Quaternion(character2D_->controls_.yaw_, Vector3::UP));
+        character2D_->GetNode()->SetRotation(Quaternion(0.0f, 90.0f, 0.0f));
+
+
     }
 }
 
@@ -450,7 +457,7 @@ void MayaSpace::ReloadScene(bool reInit)
     scene_->LoadXML(loadFile);
     // After loading we have to reacquire the weak pointer to the Character2D component, as it has been recreated
     // Simply find the character's scene node by name as there's only one of them
-    Node* character2DNode = scene_->GetChild("Imp", true);
+    Node* character2DNode = scene_->GetChild("Char", true);
     if (character2DNode)
         character2D_ = character2DNode->GetComponent<Character2D>();
 

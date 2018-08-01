@@ -362,10 +362,30 @@ void TileMapLayer3D::SetTileLayer(const TmxTileLayer2D* tileLayer)
                 continue;
 
             SharedPtr<Node> tileNode(GetNode()->CreateTemporaryChild("Tile"));
-            tileNode->SetPosition(Vector3(info.TileIndexToPosition(x, y)));
-
             auto* staticObject = tileNode->CreateComponent<StaticModel>();
-            staticObject->SetModel(cache->GetResource<Model>("Models/3dtile01.mdl"));
+
+
+            unsigned int tileId = tile->GetGid();
+
+            std::string path = "Models/";
+            std::string filler = "";
+            std::string terrainType = "Land";
+            if (tileId > 9)
+                filler = ""; 
+            else 
+                filler = "0";
+            std::string tileStr = path + terrainType + "Tile" + filler + "%d.mdl";       
+            const char *cstr = tileStr.c_str();
+
+            char buffer[100];
+            sprintf(buffer, cstr, tileId);
+
+            // Set tile location
+            tileNode->SetPosition(Vector3(info.TileIndexToPosition(x, y))+tile->GetModelOffset());
+
+            staticObject->SetModel(cache->GetResource<Model>(buffer));
+
+
 //            staticObject->SetMaterial(cache->GetResource<Material>("Models/3dtile01.mtl"));
 
  //             tileMap->SetTmxFile(cache->GetResource<TmxFile2D>("Models/3dtile01.obj"));

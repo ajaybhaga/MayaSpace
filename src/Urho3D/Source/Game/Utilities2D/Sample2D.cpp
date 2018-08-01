@@ -20,8 +20,11 @@
 // THE SOFTWARE.
 //
 
-#include <Urho3D/Urho2D/AnimatedSprite2D.h>
-#include <Urho3D/Urho2D/AnimationSet2D.h>
+#include <Urho3D/Graphics/AnimatedModel.h>
+#include <Urho3D/Graphics/Animation.h>
+#include <Urho3D/Graphics/AnimationState.h>
+//#include <Urho3D/Urho2D/AnimatedSprite2D.h>
+//#include <Urho3D/Urho2D/AnimationSet2D.h>
 #include <Urho3D/UI/BorderImage.h>
 #include <Urho3D/UI/Button.h>
 #include <Urho3D/Graphics/Camera.h>
@@ -55,6 +58,19 @@
 #include <Urho3D/UI/UIEvents.h>
 #include <Urho3D/Scene/ValueAnimation.h>
 #include <Urho3D/UI/Window.h>
+
+
+#include <Urho3D/Graphics/Graphics.h>
+#include <Urho3D/Graphics/GraphicsEvents.h>
+#include <Urho3D/Graphics/Model.h>
+#include <Urho3D/Graphics/Light.h>
+#include <Urho3D/Graphics/Material.h>
+#include <Urho3D/Graphics/Octree.h>
+#include <Urho3D/Graphics/Renderer.h>
+#include <Urho3D/Graphics/Zone.h>
+#include <Urho3D/Resource/ResourceCache.h>
+
+
 
 #include "Utilities2D/Mover.h"
 #include "Sample2D.h"
@@ -169,6 +185,7 @@ CollisionChain2D* Sample2D::CreatePolyLineShape(Node* node, TileMapObject2D* obj
 
 Node* Sample2D::CreateCharacter(TileMapInfo2D info, float friction, Vector3 position, float scale)
 {
+    /*
     auto* cache = GetSubsystem<ResourceCache>();
     Node* spriteNode = scene_->CreateChild("Imp");
     spriteNode->SetPosition(position);
@@ -187,7 +204,62 @@ Node* Sample2D::CreateCharacter(TileMapInfo2D info, float friction, Vector3 posi
     shape->SetFriction(friction); // Set friction
     shape->SetRestitution(0.1f); // Bounce
 
-    return spriteNode;
+    return spriteNode;*/
+
+    auto* cache = GetSubsystem<ResourceCache>();
+    Node* modelNode = scene_->CreateChild("Char");
+    modelNode->SetPosition(position);
+    modelNode->SetScale(scale);
+
+    // Create animated models
+    const float MODEL_MOVE_SPEED = 2.0f;
+    const float MODEL_ROTATE_SPEED = 100.0f;
+    const BoundingBox bounds(Vector3(-20.0f, 0.0f, -20.0f), Vector3(20.0f, 0.0f, 20.0f));
+
+        auto* modelObject = modelNode->CreateComponent<AnimatedModel>();
+        modelObject->SetModel(cache->GetResource<Model>("Models/Kachujin/Kachujin.mdl"));
+        modelObject->SetMaterial(cache->GetResource<Material>("Models/Kachujin/Materials/Kachujin.xml"));
+        modelObject->SetCastShadows(true);
+
+        // Create an AnimationState for a walk animation. Its time position will need to be manually updated to advance the
+        // animation, The alternative wouldbe to use an AnimationController component which updates the animation automatically,
+        // but we need to update the model's position manually in any case
+    
+        auto* walkAnimation = cache->GetResource<Animation>("Models/Kachujin/Kachujin_Walk.ani");
+
+        AnimationState* state = modelObject->AddAnimationState(walkAnimation);
+        // The state would fail to create (return null) if the animation was not found
+        if (state)
+        {
+            // Enable full blending weight and looping
+            state->SetWeight(1.0f);
+            state->SetLooped(true);
+            state->SetTime(Random(walkAnimation->GetLength()));
+        }
+
+        // Create our custom Mover component that will move & animate the model during each frame's update
+        auto* mover = modelNode->CreateComponent<Mover>();
+        mover->SetParameters(MODEL_MOVE_SPEED, MODEL_ROTATE_SPEED, bounds);
+   // }
+
+/*
+    auto* animatedSprite = spriteNode->CreateComponent<AnimatedSprite2D>();
+    // Get scml file and Play "idle" anim
+    auto* animationSet = cache->GetResource<AnimationSet2D>("Urho2D/imp/imp.scml");
+    animatedSprite->SetAnimationSet(animationSet);
+    animatedSprite->SetAnimation("idle");
+    animatedSprite->SetLayer(3); // Put character over tile map (which is on layer 0) and over Orcs (which are on layer 2) */
+
+
+    auto* impBody = modelNode->CreateComponent<RigidBody2D>();
+    impBody->SetBodyType(BT_DYNAMIC);
+    impBody->SetAllowSleep(false);
+    auto* shape = modelNode->CreateComponent<CollisionCircle2D>();
+    shape->SetRadius(0.04f); // Set shape size
+    shape->SetFriction(friction); // Set friction
+    shape->SetRestitution(0.1f); // Bounce
+
+    return modelNode;
 }
 
 Node* Sample2D::CreateTrigger()
@@ -200,6 +272,7 @@ Node* Sample2D::CreateTrigger()
     return node;
 }
 
+/*
 Node* Sample2D::CreateEnemy()
 {
     auto* cache = GetSubsystem<ResourceCache>();
@@ -261,15 +334,15 @@ Node* Sample2D::CreateMovingPlatform()
     shape->SetSize(Vector2(0.32f, 0.32f)); // Set box size
     shape->SetFriction(0.8f); // Set friction
     return node;
-}
+}*/
 
 void Sample2D::PopulateMovingEntities(TileMapLayer3D* movingEntitiesLayer)
 {
     // Create enemy (will be cloned at each placeholder)
-    Node* enemyNode = CreateEnemy();
-    Node* orcNode = CreateOrc();
-    Node* platformNode = CreateMovingPlatform();
-
+   // Node* enemyNode = CreateEnemy();
+   // Node* orcNode = CreateOrc();
+   // Node* platformNode = CreateMovingPlatform();
+/*
     // Instantiate enemies and moving platforms at each placeholder (placeholders are Poly Line objects defining a path from points)
     for (int i=0; i < movingEntitiesLayer->GetNumObjects(); ++i)
     {
@@ -309,13 +382,13 @@ void Sample2D::PopulateMovingEntities(TileMapLayer3D* movingEntitiesLayer)
     // Remove nodes used for cloning purpose
     enemyNode->Remove();
     orcNode->Remove();
-    platformNode->Remove();
+    platformNode->Remove();*/
 }
 
 void Sample2D::PopulateCoins(TileMapLayer3D* coinsLayer)
 {
     // Create coin (will be cloned at each placeholder)
-    Node* coinNode = CreateCoin();
+/*    Node* coinNode = CreateCoin();
 
     // Instantiate coins to pick at each placeholder
     for (int i=0; i < coinsLayer->GetNumObjects(); ++i)
@@ -327,7 +400,7 @@ void Sample2D::PopulateCoins(TileMapLayer3D* coinsLayer)
     }
 
     // Remove node used for cloning purpose
-    coinNode->Remove();
+    coinNode->Remove();*/
 }
 
 void Sample2D::PopulateTriggers(TileMapLayer3D* triggersLayer)
@@ -352,6 +425,7 @@ void Sample2D::PopulateTriggers(TileMapLayer3D* triggersLayer)
 
 float Sample2D::Zoom(Camera* camera)
 {
+    
     auto* input = GetSubsystem<Input>();
     float zoom_ = camera->GetZoom();
 
@@ -372,6 +446,16 @@ float Sample2D::Zoom(Camera* camera)
         zoom_ = Clamp(zoom_ * 0.99f, CAMERA_MIN_DIST, CAMERA_MAX_DIST);
         camera->SetZoom(zoom_);
     }
+
+    return zoom_;
+}
+
+
+
+float Sample2D::MoveCamera(Camera* camera)
+{
+    auto* input = GetSubsystem<Input>();
+    float zoom_ = camera->GetZoom();
 
     return zoom_;
 }
@@ -402,23 +486,28 @@ void Sample2D::CreateUIContent(const String& demoTitle, int remainingLifes, int 
     coinsUI->SetImageRect(IntRect(0, 64, 60, 128));
     coinsUI->SetAlignment(HA_LEFT, VA_TOP);
     coinsUI->SetPosition(5, 5);
+    coinsUI->SetVisible(false);
     auto* coinsText = coinsUI->CreateChild<Text>("CoinsText");
     coinsText->SetAlignment(HA_CENTER, VA_CENTER);
     coinsText->SetFont(font, 24);
     coinsText->SetTextEffect(TE_SHADOW);
     coinsText->SetText(String(remainingCoins));
-
+    coinsText->SetVisible(false);
+    
     // Create the UI for displaying the remaining lifes
     auto* lifeUI = ui->GetRoot()->CreateChild<BorderImage>("Life");
     lifeUI->SetTexture(cache->GetResource<Texture2D>("Urho2D/imp/imp_all.png"));
     lifeUI->SetSize(70, 80);
     lifeUI->SetAlignment(HA_RIGHT, VA_TOP);
     lifeUI->SetPosition(-5, 5);
+    lifeUI->SetVisible(false);
+
     auto* lifeText = lifeUI->CreateChild<Text>("LifeText");
     lifeText->SetAlignment(HA_CENTER, VA_CENTER);
     lifeText->SetFont(font, 24);
     lifeText->SetTextEffect(TE_SHADOW);
     lifeText->SetText(String(remainingLifes));
+    lifeText->SetVisible(false);
 
     // Create the fullscreen UI for start/end
     auto* fullUI = ui->GetRoot()->CreateChild<Window>("FullUI");
@@ -440,8 +529,8 @@ void Sample2D::CreateUIContent(const String& demoTitle, int remainingLifes, int 
 /// TODO: Update later
     // Create the image
     auto* spriteUI = fullUI->CreateChild<BorderImage>("Sprite");
-    spriteUI->SetTexture(cache->GetResource<Texture2D>("Urho2D/imp/imp_all.png"));
-    spriteUI->SetSize(238, 271);
+    spriteUI->SetTexture(cache->GetResource<Texture2D>("Textures/MayaSpaceLogo.png"));
+    spriteUI->SetSize(255, 128);
     spriteUI->SetAlignment(HA_CENTER, VA_CENTER);
     spriteUI->SetPosition(0, - ui->GetRoot()->GetHeight() / 4);
 
@@ -451,7 +540,7 @@ void Sample2D::CreateUIContent(const String& demoTitle, int remainingLifes, int 
     playButton->SetFocusMode(FM_RESETFOCUS);
     playButton->SetSize(100, 50);
     playButton->SetAlignment(HA_CENTER, VA_CENTER);
-    playButton->SetPosition(100, 0);
+    playButton->SetPosition(-100, 0);
     auto* playText = playButton->CreateChild<Text>("PlayText");
     playText->SetAlignment(HA_CENTER, VA_CENTER);
     playText->SetFont(font, 24);
@@ -465,7 +554,7 @@ void Sample2D::CreateUIContent(const String& demoTitle, int remainingLifes, int 
     exitButton->SetFocusMode(FM_RESETFOCUS);
     exitButton->SetSize(100, 50);
     exitButton->SetAlignment(HA_CENTER, VA_CENTER);
-    exitButton->SetPosition(-100, 0);
+    exitButton->SetPosition(100, 0);
     auto* exitText = exitButton->CreateChild<Text>("ExitText");
     exitText->SetAlignment(HA_CENTER, VA_CENTER);
     exitText->SetFont(font, 24);
@@ -473,10 +562,9 @@ void Sample2D::CreateUIContent(const String& demoTitle, int remainingLifes, int 
     SubscribeToEvent(exitButton, E_RELEASED, URHO3D_HANDLER(Sample2D, HandleExitButton));
 
 
-
     // Create the instructions
     auto* instructionText = ui->GetRoot()->CreateChild<Text>("Instructions");
-    instructionText->SetText("Use WASD keys or Arrows to move\nPageUp/PageDown/MouseWheel to zoom\nF5/F7 to save/reload scene\n'Z' to toggle debug geometry\nSpace to fight");
+    instructionText->SetText("Get ready.");
     instructionText->SetFont(cache->GetResource<Font>("Fonts/Anonymous Pro.ttf"), 15);
     instructionText->SetTextAlignment(HA_CENTER); // Center rows in relation to each other
     instructionText->SetAlignment(HA_CENTER, VA_CENTER);
@@ -503,6 +591,7 @@ void Sample2D::SaveScene(bool initial)
     scene_->SaveXML(saveFile);
 }
 
+/*
 void Sample2D::CreateBackgroundSprite(TileMapInfo2D info, float scale, const String& texture, bool animate)
 {
     auto* cache = GetSubsystem<ResourceCache>();
@@ -523,7 +612,7 @@ void Sample2D::CreateBackgroundSprite(TileMapInfo2D info, float scale, const Str
         animation->SetKeyFrame(2, Variant(Quaternion(0.0f, 0.0f, 0.0f)));
         node->SetAttributeAnimation("Rotation", animation, WM_LOOP, 0.05f);
     }
-}
+}*/
 
 void Sample2D::SpawnEffect(Node* node)
 {

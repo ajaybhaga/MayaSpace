@@ -90,6 +90,8 @@ public:
     void PopulateTriggers(TileMapLayer3D* triggersLayer);
     /// Read input and zoom the camera.
     float Zoom(Camera* camera);
+    /// Move camera.
+    float MoveCamera(Camera* camera);
     /// Create path from tmx object's points.
     PODVector<Vector2> CreatePathFromPoints(TileMapObject2D* object, Vector2 offset);
     /// Create the UI content.

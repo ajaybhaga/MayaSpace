@@ -98,6 +98,8 @@ public:
     /// Return tile.
     Tile2D* GetTile(int x, int y) const;
 
+    Vector3 GetTileModelOffset(unsigned gid) const;
+
 protected:
     /// Tiles.
     Vector<SharedPtr<Tile2D> > tiles_;

@@ -147,6 +147,7 @@ bool TmxTileLayer2D::Load(const XMLElement& element, const TileMapInfo2D& info)
                 {
                     SharedPtr<Tile2D> tile(new Tile2D());
                     tile->gid_ = gid;
+                    tile->modelOffset_ = GetTileModelOffset(gid);
                     tile->sprite_ = tmxFile_->GetTileSprite(gid & ~FLIP_ALL);
                     tile->propertySet_ = tmxFile_->GetTilePropertySet(gid & ~FLIP_ALL);
                     tiles_[y * width_ + x] = tile;
@@ -171,6 +172,7 @@ bool TmxTileLayer2D::Load(const XMLElement& element, const TileMapInfo2D& info)
                 {
                     SharedPtr<Tile2D> tile(new Tile2D());
                     tile->gid_ = gid;
+                    tile->modelOffset_ = GetTileModelOffset(gid);
                     tile->sprite_ = tmxFile_->GetTileSprite(gid & ~FLIP_ALL);
                     tile->propertySet_ = tmxFile_->GetTilePropertySet(gid & ~FLIP_ALL);
                     tiles_[y * width_ + x] = tile;
@@ -201,6 +203,7 @@ bool TmxTileLayer2D::Load(const XMLElement& element, const TileMapInfo2D& info)
                 {
                     SharedPtr<Tile2D> tile(new Tile2D());
                     tile->gid_ = gid;
+                    tile->modelOffset_ = GetTileModelOffset(gid);
                     tile->sprite_ = tmxFile_->GetTileSprite(gid & ~FLIP_ALL);
                     tile->propertySet_ = tmxFile_->GetTilePropertySet(gid & ~FLIP_ALL);
                     tiles_[y * width_ + x] = tile;
@@ -215,6 +218,60 @@ bool TmxTileLayer2D::Load(const XMLElement& element, const TileMapInfo2D& info)
 
     return true;
 }
+
+
+Vector3 TmxTileLayer2D::GetTileModelOffset(unsigned gid) const {
+
+    Vector3 offset;
+
+    switch (gid) {
+        
+        // top-left L
+        case 1:
+            offset = Vector3(0.0f, 0.0f, 0.0f);
+        break;
+
+        // top line
+        case 2:
+            offset = Vector3(0.0f, 0.0f, 0.0f);
+        break;
+        
+        // top-right L
+        case 3:
+           offset = Vector3(0.5f, 0.0f, 0.0f);
+        break;
+        
+        // right line
+        case 4:
+           offset = Vector3(0.0f, 0.0f, 0.0f);
+        break;
+        
+        // bottom-right L
+        case 5:
+            offset = Vector3(-0.5f, 0.5f, 0.0f);
+        break;
+
+        // bottom line
+        case 6:
+            offset = Vector3(0.2f, 0.5f, 0.0f);
+        break;
+
+        // bottom-left L
+        case 7:
+            offset = Vector3(0.2f, 0.5f, 0.0f);
+        break;
+
+        // left line
+         case 8:
+            offset = Vector3(-0.5f, 0.0f, 0.0f);
+        break;
+           
+
+    }
+
+    return offset;
+}
+
 
 Tile2D* TmxTileLayer2D::GetTile(int x, int y) const
 {

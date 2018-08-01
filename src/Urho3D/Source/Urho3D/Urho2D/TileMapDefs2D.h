@@ -61,6 +61,7 @@ struct URHO3D_API TileMapInfo2D
     float GetMapWidth() const;
     /// return map height.
     float GetMapHeight() const;
+
     /// Convert tmx position to Urho position.
     Vector2 ConvertPosition(const Vector2& position) const;
     /// Convert tile index to position.
@@ -134,6 +135,9 @@ public:
 
     /// Return gid.
     unsigned GetGid() const { return gid_ & ~FLIP_ALL; }
+    // Return model offset
+    const Vector3& GetModelOffset() const { return modelOffset_; }
+    
     /// Return flip X.
     bool GetFlipX() const { return gid_ & FLIP_HORIZONTAL; }
     /// Return flip Y.
@@ -153,6 +157,10 @@ private:
 
     /// Gid.
     unsigned gid_;
+
+    // Model offset
+    Vector3 modelOffset_;
+
     /// Sprite.
     SharedPtr<Sprite2D> sprite_;
     /// Property set.

@@ -157,7 +157,7 @@ void Game::CreateLogo()
 {
     // Get logo texture
     ResourceCache* cache = GetSubsystem<ResourceCache>();
-    Texture2D* logoTexture = cache->GetResource<Texture2D>("Textures/FishBoneLogo.png");
+    Texture2D* logoTexture = cache->GetResource<Texture2D>("Textures/MayaSpaceLogo.png");
     if (!logoTexture)
         return;
 

@@ -1,0 +1,14 @@
+20-120  = Idle
+
+125-150 = Run
+
+160-175 = Jump Start
+
+175-185 = Jump Air
+
+185-195 = Jump End
+
+210-245 = Attack 
+
+245-265 = Dash
+
