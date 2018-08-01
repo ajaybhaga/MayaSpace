@@ -127,7 +127,9 @@ CollisionBox2D* Sample2D::CreateRectangleShape(Node* node, TileMapObject2D* obje
     auto* shape = node->CreateComponent<CollisionBox2D>();
     shape->SetSize(size);
     if (info.orientation_ == O_ORTHOGONAL)
-        shape->SetCenter(object->GetPosition() + size / 2);
+//        shape->SetCenter(object->GetPosition() + size / 2);
+          shape->SetCenter(object->GetPosition() + size / 2);
+
     else
     {
         shape->SetCenter(object->GetPosition() + Vector2(info.tileWidth_ / 2, 0.0f));

@@ -344,9 +344,22 @@ Node* TileMapLayer3D::GetImageNode() const
 
 void TileMapLayer3D::SetTileLayer(const TmxTileLayer2D* tileLayer)
 {
+    bool land = false;
+    bool plant = false;
+    bool building = false;
+
     auto* cache = GetSubsystem<ResourceCache>();
 
     tileLayer_ = tileLayer;
+
+    if (tileLayer_->GetName() == "Land")
+        land = true;
+    
+    if (tileLayer_->GetName() == "Plant")
+        plant = true;
+
+    if (tileLayer_->GetName() == "Building")
+        building = true;
 
     int width = tileLayer->GetWidth();
     int height = tileLayer->GetHeight();
@@ -376,20 +389,102 @@ void TileMapLayer3D::SetTileLayer(const TmxTileLayer2D* tileLayer)
                 filler = "0";
 //            std::string tileStr = path + terrainType + "Tile" + filler + "%d.mdl";       
             std::string tileStr = path + "AssetPack/elephant.mdl";       
+//            std::string tileStr;
+            
+            if (land) {
+                switch(tileId) {
+                    case 1:
+                     tileStr = path + "AssetPack/cloud01.mdl";  
+                    break;
+                    case 2:
+                    break;
+                    case 3:
+                    break;
+                    case 4:
+                    break;
+                    case 5:
+                    break;
+                    case 6:
+                    break;
+                    case 7:
+                    break;
+                    case 8:
+                    break;
+                };
+            }
+                    
+            if (plant) {                  
+                switch(tileId) {
+                    case 33:
+                     tileStr = path + "AssetPack/palm.mdl";  
+                    break;
+                    case 2:
+                    break;
+                    case 3:
+                    break;
+                    case 4:
+                    break;
+                    case 5:
+                    break;
+                    case 6:
+                    break;
+                    case 7:
+                    break;
+                    case 8:
+                    break;
+                };
+            }
+
+            if (building) {
+                switch(tileId) {
+                    case 9:
+                     tileStr = path + "AssetPack/medieval-house_small.mdl";  
+                    break;
+                    case 2:
+                    break;
+                    case 3:
+                    break;
+                    case 4:
+                    break;
+                    case 5:
+                    break;
+                    case 6:
+                    break;
+                    case 7:
+                    break;
+                    case 8:
+                    break;
+                };
+            }
 
             const char *cstr = tileStr.c_str();
 
             char buffer[100];
             sprintf(buffer, cstr, tileId);
 
+            float xoffset, height, depth;
             // Set tile location
 //            tileNode->SetPosition(Vector3(info.TileIndexToPosition(x, y))+tile->GetModelOffset()+Vector3(0,0,-1));
- 
-             tileNode->SetPosition(Vector3(info.TileIndexToPosition(x, y))+Vector3(0,0,0));
-            tileNode->SetScale(Vector3(0.2,0.2,0.2));
+            if (land) { xoffset = 0.3f; depth = 0.1f; }
+            if (plant) { xoffset = 0.0f; depth = 0.2f; height = -0.6f; }
+            if (building) { xoffset = 0.0f; depth = 0.3f; height = -0.6f; }
+    
+            tileNode->SetPosition(Vector3(info.TileIndexToPosition(x, y))*1.0f+Vector3(xoffset,height,depth));
+            tileNode->SetScale(Vector3(0.17,0.17,0.17));
             tileNode->SetRotation(Quaternion(180.0f,90.0f,90.0f));
 
             staticObject->SetModel(cache->GetResource<Model>(buffer));
+            staticObject->SetMaterial(cache->GetResource<Material>("Materials/LOWPOLY-COLORS.xml"));
+           // staticObject->SetMaterial(cache->GetResource<Material>("Materials/BROWN-DARK.xml"));
+          //  staticObject->SetMaterial(cache->GetResource<Material>("Materials/GREEN.xml"));
+
+//
+/*
+        auto* modelObject = modelNode->CreateComponent<AnimatedModel>();
+        modelObject->SetModel(cache->GetResource<Model>("Models/Kachujin/Kachujin.mdl"));
+        modelObject->SetMaterial(cache->GetResource<Material>("Materials/LOWPOLY-COLORS.xml"));
+        modelObject->SetCastShadows(true);
+*/
 
 
 

@@ -136,7 +136,7 @@ void MayaSpace::CreateScene()
 
     auto* graphics = GetSubsystem<Graphics>();
  //   camera->SetOrthoSize((float)graphics->GetHeight() * PIXEL_SIZE);
-    camera->SetZoom(2.0f * Min((float)graphics->GetWidth() / 1280.0f, (float)graphics->GetHeight() / 800.0f)); // Set zoom according to user's resolution to ensure full visibility (initial zoom (2.0) is set for full visibility at 1280x800 resolution)
+    camera->SetZoom(12.0f * Min((float)graphics->GetWidth() / 1280.0f, (float)graphics->GetHeight() / 800.0f)); // Set zoom according to user's resolution to ensure full visibility (initial zoom (2.0) is set for full visibility at 1280x800 resolution)
     camera->SetFarClip(300.0f);
 
     // Setup the viewport for displaying the scene
@@ -162,7 +162,7 @@ void MayaSpace::CreateScene()
     const TileMapInfo2D& info = tileMap->GetInfo();
 
     // Create Spriter Imp character (from sample 33_SpriterAnimation)
-    Node* modelNode = sample2D_->CreateCharacter(info, 0.0f, Vector3(4.0f, 16.4f, 0.0f), 0.5f);
+    Node* modelNode = sample2D_->CreateCharacter(info, 0.0f, Vector3(2.5f, 16.0f, 0.0f), 0.1f);
     character2D_ = modelNode->CreateComponent<Character2D>(); // Create a logic component to handle character behavior
 
     // Generate physics collision shapes from the tmx file's objects located in "Physics" (top) layer
