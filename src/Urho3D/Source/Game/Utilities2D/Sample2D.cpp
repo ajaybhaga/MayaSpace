@@ -219,25 +219,51 @@ Node* Sample2D::CreateCharacter(TileMapInfo2D info, float friction, Vector3 posi
     const BoundingBox bounds(Vector3(-20.0f, 0.0f, -20.0f), Vector3(20.0f, 0.0f, 20.0f));
 
         auto* modelObject = modelNode->CreateComponent<AnimatedModel>();
-        modelObject->SetModel(cache->GetResource<Model>("Models/Kachujin/Kachujin.mdl"));
-        modelObject->SetMaterial(cache->GetResource<Material>("Models/Kachujin/Materials/Kachujin.xml"));
+        modelObject->SetModel(cache->GetResource<Model>("Models/X_Bot/X_Bot.mdl"));
+        modelObject->SetMaterial(cache->GetResource<Material>("Models/X_Bot/Materials/X_BotSurface.xml"));
         modelObject->SetCastShadows(true);
 
         // Create an AnimationState for a walk animation. Its time position will need to be manually updated to advance the
         // animation, The alternative wouldbe to use an AnimationController component which updates the animation automatically,
         // but we need to update the model's position manually in any case
     
-        auto* walkAnimation = cache->GetResource<Animation>("Models/Kachujin/Kachujin_Walk.ani");
+       // Set animation state
+    auto* walkAnimation = cache->GetResource<Animation>("Models/X_Bot/X_Bot_Walk.ani");
+    auto* idleAnimation = cache->GetResource<Animation>("Models/X_Bot/X_Bot_Idle.ani");
+    auto* jumpAnimation = cache->GetResource<Animation>("Models/X_Bot/X_Bot_Jump.ani");
 
-        AnimationState* state = modelObject->AddAnimationState(walkAnimation);
+        AnimationState* walkState = modelObject->AddAnimationState(walkAnimation);
         // The state would fail to create (return null) if the animation was not found
-        if (state)
+        if (walkState)
         {
             // Enable full blending weight and looping
-            state->SetWeight(1.0f);
-            state->SetLooped(true);
-            state->SetTime(Random(walkAnimation->GetLength()));
+            walkState->SetWeight(1.0f);
+            walkState->SetLooped(true);
+            walkState->SetTime(0);
         }
+
+        AnimationState* idleState = modelObject->AddAnimationState(idleAnimation);
+        // The state would fail to create (return null) if the animation was not found
+        if (idleState)
+        {
+            // Enable full blending weight and looping
+            idleState->SetWeight(1.0f);
+            idleState->SetLooped(true);
+            idleState->SetTime(0);
+        }
+
+        AnimationState* jumpState = modelObject->AddAnimationState(jumpAnimation);
+        // The state would fail to create (return null) if the animation was not found
+        if (jumpState)
+        {
+            // Enable full blending weight and looping
+            jumpState->SetWeight(1.0f);
+            jumpState->SetLooped(false);
+            jumpState->SetTime(0);
+        }
+
+
+
 
         // Create our custom Mover component that will move & animate the model during each frame's update
         auto* mover = modelNode->CreateComponent<Mover>();

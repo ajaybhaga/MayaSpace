@@ -27,6 +27,7 @@
 #include <Urho3D/Urho2D/RigidBody2D.h>
 #include <Urho3D/Scene/Scene.h>
 #include <Urho3D/Scene/SceneEvents.h>
+#include <Urho3D/Resource/ResourceCache.h>
 #include <Urho3D/UI/Text.h>
 #include <Urho3D/UI/UI.h>
 #include <Urho3D/Graphics/AnimatedModel.h>
@@ -55,6 +56,7 @@ Character2D::Character2D(Context* context) :
     onSlope_(false)
 {
     
+
 }
 
 void Character2D::RegisterObject(Context* context)
@@ -94,6 +96,7 @@ void Character2D::Update(float timeStep)
     auto* animatedModel = GetComponent<AnimatedModel>();
     bool onGround = false;
     bool jump = false;
+    bool walk = false;
 
     // Collision detection (AABB query)
     Vector2 characterHalfSize = Vector2(0.16f, 0.16f);
@@ -110,8 +113,17 @@ void Character2D::Update(float timeStep)
            // Jump. Must release jump control between jumps
         if (controls_.IsDown(BUTTON_A))
         {
-            jump = true;
+            doJump_ = true;
         }
+
+        if (onGround) {
+            if (doJump_) {
+                jump = true;
+                doJump_ = false;
+            }
+        }
+        
+        
 
         // Dpad
         if (controls_.IsDown(BUTTON_DPAD_UP))
@@ -128,7 +140,7 @@ void Character2D::Update(float timeStep)
 
     if (input->GetKeyDown('A') || input->GetKeyDown(KEY_LEFT) || controls_.IsDown(BUTTON_DPAD_LEFT))
     {
-        moveDir = moveDir + Vector3::FORWARD;
+        moveDir = moveDir - Vector3::FORWARD;
 
         auto* model = node_->GetComponent<AnimatedModel>(true);
         if (model->GetNumAnimationStates())
@@ -138,30 +150,32 @@ void Character2D::Update(float timeStep)
         }
 
         forward_ = false;
+        walk = true;
     }
 
     if (input->GetKeyDown('D') || input->GetKeyDown(KEY_RIGHT) || controls_.IsDown(BUTTON_DPAD_RIGHT))
     {
-        moveDir = moveDir + Vector3::FORWARD;
+        moveDir = moveDir - Vector3::FORWARD;
         auto* model = node_->GetComponent<AnimatedModel>(true);
         if (model->GetNumAnimationStates())
         {
             AnimationState* state = model->GetAnimationStates()[0];
             state->AddTime(timeStep);
+            
         }
 
         forward_ = true;
+        walk = true;
     }
 
     if (forward_) {
         //  Update rotation of model to forward
-        if (heading_ < 90.0f) { heading_ += 2.4f; };
-        if (heading_ > 90.0f) { heading_ -= 2.4f; };
-
-    } else {
-        //  Update rotation of model to back
         if (heading_ < 270.0f) { heading_ += 2.4f; };
         if (heading_ > 270.0f) { heading_ -= 2.4f; };
+    } else {
+        //  Update rotation of model to back
+        if (heading_ < 90.0f) { heading_ += 2.4f; };
+        if (heading_ > 90.0f) { heading_ -= 2.4f; };      
     }
 
     // Jump
@@ -169,6 +183,83 @@ void Character2D::Update(float timeStep)
         jump = true;
 
 
+    bool idle = (!walk && !jump);
+
+    // Set animation state
+    auto* cache = GetSubsystem<ResourceCache>();
+    auto* model = node_->GetComponent<AnimatedModel>(true);
+    auto* walkAnimation = cache->GetResource<Animation>("Models/X_Bot/X_Bot_Walk.ani");
+    auto* idleAnimation = cache->GetResource<Animation>("Models/X_Bot/X_Bot_Idle.ani");
+    auto* jumpAnimation = cache->GetResource<Animation>("Models/X_Bot/X_Bot_Jump.ani");
+
+    if (walk) {
+
+        walkState_ = model->AddAnimationState(walkAnimation);
+        // The state would fail to create (return null) if the animation was not found
+        if (walkState_)
+        {
+            // Enable full blending weight and looping
+            walkState_->SetWeight(1.0f);
+            walkState_->AddTime(timeStep);
+
+        }
+    } else {
+
+        walkState_ = model->AddAnimationState(walkAnimation);
+        // The state would fail to create (return null) if the animation was not found
+        if (walkState_)
+        {
+            // Enable full blending weight and looping
+            walkState_->SetWeight(0.0f);
+            walkState_->SetTime(0.0f);
+        }
+    }
+
+    if (idle) {
+
+        idleState_ = model->AddAnimationState(idleAnimation);
+        // The state would fail to create (return null) if the animation was not found
+        if (idleState_)
+        {
+            // Enable full blending weight and looping
+            idleState_->SetWeight(1.0f);
+            idleState_->AddTime(timeStep);
+        }
+    } else {
+
+        AnimationState* idleState_ = model->AddAnimationState(idleAnimation);
+        // The state would fail to create (return null) if the animation was not found
+        if (idleState_)
+        {
+            // Enable full blending weight and looping
+            idleState_->SetWeight(0.0f);
+            idleState_->SetTime(0.0f);
+        }
+    }
+
+
+    if (jump) {
+
+        AnimationState* jumpState_ = model->AddAnimationState(jumpAnimation);
+        // The state would fail to create (return null) if the animation was not found
+        if (jumpState_)
+        {
+            // Enable full blending weight and looping
+            jumpState_->SetWeight(1.0f);
+            jumpState_->AddTime(timeStep);
+        }
+    } else {
+
+         AnimationState* jumpState_ = model->AddAnimationState(jumpAnimation);
+        // The state would fail to create (return null) if the animation was not found
+        if (jumpState_)
+        {
+            // Enable full blending weight and looping
+            jumpState_->SetWeight(0.0f);
+            jumpState_->SetTime(0.0f);
+        }
+
+    }
 
        /* 
 
@@ -190,7 +281,7 @@ void Character2D::Update(float timeStep)
 //        if (onSlope_)
   //          body->ApplyForceToCenter(moveDir * MOVE_SPEED / 2, true); // When climbing a slope, apply force (todo: replace by setting linear velocity to zero when will work)
     //    else
-            node_->Translate(Vector3(moveDir.x_, moveDir.y_, moveDir.z_) * timeStep * 2.8f);
+            node_->Translate(Vector3(moveDir.x_, moveDir.y_, moveDir.z_) * timeStep * 1.8f);
             node_->Translate(Vector3(0, 0, -moveDir.z_) * timeStep * 0.99f);
 
         if (jump)

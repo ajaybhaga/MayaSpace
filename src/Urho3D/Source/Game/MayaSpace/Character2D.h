@@ -58,6 +58,11 @@ public:
     bool forward_;
     float heading_;
 
+    bool doJump_;
+    AnimationState* walkState_; 
+    AnimationState* idleState_;
+    AnimationState* jumpState_; 
+
     /// Flag when player is wounded.
     bool wounded_;
     /// Flag when player is dead.

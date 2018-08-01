@@ -419,7 +419,7 @@ void MayaSpace::HandleUpdate(StringHash eventType, VariantMap& eventData)
        // character2D_->controls_.pitch_ = Clamp(character2D_->controls_.pitch_, -80.0f, 80.0f);
         // Set rotation already here so that it's updated every rendering frame instead of every physics frame
         character2D_->GetNode()->SetRotation(Quaternion(character2D_->controls_.yaw_, Vector3::UP));
-        character2D_->GetNode()->SetRotation(Quaternion(0.0f, character2D_->heading_, 0.0f));
+        character2D_->GetNode()->SetRotation(Quaternion(0.0f, -180.0f-character2D_->heading_, 0.0f));
 
     }
 }
