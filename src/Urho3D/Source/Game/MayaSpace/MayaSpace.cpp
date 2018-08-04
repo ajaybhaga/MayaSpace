@@ -72,7 +72,7 @@
 
 #include "GameController.h"
 #include "Character2D.h"
-#include "Utilities2D/Sample2D.h"
+#include "Sample2D.h"
 #include "Utilities2D/Mover.h"
 #include "MayaSpace.h"
 
@@ -110,7 +110,7 @@ void MayaSpace::Start()
     CreateScene();
 
     // Create the UI content
-    sample2D_->CreateUIContent("MayaSpace v0.1", character2D_->remainingLifes_, character2D_->remainingCoins_);
+    sample2D_->CreateUIContent("MayaSpace v0.1", player_->remainingLifes_, player_->remainingCoins_);
     auto* ui = GetSubsystem<UI>();
     Button* playButton = static_cast<Button*>(ui->GetRoot()->GetChild("PlayButton", true));
     SubscribeToEvent(playButton, E_RELEASED, URHO3D_HANDLER(MayaSpace, HandlePlayButton));
@@ -161,15 +161,20 @@ void MayaSpace::CreateScene()
     tileMap->SetTmxFile(cache->GetResource<TmxFile2D>("Urho2D/Tilesets/MayaSpace_Level0.tmx"));
     const TileMapInfo2D& info = tileMap->GetInfo();
 
-    // Create Spriter Imp character (from sample 33_SpriterAnimation)
+    // Create player character
     Node* modelNode = sample2D_->CreateCharacter(info, 0.0f, Vector3(2.5f, 16.0f, 0.0f), 0.1f);
-    character2D_ = modelNode->CreateComponent<Character2D>(); // Create a logic component to handle character behavior
+    player_ = modelNode->CreateComponent<Character2D>(); // Create a logic component to handle character behavior
+
+    // Create AI player character
+    modelNode = sample2D_->CreateCharacter(info, 0.0f, Vector3(2.5f, 16.0f, 0.0f), 0.1f);
+    ai_ = modelNode->CreateComponent<Character2D>(); // Create a logic component to handle character behavior
 
     // Generate physics collision shapes from the tmx file's objects located in "Physics" (top) layer
     TileMapLayer3D* tileMapLayer = tileMap->GetLayer(tileMap->GetNumLayers() - 1);
     sample2D_->CreateCollisionShapesFromTMXObjects(tileMapNode, tileMapLayer, info);
 
-        // Create a directional light to the world so that we can see something. The light scene node's orientation controls the
+
+    // Create a directional light to the world so that we can see something. The light scene node's orientation controls the
     // light direction; we will use the SetDirection() function which calculates the orientation from a forward direction vector.
     // The light will use default settings (white light, no shadows)
     Node* lightNode = scene_->CreateChild("DirectionalLight");
@@ -188,8 +193,8 @@ void MayaSpace::CreateScene()
     //sample2D_->PopulateCoins(coinsLayer);
 
     // Init coins counters
-    //character2D_->remainingCoins_ = coinsLayer->GetNumObjects();
-    //character2D_->maxCoins_ = coinsLayer->GetNumObjects();
+    //player_->remainingCoins_ = coinsLayer->GetNumObjects();
+    //player_->maxCoins_ = coinsLayer->GetNumObjects();
 
     //Instantiate triggers (for ropes, ladders, lava, slopes...) at each placeholder of "Triggers" layer (placeholders for triggers are Rectangle objects)
     //sample2D_->PopulateTriggers(tileMap->GetLayer(tileMap->GetNumLayers() - 4));
@@ -241,11 +246,11 @@ void MayaSpace::HandleCollisionBegin(StringHash eventType, VariantMap& eventData
     // Handle ropes and ladders climbing
     if (nodeName == "Climb")
     {
-        if (character2D_->isClimbing_) // If transition between rope and top of rope (as we are using split triggers)
-            character2D_->climb2_ = true;
+        if (player_->isClimbing_) // If transition between rope and top of rope (as we are using split triggers)
+            player_->climb2_ = true;
         else
         {
-            character2D_->isClimbing_ = true;
+            player_->isClimbing_ = true;
             auto* body = character2DNode->GetComponent<RigidBody2D>();
             body->SetGravityScale(0.0f); // Override gravity so that the character doesn't fall
             // Clear forces so that the character stops (should be performed by setting linear velocity to zero, but currently doesn't work)
@@ -256,21 +261,21 @@ void MayaSpace::HandleCollisionBegin(StringHash eventType, VariantMap& eventData
     }
 
     if (nodeName == "CanJump")
-        character2D_->aboveClimbable_ = true;
+        player_->aboveClimbable_ = true;
 
     // Handle coins picking
     if (nodeName == "Coin")
     {
         hitNode->Remove();
-        character2D_->remainingCoins_ -= 1;
+        player_->remainingCoins_ -= 1;
         auto* ui = GetSubsystem<UI>();
-        if (character2D_->remainingCoins_ == 0)
+        if (player_->remainingCoins_ == 0)
         {
             Text* instructions = static_cast<Text*>(ui->GetRoot()->GetChild("Instructions", true));
             instructions->SetText("!!! Go to the Exit !!!");
         }
         Text* coinsText = static_cast<Text*>(ui->GetRoot()->GetChild("CoinsText", true));
-        coinsText->SetText(String(character2D_->remainingCoins_)); // Update coins UI counter
+        coinsText->SetText(String(player_->remainingCoins_)); // Update coins UI counter
         sample2D_->PlaySoundEffect("Powerup.wav");
     }
 
@@ -297,7 +302,7 @@ void MayaSpace::HandleCollisionBegin(StringHash eventType, VariantMap& eventData
         {
             if (!character2DNode->GetChild("Emitter", true))
             {
-                character2D_->wounded_ = true;
+                player_->wounded_ = true;
                 if (nodeName == "Orc")
                 {
                     auto* orc = static_cast<Mover*>(hitNode->GetComponent<Mover>());
@@ -310,7 +315,7 @@ void MayaSpace::HandleCollisionBegin(StringHash eventType, VariantMap& eventData
     }*/
 
     // Handle exiting the level when all coins have been gathered
-    if (nodeName == "Exit" && character2D_->remainingCoins_ == 0)
+    if (nodeName == "Exit" && player_->remainingCoins_ == 0)
     {
         // Update UI
         auto* ui = GetSubsystem<UI>();
@@ -329,7 +334,7 @@ void MayaSpace::HandleCollisionBegin(StringHash eventType, VariantMap& eventData
         body->ApplyForceToCenter(Vector2(0.0f, 1000.0f), true);
         if (!character2DNode->GetChild("Emitter", true))
         {
-            character2D_->wounded_ = true;
+            player_->wounded_ = true;
             sample2D_->SpawnEffect(character2DNode);
             sample2D_->PlaySoundEffect("BigExplosion.wav");
         }
@@ -337,7 +342,7 @@ void MayaSpace::HandleCollisionBegin(StringHash eventType, VariantMap& eventData
 
     // Handle climbing a slope
     if (nodeName == "Slope")
-        character2D_->onSlope_ = true;
+        player_->onSlope_ = true;
 }
 
 void MayaSpace::HandleCollisionEnd(StringHash eventType, VariantMap& eventData)
@@ -352,23 +357,23 @@ void MayaSpace::HandleCollisionEnd(StringHash eventType, VariantMap& eventData)
     // Handle leaving a rope or ladder
     if (nodeName == "Climb")
     {
-        if (character2D_->climb2_)
-            character2D_->climb2_ = false;
+        if (player_->climb2_)
+            player_->climb2_ = false;
         else
         {
-            character2D_->isClimbing_ = false;
+            player_->isClimbing_ = false;
             auto* body = character2DNode->GetComponent<RigidBody2D>();
             body->SetGravityScale(1.0f); // Restore gravity
         }
     }
 
     if (nodeName == "CanJump")
-        character2D_->aboveClimbable_ = false;
+        player_->aboveClimbable_ = false;
 
     // Handle leaving a slope
     if (nodeName == "Slope")
     {
-        character2D_->onSlope_ = false;
+        player_->onSlope_ = false;
         // Clear forces (should be performed by setting linear velocity to zero, but currently doesn't work)
         auto* body = character2DNode->GetComponent<RigidBody2D>();
         body->SetLinearVelocity(Vector2::ZERO);
@@ -399,37 +404,37 @@ void MayaSpace::HandleUpdate(StringHash eventType, VariantMap& eventData)
 
     GameController* gameController = GetSubsystem<GameController>();
 
-    if (character2D_)
+    if (player_)
     {
-        gameController->UpdateControlInputs(character2D_->controls_);
+        gameController->UpdateControlInputs(player_->controls_);
 
         // **note** the buttons controls are handled in the character class update fn.
 
         // right stick - camera
-        Variant rStick = character2D_->controls_.extraData_[VAR_AXIS_1];
+        Variant rStick = player_->controls_.extraData_[VAR_AXIS_1];
 
         if (!rStick.IsEmpty())
         {
             Vector2 axisInput = rStick.GetVector2();
-            character2D_->controls_.yaw_ += axisInput.x_ * YAW_SENSITIVITY;
-            character2D_->controls_.pitch_ += axisInput.y_ * YAW_SENSITIVITY;
+            player_->controls_.yaw_ += axisInput.x_ * YAW_SENSITIVITY;
+            player_->controls_.pitch_ += axisInput.y_ * YAW_SENSITIVITY;
         }
 
         // Limit pitch
-       // character2D_->controls_.pitch_ = Clamp(character2D_->controls_.pitch_, -80.0f, 80.0f);
+       // player_->controls_.pitch_ = Clamp(player_->controls_.pitch_, -80.0f, 80.0f);
         // Set rotation already here so that it's updated every rendering frame instead of every physics frame
-        character2D_->GetNode()->SetRotation(Quaternion(character2D_->controls_.yaw_, Vector3::UP));
-        character2D_->GetNode()->SetRotation(Quaternion(0.0f, -180.0f-character2D_->heading_, 0.0f));
+        player_->GetNode()->SetRotation(Quaternion(player_->controls_.yaw_, Vector3::UP));
+        player_->GetNode()->SetRotation(Quaternion(0.0f, -180.0f-player_->heading_, 0.0f));
 
     }
 }
 
 void MayaSpace::HandlePostUpdate(StringHash eventType, VariantMap& eventData)
 {
-    if (!character2D_)
+    if (!player_)
         return;
 
-    Node* character2DNode = character2D_->GetNode();
+    Node* character2DNode = player_->GetNode();
     cameraNode_->SetPosition(Vector3(character2DNode->GetPosition().x_, character2DNode->GetPosition().y_, -10.0f)); // Camera tracks character
 }
 
@@ -458,15 +463,15 @@ void MayaSpace::ReloadScene(bool reInit)
     // Simply find the character's scene node by name as there's only one of them
     Node* character2DNode = scene_->GetChild("Char", true);
     if (character2DNode)
-        character2D_ = character2DNode->GetComponent<Character2D>();
+        player_ = character2DNode->GetComponent<Character2D>();
 
     // Set what number to use depending whether reload is requested from 'PLAY' button (reInit=true) or 'F7' key (reInit=false)
-    int lifes = character2D_->remainingLifes_;
-    int coins = character2D_->remainingCoins_;
+    int lifes = player_->remainingLifes_;
+    int coins = player_->remainingCoins_;
     if (reInit)
     {
         lifes = LIFES;
-        coins = character2D_->maxCoins_;
+        coins = player_->maxCoins_;
     }
 
     // Update lifes UI

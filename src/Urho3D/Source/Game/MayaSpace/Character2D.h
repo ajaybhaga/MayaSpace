@@ -54,6 +54,9 @@ public:
     /// Movement controls. Assigned by the main program each frame.
     Controls controls_;
 
+    // Character position (updated from node)
+    Vector2 position_;
+
     /// Flag when player is facing forward.
     bool forward_;
     float heading_;
@@ -83,4 +86,5 @@ public:
     bool aboveClimbable_;
     /// Indicate when the player is climbing a slope, so we can apply force to its body.
     bool onSlope_;
+    bool isAI_;
 };

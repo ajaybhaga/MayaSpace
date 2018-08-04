@@ -23,7 +23,7 @@
 #pragma once
 
 #include "Game.h"
-#include "Utilities2D/Sample2D.h"
+#include "Sample2D.h"
 
 class Character2D;
 class Sample2D;
@@ -74,7 +74,9 @@ private:
     void HandlePlayButton(StringHash eventType, VariantMap& eventData);
 
     /// The controllable character component.
-    WeakPtr<Character2D> character2D_;
+    WeakPtr<Character2D> player_;
+    WeakPtr<Character2D> ai_;
+
     /// Flag for drawing debug geometry.
     bool drawDebug_{};
     /// Scaling factor based on tiles' aspect ratio.

@@ -70,11 +70,9 @@
 #include <Urho3D/Graphics/Zone.h>
 #include <Urho3D/Resource/ResourceCache.h>
 
-
-
 #include "Utilities2D/Mover.h"
 #include "Sample2D.h"
-
+#include "Character2D.h"
 
 Sample2D::Sample2D(Context* context) :
     Object(context)
@@ -159,6 +157,20 @@ CollisionCircle2D* Sample2D::CreateCircleShape(Node* node, TileMapObject2D* obje
     return shape;
 }
 
+CollisionCircle2D* Sample2D::CreateCircleShape(Node* node, Character2D* object, float radius)
+{
+    // Create rigid body to the root node
+    auto* body = node->CreateComponent<RigidBody2D>();
+    body->SetBodyType(BT_STATIC);
+
+    auto* shape = node->CreateComponent<CollisionCircle2D>();
+    shape->SetCenter(Vector2(object->position_.x_, object->position_.y_)); 
+    shape->SetRadius(radius);
+    shape->SetFriction(0.8f);
+
+    return shape;
+}
+
 CollisionPolygon2D* Sample2D::CreatePolygonShape(Node* node, TileMapObject2D* object)
 {
     auto* shape = node->CreateComponent<CollisionPolygon2D>();
@@ -219,8 +231,8 @@ Node* Sample2D::CreateCharacter(TileMapInfo2D info, float friction, Vector3 posi
     const BoundingBox bounds(Vector3(-20.0f, 0.0f, -20.0f), Vector3(20.0f, 0.0f, 20.0f));
 
         auto* modelObject = modelNode->CreateComponent<AnimatedModel>();
-        modelObject->SetModel(cache->GetResource<Model>("Models/X_Bot/X_Bot.mdl"));
-        modelObject->SetMaterial(cache->GetResource<Material>("Models/X_Bot/Materials/X_BotSurface.xml"));
+        modelObject->SetModel(cache->GetResource<Model>("Models/Mutant/Mutant.mdl"));
+        modelObject->SetMaterial(cache->GetResource<Material>("Models/Mutant/Materials/mutant_M.xml"));
         modelObject->SetCastShadows(true);
 
         // Create an AnimationState for a walk animation. Its time position will need to be manually updated to advance the
@@ -228,9 +240,10 @@ Node* Sample2D::CreateCharacter(TileMapInfo2D info, float friction, Vector3 posi
         // but we need to update the model's position manually in any case
     
        // Set animation state
-    auto* walkAnimation = cache->GetResource<Animation>("Models/X_Bot/X_Bot_Walk.ani");
-    auto* idleAnimation = cache->GetResource<Animation>("Models/X_Bot/X_Bot_Idle.ani");
-    auto* jumpAnimation = cache->GetResource<Animation>("Models/X_Bot/X_Bot_Jump.ani");
+    auto* walkAnimation = cache->GetResource<Animation>("Models/Mutant/Mutant_Walk.ani");
+    auto* idleAnimation = cache->GetResource<Animation>("Models/Mutant/Mutant_Idle0.ani");
+    auto* jumpAnimation = cache->GetResource<Animation>("Models/Mutant/Mutant_Jump.ani");
+    auto* kickAnimation = cache->GetResource<Animation>("Models/Mutant/Mutant_Kick.ani");
 
         AnimationState* walkState = modelObject->AddAnimationState(walkAnimation);
         // The state would fail to create (return null) if the animation was not found
@@ -262,8 +275,15 @@ Node* Sample2D::CreateCharacter(TileMapInfo2D info, float friction, Vector3 posi
             jumpState->SetTime(0);
         }
 
-
-
+        AnimationState* kickState = modelObject->AddAnimationState(kickAnimation);
+        // The state would fail to create (return null) if the animation was not found
+        if (kickState)
+        {
+            // Enable full blending weight and looping
+            kickState->SetWeight(1.0f);
+            kickState->SetLooped(false);
+            kickState->SetTime(0);
+        }
 
         // Create our custom Mover component that will move & animate the model during each frame's update
         auto* mover = modelNode->CreateComponent<Mover>();
@@ -286,6 +306,16 @@ Node* Sample2D::CreateCharacter(TileMapInfo2D info, float friction, Vector3 posi
     shape->SetRadius(0.04f); // Set shape size
     shape->SetFriction(friction); // Set friction
     shape->SetRestitution(0.1f); // Bounce
+
+
+    auto* impBody = modelNode->CreateComponent<RigidBody2D>();
+    impBody->SetBodyType(BT_DYNAMIC);
+    impBody->SetAllowSleep(false);
+    auto* shape = modelNode->CreateComponent<CollisionCircle2D>();
+    shape->SetRadius(10.0f); // Set shape size
+    shape->SetFriction(friction); // Set friction
+    shape->SetRestitution(0.1f); // Bounce
+
 
     return modelNode;
 }
