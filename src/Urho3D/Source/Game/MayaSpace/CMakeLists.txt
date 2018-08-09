@@ -28,7 +28,7 @@ endif ()
 set (TARGET_NAME MayaSpace)
 
 # Define source files
-define_source_files (EXTRA_H_FILES ${COMMON_SAMPLE_H_FILES} ../Utilities2D/Sample2D.h ../Utilities2D/Sample2D.cpp ../Utilities2D/Mover.h ../Utilities2D/Mover.cpp)
+define_source_files (EXTRA_H_FILES ${COMMON_SAMPLE_H_FILES} ./Sample2D.h ./Sample2D.cpp ../Utilities2D/Mover.h ../Utilities2D/Mover.cpp)
 
 # Setup target with resource copying
 setup_main_executable ()

@@ -23,8 +23,8 @@
 #include <Urho3D/Graphics/AnimatedModel.h>
 #include <Urho3D/Graphics/Animation.h>
 #include <Urho3D/Graphics/AnimationState.h>
-//#include <Urho3D/Urho2D/AnimatedSprite2D.h>
-//#include <Urho3D/Urho2D/AnimationSet2D.h>
+#include <Urho3D/Urho2D/AnimatedSprite2D.h>
+#include <Urho3D/Urho2D/AnimationSet2D.h>
 #include <Urho3D/UI/BorderImage.h>
 #include <Urho3D/UI/Button.h>
 #include <Urho3D/Graphics/Camera.h>
@@ -157,20 +157,6 @@ CollisionCircle2D* Sample2D::CreateCircleShape(Node* node, TileMapObject2D* obje
     return shape;
 }
 
-CollisionCircle2D* Sample2D::CreateCircleShape(Node* node, Character2D* object, float radius)
-{
-    // Create rigid body to the root node
-    auto* body = node->CreateComponent<RigidBody2D>();
-    body->SetBodyType(BT_STATIC);
-
-    auto* shape = node->CreateComponent<CollisionCircle2D>();
-    shape->SetCenter(Vector2(object->position_.x_, object->position_.y_)); 
-    shape->SetRadius(radius);
-    shape->SetFriction(0.8f);
-
-    return shape;
-}
-
 CollisionPolygon2D* Sample2D::CreatePolygonShape(Node* node, TileMapObject2D* object)
 {
     auto* shape = node->CreateComponent<CollisionPolygon2D>();
@@ -197,7 +183,7 @@ CollisionChain2D* Sample2D::CreatePolyLineShape(Node* node, TileMapObject2D* obj
     return shape;
 }
 
-Node* Sample2D::CreateCharacter(TileMapInfo2D info, float friction, Vector3 position, float scale)
+Node* Sample2D::CreateCharacter(TileMapInfo2D info, float friction, Vector3 position, float scale, int type)
 {
     /*
     auto* cache = GetSubsystem<ResourceCache>();
@@ -222,6 +208,7 @@ Node* Sample2D::CreateCharacter(TileMapInfo2D info, float friction, Vector3 posi
 
     auto* cache = GetSubsystem<ResourceCache>();
     Node* modelNode = scene_->CreateChild("Char");
+
     modelNode->SetPosition(position);
     modelNode->SetScale(scale);
 
@@ -230,21 +217,64 @@ Node* Sample2D::CreateCharacter(TileMapInfo2D info, float friction, Vector3 posi
     const float MODEL_ROTATE_SPEED = 100.0f;
     const BoundingBox bounds(Vector3(-20.0f, 0.0f, -20.0f), Vector3(20.0f, 0.0f, 20.0f));
 
-        auto* modelObject = modelNode->CreateComponent<AnimatedModel>();
-        modelObject->SetModel(cache->GetResource<Model>("Models/Mutant/Mutant.mdl"));
-        modelObject->SetMaterial(cache->GetResource<Material>("Models/Mutant/Materials/mutant_M.xml"));
+//        modelObject->SetModel(cache->GetResource<Model>("Models/Mutant/Mutant.mdl"));
+//        modelObject->SetMaterial(cache->GetResource<Material>("Models/Mutant/Materials/mutant_M.xml"));
+
+
+// Node* objectNode = scene_->CreateChild("Jack");
+//    objectNode->SetPosition(Vector3(0.0f, 1.0f, 0.0f));
+
+
+
+    // rotate model by 180 ****************************
+    Node* adjustNode = modelNode->CreateChild("AdjNode");
+    Quaternion qAdjRot(180, Vector3(0,1,0) ); // rotate it by 180 
+    adjustNode->SetRotation( qAdjRot );
+
+    // Create the rendering component + animation controller
+    auto* modelObject = adjustNode->CreateComponent<AnimatedModel>();
+    //auto* modelObject = modelNode->CreateComponent<AnimatedModel>();
+
+//        modelObject->SetModel(cache->GetResource<Model>("Models/lario/Sphere.006.mdl"));
+//        modelObject->ApplyMaterialList(GetSubsystem<FileSystem>()->GetProgramDir() + "Data/Models/bear2/Cube.003.txt");
+
+        switch (type) {
+            case 1:
+            modelObject->SetModel(cache->GetResource<Model>("Models/bear1/Cube.003.mdl"));
+            modelObject->SetMaterial(cache->GetResource<Material>("Models/bear1/Materials/Material.xml"));
+            break;
+            case 2:
+            modelObject->SetModel(cache->GetResource<Model>("Models/bear2/Cube.003.mdl"));
+            modelObject->SetMaterial(cache->GetResource<Material>("Models/bear2/Materials/Material.xml"));
+            break;
+            case 3:
+            modelObject->SetModel(cache->GetResource<Model>("Models/bear3/Cube.003.mdl"));
+            modelObject->SetMaterial(cache->GetResource<Material>("Models/bear3/Materials/Material.xml"));
+            break;
+            case 4:
+            modelObject->SetModel(cache->GetResource<Model>("Models/bear4/Cube.003.mdl"));
+            modelObject->SetMaterial(cache->GetResource<Material>("Models/bear4/Materials/Material.xml"));
+            break;
+        }
+
+
         modelObject->SetCastShadows(true);
+
+
+
+
 
         // Create an AnimationState for a walk animation. Its time position will need to be manually updated to advance the
         // animation, The alternative wouldbe to use an AnimationController component which updates the animation automatically,
         // but we need to update the model's position manually in any case
-    
+    /*
        // Set animation state
     auto* walkAnimation = cache->GetResource<Animation>("Models/Mutant/Mutant_Walk.ani");
     auto* idleAnimation = cache->GetResource<Animation>("Models/Mutant/Mutant_Idle0.ani");
     auto* jumpAnimation = cache->GetResource<Animation>("Models/Mutant/Mutant_Jump.ani");
     auto* kickAnimation = cache->GetResource<Animation>("Models/Mutant/Mutant_Kick.ani");
-
+*/
+/*
         AnimationState* walkState = modelObject->AddAnimationState(walkAnimation);
         // The state would fail to create (return null) if the animation was not found
         if (walkState)
@@ -289,7 +319,7 @@ Node* Sample2D::CreateCharacter(TileMapInfo2D info, float friction, Vector3 posi
         auto* mover = modelNode->CreateComponent<Mover>();
         mover->SetParameters(MODEL_MOVE_SPEED, MODEL_ROTATE_SPEED, bounds);
    // }
-
+*/
 /*
     auto* animatedSprite = spriteNode->CreateComponent<AnimatedSprite2D>();
     // Get scml file and Play "idle" anim
@@ -300,22 +330,66 @@ Node* Sample2D::CreateCharacter(TileMapInfo2D info, float friction, Vector3 posi
 
 
     auto* impBody = modelNode->CreateComponent<RigidBody2D>();
+    //impBody->SetBodyType(BT_STATIC);
+//    impBody->SetMassCenter()
     impBody->SetBodyType(BT_DYNAMIC);
     impBody->SetAllowSleep(false);
+
     auto* shape = modelNode->CreateComponent<CollisionCircle2D>();
+    //shape->SetCenter(Vector2(position.x_, position.y_)); 
     shape->SetRadius(0.04f); // Set shape size
     shape->SetFriction(friction); // Set friction
     shape->SetRestitution(0.1f); // Bounce
 
-
-    auto* impBody = modelNode->CreateComponent<RigidBody2D>();
-    impBody->SetBodyType(BT_DYNAMIC);
-    impBody->SetAllowSleep(false);
-    auto* shape = modelNode->CreateComponent<CollisionCircle2D>();
-    shape->SetRadius(10.0f); // Set shape size
+    shape = modelNode->CreateComponent<CollisionCircle2D>();
+    shape->SetCenter(shape->GetCenter()+Vector2(0,+1.2f)); 
+    shape->SetRadius(0.12f); // Set shape size
     shape->SetFriction(friction); // Set friction
     shape->SetRestitution(0.1f); // Bounce
 
+//        boneNode1->SetPosition(skeleton.GetRootBone()->initialPosition_);
+/*
+    auto& bones = modelObject->GetSkeleton().GetBones();
+		for (auto& bone : bones) {
+			auto& name = bone.name_;
+			if (name == "Bip01_Head" || name == "Bip01_L_UpperArm" ||
+				name == "Bip01_L_Forearm" || name == "Bip01_L_Thigh" ||
+				name == "Bip01_L_Calf") {
+				//CreateRagdollBone(name, SHAPE_BOX, Vector3(bone.boundingBox_.max_.x_ - bone.boundingBox_.min_.x_, bone.boundingBox_.max_.y_ - bone.boundingBox_.min_.y_, bone.boundingBox_.max_.z_ - bone.boundingBox_.min_.z_), bone.initialPosition_, bone.initialRotation_);
+                auto* shape = modelNode->CreateComponent<CollisionCircle2D>();
+                shape->SetCenter(Vector2(bone.boundingBox_.max_.x_ - bone.boundingBox_.min_.x_, bone.boundingBox_.max_.y_ - bone.boundingBox_.min_.y_)); 
+                shape->SetRadius(0.04f); // Set shape size
+                shape->SetFriction(friction); // Set friction
+                shape->SetRestitution(0.1f); // Bounce
+
+
+			}
+		}
+*/
+    // Create rigid body to the root node
+ //   auto* body = modelNode->CreateComponent<RigidBody2D>();
+ //   body->SetBodyType(BT_STATIC);
+//    body->SetBodyType(BT_DYNAMIC);
+//    body->SetAllowSleep(false);
+
+/*
+    auto* shape = modelNode->CreateComponent<CollisionCircle2D>();
+    shape->SetCenter(Vector2(position.x_, position.y_)); 
+    shape->SetRadius(0.04f);
+    shape->SetFriction(0.8f);
+
+*/
+/*
+    auto* impBody2 = boneNode1->CreateComponent<RigidBody2D>();
+    impBody2->SetBodyType(BT_DYNAMIC);
+    impBody2->SetAllowSleep(false);
+*/
+/*
+    auto* shape2 = modelNode->CreateComponent<CollisionCircle2D>();
+    shape2->SetRadius(1.00f); // Set shape size
+    shape2->SetFriction(friction); // Set friction
+    shape2->SetRestitution(0.1f); // Bounce
+*/
 
     return modelNode;
 }
@@ -649,17 +723,17 @@ void Sample2D::SaveScene(bool initial)
     scene_->SaveXML(saveFile);
 }
 
-/*
+
 void Sample2D::CreateBackgroundSprite(TileMapInfo2D info, float scale, const String& texture, bool animate)
 {
     auto* cache = GetSubsystem<ResourceCache>();
     Node* node = scene_->CreateChild("Background");
-    node->SetPosition(Vector3(info.GetMapWidth(), info.GetMapHeight(), 0) / 2);
+    node->SetPosition(Vector3(info.GetMapWidth(), info.GetMapHeight(), 20.0f) / 2);
     node->SetScale(scale);
     auto* sprite = node->CreateComponent<StaticSprite2D>();
     sprite->SetSprite(cache->GetResource<Sprite2D>(texture));
     SetRandomSeed(Time::GetSystemTime()); // Randomize from system clock
-    sprite->SetColor(Color(Random(0.0f, 1.0f), Random(0.0f, 1.0f), Random(0.0f, 1.0f), 1.0f));
+    sprite->SetColor(Color(Random(0.6f, 0.9f), Random(0.8f, 1.0f), Random(0.9f, 1.0f), 1.0f));
 
     // Create rotation animation
     if (animate)
@@ -668,9 +742,9 @@ void Sample2D::CreateBackgroundSprite(TileMapInfo2D info, float scale, const Str
         animation->SetKeyFrame(0, Variant(Quaternion(0.0f, 0.0f, 0.0f)));
         animation->SetKeyFrame(1, Variant(Quaternion(0.0f, 0.0f, 180.0f)));
         animation->SetKeyFrame(2, Variant(Quaternion(0.0f, 0.0f, 0.0f)));
-        node->SetAttributeAnimation("Rotation", animation, WM_LOOP, 0.05f);
+        node->SetAttributeAnimation("Rotation", animation, WM_LOOP, 0.02f);
     }
-}*/
+}
 
 void Sample2D::SpawnEffect(Node* node)
 {

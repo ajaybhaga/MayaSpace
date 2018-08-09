@@ -77,6 +77,12 @@ protected:
 
     /// Logo sprite.
     SharedPtr<Sprite> logoSprite_;
+
+    /// Powerbar P1 sprite.
+    SharedPtr<Sprite> powerbarP1Sprite_;
+    /// Powerbar Bkg P1 sprite.
+    SharedPtr<Sprite> powerbarBkgP1Sprite_;
+
     /// Scene.
     SharedPtr<Scene> scene_;
     /// Camera scene node.
@@ -93,6 +99,9 @@ protected:
 private:
     /// Create logo.
     void CreateLogo();
+
+    void CreatePowerBarP1();
+
     /// Set custom window Title & Icon
     void SetWindowTitleAndIcon();
     /// Create console and debug HUD.

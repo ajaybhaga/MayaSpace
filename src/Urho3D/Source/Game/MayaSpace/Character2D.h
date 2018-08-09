@@ -54,12 +54,11 @@ public:
     /// Movement controls. Assigned by the main program each frame.
     Controls controls_;
 
-    // Character position (updated from node)
-    Vector2 position_;
-
     /// Flag when player is facing forward.
     bool forward_;
     float heading_;
+
+    int type_;
 
     bool doJump_;
     AnimationState* walkState_; 

@@ -82,6 +82,9 @@ void Game::Start()
     // Create logo
     CreateLogo();
 
+    // Create power bar P1
+    CreatePowerBarP1();
+
     // Set custom window Title & Icon
     SetWindowTitleAndIcon();
 
@@ -188,6 +191,93 @@ void Game::CreateLogo()
 
     // Set a low priority for the logo so that other UI elements can be drawn on top
     logoSprite_->SetPriority(-100);
+}
+
+void Game::CreatePowerBarP1()
+{
+    ResourceCache* cache = GetSubsystem<ResourceCache>();
+    UI* ui = GetSubsystem<UI>();
+
+    // Set the default UI style and font
+    //ui->GetRoot()->SetDefaultStyle(cache->GetResource<XMLFile>("UI/DefaultStyle.xml"));
+    auto* font = cache->GetResource<Font>("Fonts/Anonymous Pro.ttf");
+
+    // Create the UI for displaying the remaining lifes
+/*    auto* lifeUI = ui->GetRoot()->CreateChild<BorderImage>("Life2");
+    lifeUI->SetTexture(cache->GetResource<Texture2D>("Textures/bear2d.png"));
+    lifeUI->SetSize(70, 80);
+    lifeUI->SetAlignment(HA_RIGHT, VA_TOP);
+    lifeUI->SetPosition(-5, 5);
+    lifeUI->SetVisible(true);
+
+    auto* lifeText = lifeUI->CreateChild<Text>("LifeText2");
+    lifeText->SetAlignment(HA_CENTER, VA_CENTER);
+    lifeText->SetFont(font, 24);
+    lifeText->SetTextEffect(TE_SHADOW);
+    lifeText->SetText(String(3));
+    lifeText->SetVisible(true);
+*/
+
+    // Get powerbar texture
+    Texture2D* powerbarTexture = cache->GetResource<Texture2D>("Textures/powerbar.png");
+    if (!powerbarTexture)
+        return;
+
+    // Get powerbar background texture
+    Texture2D* powerbarBkgTexture = cache->GetResource<Texture2D>("Textures/powerbar-bk.png");
+    if (!powerbarBkgTexture)
+        return;
+
+    // Create sprite and add to the UI layout
+    powerbarP1Sprite_ = ui->GetRoot()->CreateChild<Sprite>();
+    powerbarBkgP1Sprite_ = ui->GetRoot()->CreateChild<Sprite>();
+
+    // Set sprite texture
+    powerbarP1Sprite_->SetTexture(powerbarTexture);
+    powerbarBkgP1Sprite_->SetTexture(powerbarBkgTexture);
+
+    int textureWidth;
+    int textureHeight;
+
+    textureWidth = powerbarTexture->GetWidth();
+    textureHeight = powerbarTexture->GetHeight();
+
+    powerbarP1Sprite_->SetScale(256.0f / textureWidth);
+    powerbarP1Sprite_->SetSize(textureWidth-100.0f, textureHeight);
+    powerbarP1Sprite_->SetHotSpot(textureWidth, textureHeight);
+    powerbarP1Sprite_->SetAlignment(HA_LEFT, VA_TOP);
+    powerbarP1Sprite_->SetPosition(Vector2(300.0f,80.0f));
+    powerbarP1Sprite_->SetOpacity(1.0f);
+    // Set a low priority so that other UI elements can be drawn on top
+    powerbarP1Sprite_->SetPriority(-100);
+
+    powerbarBkgP1Sprite_->SetScale(256.0f / textureWidth);
+    powerbarBkgP1Sprite_->SetSize(textureWidth, textureHeight);
+    powerbarBkgP1Sprite_->SetHotSpot(textureWidth, textureHeight);
+    powerbarBkgP1Sprite_->SetAlignment(HA_LEFT, VA_TOP);
+    powerbarBkgP1Sprite_->SetPosition(Vector2(300.0f,80.0f));
+    powerbarBkgP1Sprite_->SetOpacity(0.2f);
+    // Set a low priority so that other UI elements can be drawn on top
+    powerbarBkgP1Sprite_->SetPriority(-100);
+
+    powerbarP1Sprite_->SetVisible(true);
+    powerbarBkgP1Sprite_->SetVisible(true);
+
+
+/*    SetRandomSeed(Time::GetSystemTime()); // Randomize from system clock
+    sprite->SetColor(Color(Random(0.0f, 1.0f), Random(0.0f, 1.0f), Random(0.0f, 1.0f), 1.0f));
+
+    // Create rotation animation
+    if (animate)
+    {
+        SharedPtr<ValueAnimation> animation(new ValueAnimation(context_));
+        animation->SetKeyFrame(0, Variant(Quaternion(0.0f, 0.0f, 0.0f)));
+        animation->SetKeyFrame(1, Variant(Quaternion(0.0f, 0.0f, 180.0f)));
+        animation->SetKeyFrame(2, Variant(Quaternion(0.0f, 0.0f, 0.0f)));
+        node->SetAttributeAnimation("Rotation", animation, WM_LOOP, 0.05f);
+    }
+
+*/
 }
 
 void Game::SetWindowTitleAndIcon()

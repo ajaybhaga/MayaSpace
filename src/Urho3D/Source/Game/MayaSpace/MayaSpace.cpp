@@ -162,17 +162,18 @@ void MayaSpace::CreateScene()
     const TileMapInfo2D& info = tileMap->GetInfo();
 
     // Create player character
-    Node* modelNode = sample2D_->CreateCharacter(info, 0.0f, Vector3(2.5f, 16.0f, 0.0f), 0.1f);
+    Node* modelNode = sample2D_->CreateCharacter(info, 0.0f, Vector3(2.5f, 16.0f, 0.0f), 0.1f, 1);
     player_ = modelNode->CreateComponent<Character2D>(); // Create a logic component to handle character behavior
+    player_->isAI_ = false;
 
     // Create AI player character
-    modelNode = sample2D_->CreateCharacter(info, 0.0f, Vector3(2.5f, 16.0f, 0.0f), 0.1f);
+    modelNode = sample2D_->CreateCharacter(info, 0.0f, Vector3(3.5f, 16.0f, 0.0f), 0.1f, 2);
     ai_ = modelNode->CreateComponent<Character2D>(); // Create a logic component to handle character behavior
+    ai_->isAI_ = true;
 
     // Generate physics collision shapes from the tmx file's objects located in "Physics" (top) layer
     TileMapLayer3D* tileMapLayer = tileMap->GetLayer(tileMap->GetNumLayers() - 1);
     sample2D_->CreateCollisionShapesFromTMXObjects(tileMapNode, tileMapLayer, info);
-
 
     // Create a directional light to the world so that we can see something. The light scene node's orientation controls the
     // light direction; we will use the SetDirection() function which calculates the orientation from a forward direction vector.
@@ -200,7 +201,7 @@ void MayaSpace::CreateScene()
     //sample2D_->PopulateTriggers(tileMap->GetLayer(tileMap->GetNumLayers() - 4));
 
     // Create background
-//    sample2D_->CreateBackgroundSprite(info, 3.5, "Textures/HeightMap.png", true);
+    sample2D_->CreateBackgroundSprite(info, 3.5, "Textures/HeightMap.png", true);
 
     // Check when scene is rendered
     SubscribeToEvent(E_ENDRENDERING, URHO3D_HANDLER(MayaSpace, HandleSceneRendered));

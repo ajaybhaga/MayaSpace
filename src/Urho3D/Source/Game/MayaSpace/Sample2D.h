@@ -66,15 +66,12 @@ public:
     CollisionBox2D* CreateRectangleShape(Node* node, TileMapObject2D* object, Vector2 size, TileMapInfo2D info);
     /// Build collision shape from Tiled 'Ellipse' objects.
     CollisionCircle2D* CreateCircleShape(Node* node, TileMapObject2D* object, float radius, TileMapInfo2D info);
-
-    CollisionCircle2D* CreateCircleShape(Node* node, Character2D* object, float radius);
-
     /// Build collision shape from Tiled 'Polygon' objects.
     CollisionPolygon2D* CreatePolygonShape(Node* node, TileMapObject2D* object);
     /// Build collision shape from Tiled 'Poly Line' objects.
     CollisionChain2D* CreatePolyLineShape(Node* node, TileMapObject2D* object);
     /// Create Imp Spriter character.
-    Node* CreateCharacter(TileMapInfo2D info, float friction, Vector3 position, float scale);
+    Node* CreateCharacter(TileMapInfo2D info, float friction, Vector3 position, float scale, int type);
     /// Create a trigger (will be cloned at each tmx placeholder).
     Node* CreateTrigger();
     /// Create an enemy (will be cloned at each tmx placeholder).

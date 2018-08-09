@@ -55,8 +55,11 @@ Character2D::Character2D(Context* context) :
     aboveClimbable_(false),
     onSlope_(false)
 {
-    
+ 
+    // Face model forward (right)
+    heading_ = 270.0f;
 
+    type_ = 1;
 }
 
 void Character2D::RegisterObject(Context* context)
@@ -79,9 +82,6 @@ void Character2D::RegisterObject(Context* context)
 
 void Character2D::Update(float timeStep)
 {
-    // Store position to expose
-    position_ = Vector2(0,0);//node_->GetPosition;
-
     // Handle wounded/killed states
     if (killed_)
         return;
@@ -120,7 +120,7 @@ void Character2D::Update(float timeStep)
         // GAME CONTROLS
 
             // Jump. Must release jump control between jumps
-            if (controls_.IsDown(BUTTON_A) || input->GetKeyPress(KEY_SPACE))
+            if (controls_.IsDown(BUTTON_A) || input->GetKeyDown('J'))
             {
                 doJump_ = true;
             }
@@ -216,10 +216,17 @@ void Character2D::Update(float timeStep)
 //    auto* idleAnimation = cache->GetResource<Animation>("Models/X_Bot/X_Bot_Idle.ani");
 //    auto* jumpAnimation = cache->GetResource<Animation>("Models/X_Bot/X_Bot_Jump.ani");
 
+/*
     auto* walkAnimation = cache->GetResource<Animation>("Models/Mutant/Mutant_Walk.ani");
     auto* idleAnimation = cache->GetResource<Animation>("Models/Mutant/Mutant_Idle0.ani");
     auto* jumpAnimation = cache->GetResource<Animation>("Models/Mutant/Mutant_Jump.ani");
     auto* kickAnimation = cache->GetResource<Animation>("Models/Mutant/Mutant_Kick.ani");
+*/
+
+    auto* walkAnimation = cache->GetResource<Animation>("Models/bear1/Run.ani");
+    auto* idleAnimation = cache->GetResource<Animation>("Models/bear1/Idle.ani");
+    auto* jumpAnimation = cache->GetResource<Animation>("Models/bear1/Jump.ani");
+    auto* kickAnimation = cache->GetResource<Animation>("Models/bear1/Attack.ani");
 
 
     if (walk) {
@@ -231,7 +238,7 @@ void Character2D::Update(float timeStep)
             // Enable full blending weight and looping
             walkState_->SetWeight(1.0f);
             walkState_->AddTime(timeStep);
-
+            walkState_->SetLooped(true);
         }
     } else {
 
@@ -254,6 +261,7 @@ void Character2D::Update(float timeStep)
             // Enable full blending weight and looping
             idleState_->SetWeight(1.0f);
             idleState_->AddTime(timeStep);
+            idleState_->SetLooped(true);
         }
     } else {
 
