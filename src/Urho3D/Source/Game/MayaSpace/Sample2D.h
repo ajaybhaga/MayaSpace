@@ -37,7 +37,7 @@ class Character2D;
 // All Urho3D classes reside in namespace Urho3D
 using namespace Urho3D;
 
-const float CAMERA_MIN_DIST = 0.1f;
+const float CAMERA_MIN_DIST = 1.5f;
 const float CAMERA_MAX_DIST = 6.0f;
 
 /// Convenient functions for Urho2D samples:

@@ -28,7 +28,7 @@
 // All Urho3D classes reside in namespace Urho3D
 using namespace Urho3D;
 
-const float MOVE_SPEED = 23.0f;
+const float MOVE_SPEED = 30.0f;
 const float YAW_SENSITIVITY = 0.1f;
 const int LIFES = 3;
 
@@ -59,6 +59,8 @@ public:
     float heading_;
 
     int type_;
+    
+    int life_;
 
     bool doJump_;
     AnimationState* walkState_; 
@@ -86,4 +88,10 @@ public:
     /// Indicate when the player is climbing a slope, so we can apply force to its body.
     bool onSlope_;
     bool isAI_;
+
+    Vector3 playerPos_;
+    bool doMove_;
+    float lastMove_;
+    float currMove_;
+
 };

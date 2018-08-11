@@ -20,6 +20,7 @@
 // THE SOFTWARE.
 //
 
+#include <iostream>
 #include <Urho3D/Audio/Audio.h>
 #include <Urho3D/UI/Button.h>
 #include <Urho3D/Urho2D/CollisionBox2D.h>
@@ -31,6 +32,7 @@
 #include <Urho3D/Engine/Engine.h>
 #include <Urho3D/UI/Font.h>
 #include <Urho3D/Input/Input.h>
+#include <Urho3D/IO/MemoryBuffer.h>
 #include <Urho3D/IO/Log.h>
 #include <Urho3D/Graphics/AnimatedModel.h>
 #include <Urho3D/Graphics/Animation.h>
@@ -67,6 +69,10 @@
 #include <Urho3D/UI/UI.h>
 #include <Urho3D/UI/UIEvents.h>
 #include <Urho3D/Graphics/Zone.h>
+
+#include <Urho3D/Urho2D/ParticleEffect2D.h>
+#include <Urho3D/Urho2D/ParticleEmitter2D.h>
+
 
 #include <Urho3D/DebugNew.h>
 
@@ -109,9 +115,11 @@ void MayaSpace::Start()
     // Create the scene content
     CreateScene();
 
+    UI* ui = GetSubsystem<UI>();
+
     // Create the UI content
     sample2D_->CreateUIContent("MayaSpace v0.1", player_->remainingLifes_, player_->remainingCoins_);
-    auto* ui = GetSubsystem<UI>();
+//    auto* ui = GetSubsystem<UI>();
     Button* playButton = static_cast<Button*>(ui->GetRoot()->GetChild("PlayButton", true));
     SubscribeToEvent(playButton, E_RELEASED, URHO3D_HANDLER(MayaSpace, HandlePlayButton));
 
@@ -136,7 +144,7 @@ void MayaSpace::CreateScene()
 
     auto* graphics = GetSubsystem<Graphics>();
  //   camera->SetOrthoSize((float)graphics->GetHeight() * PIXEL_SIZE);
-    camera->SetZoom(12.0f * Min((float)graphics->GetWidth() / 1280.0f, (float)graphics->GetHeight() / 800.0f)); // Set zoom according to user's resolution to ensure full visibility (initial zoom (2.0) is set for full visibility at 1280x800 resolution)
+    camera->SetZoom(4.0f * Min((float)graphics->GetWidth() / 1280.0f, (float)graphics->GetHeight() / 800.0f)); // Set zoom according to user's resolution to ensure full visibility (initial zoom (2.0) is set for full visibility at 1280x800 resolution)
     camera->SetFarClip(300.0f);
 
     // Setup the viewport for displaying the scene
@@ -144,12 +152,91 @@ void MayaSpace::CreateScene()
     auto* renderer = GetSubsystem<Renderer>();
     renderer->SetViewport(0, viewport);
 
+    ResourceCache* cache = GetSubsystem<ResourceCache>();
+    UI* ui = GetSubsystem<UI>();
+
+    // Set the default UI style and font
+    //ui->GetRoot()->SetDefaultStyle(cache->GetResource<XMLFile>("UI/DefaultStyle.xml"));
+    auto* font = cache->GetResource<Font>("Fonts/Anonymous Pro.ttf");
+
+    // Get powerbar texture
+    Texture2D* powerbarTexture = cache->GetResource<Texture2D>("Textures/powerbar.png");
+    if (!powerbarTexture)
+        return;
+
+    // Get powerbar background texture
+    Texture2D* powerbarBkgTexture = cache->GetResource<Texture2D>("Textures/powerbar-bk.png");
+    if (!powerbarBkgTexture)
+        return;
+
+    // Create sprite and add to the UI layout
+    powerbarP1Sprite_ = ui->GetRoot()->CreateChild<Sprite>();
+    powerbarBkgP1Sprite_ = ui->GetRoot()->CreateChild<Sprite>();
+
+    // Set sprite texture
+    powerbarP1Sprite_->SetTexture(powerbarTexture);
+    powerbarBkgP1Sprite_->SetTexture(powerbarBkgTexture);
+
+    int textureWidth;
+    int textureHeight;
+
+    textureWidth = powerbarTexture->GetWidth();
+    textureHeight = powerbarTexture->GetHeight();
+
+    powerbarP1Sprite_->SetScale(256.0f / textureWidth);
+    powerbarP1Sprite_->SetSize(textureWidth, textureHeight);
+    powerbarP1Sprite_->SetHotSpot(textureWidth, textureHeight);
+    powerbarP1Sprite_->SetAlignment(HA_LEFT, VA_TOP);
+    powerbarP1Sprite_->SetPosition(Vector2(300.0f,80.0f));
+    powerbarP1Sprite_->SetOpacity(1.0f);
+    // Set a low priority so that other UI elements can be drawn on top
+    powerbarP1Sprite_->SetPriority(-100);
+
+    powerbarBkgP1Sprite_->SetScale(256.0f / textureWidth);
+    powerbarBkgP1Sprite_->SetSize(textureWidth, textureHeight);
+    powerbarBkgP1Sprite_->SetHotSpot(textureWidth, textureHeight);
+    powerbarBkgP1Sprite_->SetAlignment(HA_LEFT, VA_TOP);
+    powerbarBkgP1Sprite_->SetPosition(Vector2(300.0f,80.0f));
+    powerbarBkgP1Sprite_->SetOpacity(0.2f);
+    // Set a low priority so that other UI elements can be drawn on top
+    powerbarBkgP1Sprite_->SetPriority(-100);
+
+    powerbarP1Sprite_->SetVisible(true);
+    powerbarBkgP1Sprite_->SetVisible(true);
+
+    // Create the UI for displaying the remaining lifes
+    auto* lifeUI = ui->GetRoot()->CreateChild<BorderImage>("Life2");
+    lifeUI->SetTexture(cache->GetResource<Texture2D>("Textures/bear2d.png"));
+    lifeUI->SetSize(60, 60);
+    lifeUI->SetAlignment(HA_LEFT, VA_TOP);
+    lifeUI->SetPosition(-5, 15);
+    lifeUI->SetVisible(true);
+
+    auto* lifeText = lifeUI->CreateChild<Text>("LifeText2");
+    lifeText->SetAlignment(HA_CENTER, VA_CENTER);
+    lifeText->SetPosition(90.0f, -20.0);
+    lifeText->SetFont(font, 24);
+    lifeText->SetTextEffect(TE_SHADOW);
+    lifeText->SetText(String("Bear"));
+    lifeText->SetVisible(true);
+
+/*
+    auto* lifeText = ui->GetRoot()->CreateChild<Text>("LifeText2");
+    lifeText->SetAlignment(HA_CENTER, VA_CENTER);
+    lifeText->SetFont(font, 24);
+    lifeText->SetTextEffect(TE_SHADOW);
+    lifeText->SetText(String(3));
+    lifeText->SetVisible(false);
+
+*/
+
+
+
     // Set background color for the scene
     Zone* zone = renderer->GetDefaultZone();
     zone->SetFogColor(Color(0.2f, 0.2f, 0.2f));
 
     // Create tile map from tmx file
-    auto* cache = GetSubsystem<ResourceCache>();
     SharedPtr<Node> tileMapNode(scene_->CreateChild("TileMap"));
 
 //    auto* tileMap3d = tileMapNode->CreateComponent<TileMap3D>();
@@ -164,12 +251,16 @@ void MayaSpace::CreateScene()
     // Create player character
     Node* modelNode = sample2D_->CreateCharacter(info, 0.0f, Vector3(2.5f, 16.0f, 0.0f), 0.1f, 1);
     player_ = modelNode->CreateComponent<Character2D>(); // Create a logic component to handle character behavior
+    player_->GetNode()->SetName("Bear-P1");
     player_->isAI_ = false;
+    player_->life_ = 100; 
 
     // Create AI player character
     modelNode = sample2D_->CreateCharacter(info, 0.0f, Vector3(3.5f, 16.0f, 0.0f), 0.1f, 2);
     ai_ = modelNode->CreateComponent<Character2D>(); // Create a logic component to handle character behavior
+    ai_->GetNode()->SetName("Bear-P2");
     ai_->isAI_ = true;
+    ai_->playerPos_ = player_->GetNode()->GetPosition();
 
     // Generate physics collision shapes from the tmx file's objects located in "Physics" (top) layer
     TileMapLayer3D* tileMapLayer = tileMap->GetLayer(tileMap->GetNumLayers() - 1);
@@ -201,7 +292,7 @@ void MayaSpace::CreateScene()
     //sample2D_->PopulateTriggers(tileMap->GetLayer(tileMap->GetNumLayers() - 4));
 
     // Create background
-    sample2D_->CreateBackgroundSprite(info, 3.5, "Textures/HeightMap.png", true);
+    sample2D_->CreateBackgroundSprite(info, 6.0, "Textures/HeightMap.png", true);
 
     // Check when scene is rendered
     SubscribeToEvent(E_ENDRENDERING, URHO3D_HANDLER(MayaSpace, HandleSceneRendered));
@@ -231,18 +322,136 @@ void MayaSpace::SubscribeToEvents()
     SubscribeToEvent(E_PHYSICSBEGINCONTACT2D, URHO3D_HANDLER(MayaSpace, HandleCollisionBegin));
     SubscribeToEvent(E_PHYSICSENDCONTACT2D, URHO3D_HANDLER(MayaSpace, HandleCollisionEnd));
 
+    // If the node pointer is non-null, this component has been created into a scene node. Subscribe to physics collisions that
+    // concern this scene node
+//    SubscribeToEvent(E_NODEUPDATECONTACT2D, URHO3D_HANDLER(MayaSpace, HandleNodeCollision));
+
     // Unsubscribe the SceneUpdate event from base class to prevent camera pitch and yaw in 2D sample
     UnsubscribeFromEvent(E_SCENEUPDATE);
+}
+
+void MayaSpace::HandleNodeCollision(StringHash eventType, VariantMap& eventData) {
+
+    using namespace PhysicsBeginContact2D;
+
+    Node* p1Node = scene_->GetChild("Bear-P1", true);
+    Node* p2Node = scene_->GetChild("Bear-P2", true);
+
+    // Get colliding node
+    auto* hitNodeA = static_cast<Node*>(eventData[PhysicsBeginContact2D::P_NODEA].GetPtr());
+    auto* hitNodeB = static_cast<Node*>(eventData[PhysicsBeginContact2D::P_NODEB].GetPtr());
+
+    URHO3D_LOGINFOF("hitNodeA=%d, hitNodeB=%d", hitNodeA, hitNodeB);
+    URHO3D_LOGINFOF("hitNodeA id=%d, hitNodeB id=%d", hitNodeA->GetID(), hitNodeB->GetName());
+        Vector2 contactPosition; 
+
+        MemoryBuffer contacts(eventData[P_CONTACTS].GetBuffer());
+        while (!contacts.IsEof()) {
+            contactPosition = contacts.ReadVector2();
+            auto contactNormal = contacts.ReadVector2();
+            auto contactDistance = contacts.ReadFloat();
+            auto contactImpulse = contacts.ReadFloat();
+            std::cout << "contact position " << contactPosition.ToString().CString() << std::endl;
+            std::cout << "contact normal " << contactNormal.ToString().CString() << std::endl;
+            std::cout << "contact distance " << contactDistance << std::endl;
+            std::cout << "contact impulse " << contactImpulse << std::endl;
+        }
+
+        std::cout << std::endl;
+
 }
 
 void MayaSpace::HandleCollisionBegin(StringHash eventType, VariantMap& eventData)
 {
     // Get colliding node
     auto* hitNode = static_cast<Node*>(eventData[PhysicsBeginContact2D::P_NODEA].GetPtr());
-    if (hitNode->GetName() == "Char")
+    if (hitNode->GetName() == "Bear-P1")
         hitNode = static_cast<Node*>(eventData[PhysicsBeginContact2D::P_NODEB].GetPtr());
     String nodeName = hitNode->GetName();
-    Node* character2DNode = scene_->GetChild("Char", true);
+    Node* character2DNode = scene_->GetChild("Bear-P1", true);
+
+
+    Node* p1Node = scene_->GetChild("Bear-P1", true);
+    Node* p2Node = scene_->GetChild("Bear-P2", true);
+
+    // Get colliding node
+    auto* hitNodeA = static_cast<Node*>(eventData[PhysicsBeginContact2D::P_NODEA].GetPtr());
+    auto* hitNodeB = static_cast<Node*>(eventData[PhysicsBeginContact2D::P_NODEB].GetPtr());
+
+    URHO3D_LOGINFOF("hitNodeA=%d, hitNodeB=%d", hitNodeA, hitNodeB);
+    URHO3D_LOGINFOF("hitNodeA id=%d, hitNodeB id=%d", hitNodeA->GetID(), hitNodeB->GetName());
+        Vector2 contactPosition;
+        //
+        MemoryBuffer contacts(eventData[PhysicsBeginContact2D::P_CONTACTS].GetBuffer());
+        while (!contacts.IsEof()) {
+            contactPosition = contacts.ReadVector2();
+            auto contactNormal = contacts.ReadVector2();
+            auto contactDistance = contacts.ReadFloat();
+            auto contactImpulse = contacts.ReadFloat();
+            std::cout << "contact position " << contactPosition.ToString().CString() << std::endl;
+            std::cout << "contact normal " << contactNormal.ToString().CString() << std::endl;
+            std::cout << "contact distance " << contactDistance << std::endl;
+            std::cout << "contact impulse " << contactImpulse << std::endl;
+        }
+
+        std::cout << std::endl;
+
+
+    // If hit node is an id more than the player, it's AI
+    if (hitNode->GetID() > character2DNode->GetID()) {
+        player_->life_ -= 10;
+        auto* body = character2DNode->GetComponent<RigidBody2D>();
+        auto* body2 = hitNode->GetComponent<RigidBody2D>();
+
+//        Vector2 v = body->GetLinearVelocity()*-10.0f;
+//        float a = body->GetAngularVelocity();
+
+        // Clear forces (should be performed by setting linear velocity to zero, but currently doesn't work)
+        body->SetLinearVelocity(Vector2::ZERO);
+        body->SetAwake(false);
+        body->SetAwake(true);
+
+        body2->SetLinearVelocity(Vector2::ZERO);
+        body2->SetAwake(false);
+        body2->SetAwake(true);
+
+        URHO3D_LOGINFOF("PLAYER HIT by=%d", hitNode->GetID());
+
+        if (particleNode_)
+            particleNode_->Remove();
+
+        auto* cache = GetSubsystem<ResourceCache>();
+        auto* particleEffect = cache->GetResource<ParticleEffect2D>("Urho2D/sun.pex");
+        if (!particleEffect)
+            return;
+
+        particleNode_ = scene_->CreateChild("ParticleEmitter2D");
+        auto* particleEmitter = particleNode_->CreateComponent<ParticleEmitter2D>();
+        particleEmitter->SetEffect(particleEffect);
+
+/*        auto* greenSpiralEffect = cache->GetResource<ParticleEffect2D>("Urho2D/greenspiral.pex");
+        if (!greenSpiralEffect)
+            return;
+
+        Node* greenSpiralNode = scene_->CreateChild("GreenSpiral");
+        auto* greenSpiralEmitter = greenSpiralNode->CreateComponent<ParticleEmitter2D>();
+        greenSpiralEmitter->SetEffect(greenSpiralEffect);
+*/
+        particleNode_->SetPosition(Vector3(contactPosition.x_, contactPosition.y_, 0.0));
+
+        using namespace Update;
+        // Take the frame time step, which is stored as a float
+        float timeStep = eventData[P_TIMESTEP].GetFloat();
+        lastEmit_ = timeStep;
+        currEmit_ = 0;
+
+//        particleNode_->SetPosition(camera->ScreenToWorldPoint(Vector3(x / graphics->GetWidth(), y / graphics->GetHeight(), 10.0f)));
+
+    }
+
+
+
+
 
     // Handle ropes and ladders climbing
     if (nodeName == "Climb")
@@ -259,6 +468,24 @@ void MayaSpace::HandleCollisionBegin(StringHash eventType, VariantMap& eventData
             body->SetAwake(false);
             body->SetAwake(true);
         }
+    }
+
+    URHO3D_LOGINFOF("HIT id=%d, name=%s", hitNode->GetID(), hitNode->GetName());
+    URHO3D_LOGINFOF("character2DNode=%d", character2DNode->GetID());
+
+
+            auto* body = character2DNode->GetComponent<RigidBody2D>();
+           // body->SetGravityScale(0.0f); // Override gravity so that the character doesn't fall
+            // Clear forces so that the character stops (should be performed by setting linear velocity to zero, but currently doesn't work)
+//            body->SetLinearVelocity(body->GetLinearVelocity()*-1.0f);
+//            body->SetAwake(false);
+//            body->SetAwake(true);
+        
+
+
+    if (nodeName == "hit-body")
+    {
+        URHO3D_LOGINFOF("HIT BODY=%s", hitNode->GetName());
     }
 
     if (nodeName == "CanJump")
@@ -350,10 +577,10 @@ void MayaSpace::HandleCollisionEnd(StringHash eventType, VariantMap& eventData)
 {
     // Get colliding node
     auto* hitNode = static_cast<Node*>(eventData[PhysicsEndContact2D::P_NODEA].GetPtr());
-    if (hitNode->GetName() == "Char")
+    if (hitNode->GetName() == "Bear-P1")
         hitNode = static_cast<Node*>(eventData[PhysicsEndContact2D::P_NODEB].GetPtr());
     String nodeName = hitNode->GetName();
-    Node* character2DNode = scene_->GetChild("Char", true);
+    Node* character2DNode = scene_->GetChild("Bear-P1", true);
 
     // Handle leaving a rope or ladder
     if (nodeName == "Climb")
@@ -387,6 +614,52 @@ void MayaSpace::HandleUpdate(StringHash eventType, VariantMap& eventData)
 {
     using namespace Update;
     auto* input = GetSubsystem<Input>();
+
+
+    // Take the frame time step, which is stored as a float
+    float timeStep = eventData[P_TIMESTEP].GetFloat();
+    currEmit_ += timeStep;
+
+    if (currEmit_-lastEmit_ > 0.8f) {
+        if (particleNode_)
+            particleNode_->Remove();
+    }
+
+    // Update player location for AI
+    ai_->playerPos_ = player_->GetNode()->GetPosition();
+    ai_->currMove_ += timeStep;
+
+    if (ai_->currMove_-ai_->lastMove_ > 0.4f) {
+        ai_->doMove_ = true;
+    } else {
+        ai_->doMove_ = false;
+    }
+
+    float zoom_ = cameraNode_->GetComponent<Camera>()->GetZoom();
+    Vector3 p1 = player_->GetNode()->GetPosition();
+    p1.z_ = 0;
+    Vector3 p2 = ai_->GetNode()->GetPosition();
+    p2.z_= 0;
+    float delta = p1.DistanceToPoint(p2);
+    float factor;
+
+    if (delta > 2.0f) {
+        factor = 1.0f - delta*0.02f;
+    } else {
+        factor = 1.0f + delta*0.02f;
+    }
+
+
+
+
+
+    zoom_ = Clamp(zoom_ * factor, CAMERA_MIN_DIST, CAMERA_MAX_DIST);
+    cameraNode_->GetComponent<Camera>()->SetZoom(zoom_);
+
+
+        URHO3D_LOGINFOF("delta=%f", delta);
+        URHO3D_LOGINFOF("factor=%f", factor);
+
 
     // Zoom in/out
     if (cameraNode_)
@@ -428,6 +701,28 @@ void MayaSpace::HandleUpdate(StringHash eventType, VariantMap& eventData)
         player_->GetNode()->SetRotation(Quaternion(0.0f, -180.0f-player_->heading_, 0.0f));
 
     }
+
+    // Clamp player life
+    if (player_->life_ > 100) {
+        player_->life_ = 100;
+    }
+    if (player_->life_ < 0) {
+        player_->life_ = 0;
+    }
+
+    // AI
+    if (ai_)
+    {
+        // Set rotation already here so that it's updated every rendering frame instead of every physics frame
+        ai_->GetNode()->SetRotation(Quaternion(ai_->controls_.yaw_, Vector3::UP));
+        ai_->GetNode()->SetRotation(Quaternion(0.0f, -180.0f-ai_->heading_, 0.0f));
+    }
+
+    // Update player powerbar
+    IntVector2 v = powerbarBkgP1Sprite_->GetSize();    
+    int power = int(((player_->life_)/100.0f)*(float)v.x_);
+    powerbarP1Sprite_->SetSize(power, v.y_);
+
 }
 
 void MayaSpace::HandlePostUpdate(StringHash eventType, VariantMap& eventData)
@@ -462,7 +757,7 @@ void MayaSpace::ReloadScene(bool reInit)
     scene_->LoadXML(loadFile);
     // After loading we have to reacquire the weak pointer to the Character2D component, as it has been recreated
     // Simply find the character's scene node by name as there's only one of them
-    Node* character2DNode = scene_->GetChild("Char", true);
+    Node* character2DNode = scene_->GetChild("Bear-P1", true);
     if (character2DNode)
         player_ = character2DNode->GetComponent<Character2D>();
 

@@ -78,11 +78,6 @@ protected:
     /// Logo sprite.
     SharedPtr<Sprite> logoSprite_;
 
-    /// Powerbar P1 sprite.
-    SharedPtr<Sprite> powerbarP1Sprite_;
-    /// Powerbar Bkg P1 sprite.
-    SharedPtr<Sprite> powerbarBkgP1Sprite_;
-
     /// Scene.
     SharedPtr<Scene> scene_;
     /// Camera scene node.

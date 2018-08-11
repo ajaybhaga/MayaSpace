@@ -64,6 +64,7 @@ private:
     void HandlePostRenderUpdate(StringHash eventType, VariantMap& eventData);
     /// Handle the end rendering event.
     void HandleSceneRendered(StringHash eventType, VariantMap& eventData);
+    void HandleNodeCollision(StringHash eventType, VariantMap& eventData);
     /// Handle the contact begin event (Box2D contact listener).
     void HandleCollisionBegin(StringHash eventType, VariantMap& eventData);
     /// Handle the contact end event (Box2D contact listener).
@@ -81,7 +82,16 @@ private:
     bool drawDebug_{};
     /// Scaling factor based on tiles' aspect ratio.
     float moveSpeedScale_{};
+    float lastEmit_;
+    float currEmit_;
 
     /// Sample2D utility object.
     SharedPtr<Sample2D> sample2D_;
+    /// Powerbar P1 sprite.
+    SharedPtr<Sprite> powerbarP1Sprite_;
+    /// Powerbar Bkg P1 sprite.
+    SharedPtr<Sprite> powerbarBkgP1Sprite_;
+
+    /// Particle scene node.
+    SharedPtr<Node> particleNode_;
 };

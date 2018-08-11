@@ -48,6 +48,8 @@
 #include <Urho3D/Audio/SoundSource.h>
 #include <Urho3D/Core/StringUtils.h>
 #include <Urho3D/UI/Text.h>
+#include <Urho3D/Input/Input.h>
+#include <Urho3D/IO/Log.h>
 #include <Urho3D/Graphics/Texture2D.h>
 #include <Urho3D/Urho2D/TileMap2D.h>
 #include <Urho3D/Urho2D/TileMapLayer2D.h>
@@ -125,9 +127,9 @@ CollisionBox2D* Sample2D::CreateRectangleShape(Node* node, TileMapObject2D* obje
     auto* shape = node->CreateComponent<CollisionBox2D>();
     shape->SetSize(size);
     if (info.orientation_ == O_ORTHOGONAL)
-//        shape->SetCenter(object->GetPosition() + size / 2);
+    {
           shape->SetCenter(object->GetPosition() + size / 2);
-
+    }
     else
     {
         shape->SetCenter(object->GetPosition() + Vector2(info.tileWidth_ / 2, 0.0f));
@@ -207,7 +209,7 @@ Node* Sample2D::CreateCharacter(TileMapInfo2D info, float friction, Vector3 posi
     return spriteNode;*/
 
     auto* cache = GetSubsystem<ResourceCache>();
-    Node* modelNode = scene_->CreateChild("Char");
+    Node* modelNode = scene_->CreateChild("CharNode");
 
     modelNode->SetPosition(position);
     modelNode->SetScale(scale);
@@ -332,26 +334,77 @@ Node* Sample2D::CreateCharacter(TileMapInfo2D info, float friction, Vector3 posi
     auto* impBody = modelNode->CreateComponent<RigidBody2D>();
     //impBody->SetBodyType(BT_STATIC);
 //    impBody->SetMassCenter()
+    impBody->GetNode()->SetName("hit r");
     impBody->SetBodyType(BT_DYNAMIC);
     impBody->SetAllowSleep(false);
+    URHO3D_LOGINFOF("CREATE BODY HIT id=%d, name=%s", impBody->GetNode()->GetID(), impBody->GetNode()->GetName());
+
 
     auto* shape = modelNode->CreateComponent<CollisionCircle2D>();
+    shape->GetNode()->SetName("hit a");
     //shape->SetCenter(Vector2(position.x_, position.y_)); 
     shape->SetRadius(0.04f); // Set shape size
     shape->SetFriction(friction); // Set friction
     shape->SetRestitution(0.1f); // Bounce
+    URHO3D_LOGINFOF("CREATE HIT id=%d, name=%s", shape->GetNode()->GetID(), shape->GetNode()->GetName());
 
     shape = modelNode->CreateComponent<CollisionCircle2D>();
+    shape->GetNode()->SetName("hit b");
     shape->SetCenter(shape->GetCenter()+Vector2(0,+1.2f)); 
     shape->SetRadius(0.12f); // Set shape size
     shape->SetFriction(friction); // Set friction
     shape->SetRestitution(0.1f); // Bounce
+    URHO3D_LOGINFOF("CREATE HIT id=%d, name=%s", shape->GetNode()->GetID(), shape->GetNode()->GetName());
 
-//        boneNode1->SetPosition(skeleton.GetRootBone()->initialPosition_);
+    // Main bounding circle
+    shape = modelNode->CreateComponent<CollisionCircle2D>();
+    shape->GetNode()->SetName("hit c");
+    shape->SetCenter(shape->GetCenter()+Vector2(0,+1.2f)); 
+    shape->SetRadius(1.0f); // Set shape size
+    shape->SetFriction(friction); // Set friction
+    shape->SetRestitution(0.1f); // Bounce
+    URHO3D_LOGINFOF("CREATE HIT id=%d, name=%s", shape->GetNode()->GetID(), shape->GetNode()->GetName());
+
+
+    Vector2 min, max, center;
+    auto& bones = modelObject->GetSkeleton().GetBones();
+		for (auto& bone : bones) {
+			auto& name = bone.name_;
+            
+                URHO3D_LOGINFOF("bone=%d", bone.name_);
+//            center = Vector2(bone.boundingBox_.max_.x_-bone.boundingBox_.min_.x_, bone.boundingBox_.max_.y_-bone.boundingBox_.min_.y_);
+             center = Vector2(bone.boundingBox_.max_.x_-bone.boundingBox_.min_.x_, bone.boundingBox_.max_.y_-bone.boundingBox_.min_.y_);
+            max = Vector2(std::max(max.x_, bone.boundingBox_.max_.x_), std::max(max.y_, bone.boundingBox_.max_.y_));
+            min = Vector2(std::min(min.x_, bone.boundingBox_.min_.x_), std::min(min.y_, bone.boundingBox_.min_.y_));
+
+                URHO3D_LOGINFOF("center=(%f, %f)", center.x_, center.y_);
+
+        //        bone.boundingBox_.max_.x_ - , bone.boundingBox_.max_.y_ - bone.boundingBox_.min_.y_)
+        }
+
+                shape = modelNode->CreateComponent<CollisionCircle2D>();
+                shape->GetNode()->SetName("hit-right");
+                shape->SetCenter(Vector2((max.x_),center.y_+0.4f));
+                shape->SetRadius(0.3f); // Set shape size
+                shape->SetFriction(friction); // Set friction
+                shape->SetRestitution(0.1f); // Bounce
+                URHO3D_LOGINFOF("CREATE HIT id=%d, name=%s", shape->GetNode()->GetID(), shape->GetNode()->GetName());
+
+                shape = modelNode->CreateComponent<CollisionCircle2D>();
+                shape->GetNode()->SetName("hit-left");
+                shape->SetCenter(Vector2((center.x_-max.x_),center.y_+0.4f));
+                shape->SetRadius(0.3f); // Set shape size
+                shape->SetFriction(friction); // Set friction
+                shape->SetRestitution(0.1f); // Bounce
+                URHO3D_LOGINFOF("CREATE HIT id=%d, name=%s", shape->GetNode()->GetID(), shape->GetNode()->GetName());
+
+//        boneNode1->SetPosition(skeleton.GetRootBone()-->initialPosition_);
 /*
     auto& bones = modelObject->GetSkeleton().GetBones();
 		for (auto& bone : bones) {
 			auto& name = bone.name_;
+//                URHO3D_LOGINFOF("bone=%s", name);
+
 			if (name == "Bip01_Head" || name == "Bip01_L_UpperArm" ||
 				name == "Bip01_L_Forearm" || name == "Bip01_L_Thigh" ||
 				name == "Bip01_L_Calf") {
@@ -363,8 +416,8 @@ Node* Sample2D::CreateCharacter(TileMapInfo2D info, float friction, Vector3 posi
                 shape->SetRestitution(0.1f); // Bounce
 
 
-			}
-		}
+			//}
+//		}
 */
     // Create rigid body to the root node
  //   auto* body = modelNode->CreateComponent<RigidBody2D>();

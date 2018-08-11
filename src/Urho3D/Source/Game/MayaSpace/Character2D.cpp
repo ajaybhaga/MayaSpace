@@ -59,6 +59,8 @@ Character2D::Character2D(Context* context) :
     // Face model forward (right)
     heading_ = 270.0f;
 
+    life_ = 100;
+
     type_ = 1;
 }
 
@@ -116,6 +118,51 @@ void Character2D::Update(float timeStep)
 
     if (isAI_) {
 
+        // Update movement direction
+            moveDir = moveDir - Vector3::FORWARD;
+
+        // Update frame
+            auto* model = node_->GetComponent<AnimatedModel>(true);
+                for (AnimationState* state : model->GetAnimationStates()) {
+                    state->AddTime(timeStep);
+                }
+
+    //            if (walk)
+                
+ //               if (kick)
+///                    state = model->GetAnimationStates()[3];
+                
+      //          if (state)
+
+//            forward_ = false;
+        if (playerPos_.x_ < GetNode()->GetPosition().x_) { 
+            forward_ = false;
+        } else {
+
+            forward_ = true;
+        }
+
+        if (doMove_) {
+            int r = Random(1,3);
+            
+            switch (r) {
+                case 1:
+                case 2:
+                kick = true;
+                break;
+                case 3:
+                doJump_ = true;
+                break;
+            }
+
+            walk = true;
+
+            // Reset timer
+            currMove_ = 0;
+            doMove_ = false;
+        }
+
+        
     } else {
         // GAME CONTROLS
 
@@ -123,13 +170,6 @@ void Character2D::Update(float timeStep)
             if (controls_.IsDown(BUTTON_A) || input->GetKeyDown('J'))
             {
                 doJump_ = true;
-            }
-
-            if (onGround) {
-                if (doJump_) {
-                    jump = true;
-                    doJump_ = false;
-                }
             }
 
             if (controls_.IsDown(BUTTON_X) || input->GetKeyDown('R'))
@@ -189,23 +229,31 @@ void Character2D::Update(float timeStep)
             walk = true;
         }
 
-        if (forward_) {
-            //  Update rotation of model to forward
-            if (heading_ < 270.0f) { heading_ += 2.4f; };
-            if (heading_ > 270.0f) { heading_ -= 2.4f; };
-        } else {
-            //  Update rotation of model to back
-            if (heading_ < 90.0f) { heading_ += 2.4f; };
-            if (heading_ > 90.0f) { heading_ -= 2.4f; };      
-        }
-
         // Jump
         if ((onGround || aboveClimbable_) && (input->GetKeyPress('W') || input->GetKeyPress(KEY_UP) || controls_.IsDown(BUTTON_A)))
             jump = true;
-        
+
         // END GAME CONTROLS
     }
 
+    // Player mechanics
+//    if (onGround) {
+        if (doJump_) {
+            jump = true;
+            doJump_ = false;
+        }
+  //  }
+
+
+    if (forward_) {
+        //  Update rotation of model to forward
+        if (heading_ < 270.0f) { heading_ += 2.4f; };
+        if (heading_ > 270.0f) { heading_ -= 2.4f; };
+    } else {
+        //  Update rotation of model to back
+        if (heading_ < 90.0f) { heading_ += 2.4f; };
+        if (heading_ > 90.0f) { heading_ -= 2.4f; };      
+    }
 
     bool idle = (!walk && !jump);
 
@@ -348,6 +396,7 @@ void Character2D::Update(float timeStep)
         if (jump)
             body->ApplyLinearImpulse(Vector2(0.0f, 0.005f) * MOVE_SPEED, body->GetMassCenter(), true);
     }
+
 
   /*
     // Animate
