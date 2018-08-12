@@ -37,6 +37,9 @@
 #include "../Graphics/StaticModel.h"
 #include "../Graphics/Octree.h"
 
+#include "..//IO/File.h"
+#include "../IO/FileSystem.h"
+
 
 #include "../DebugNew.h"
 
@@ -376,9 +379,8 @@ void TileMapLayer3D::SetTileLayer(const TmxTileLayer2D* tileLayer)
 
             SharedPtr<Node> tileNode(GetNode()->CreateTemporaryChild("Tile"));
             auto* staticObject = tileNode->CreateComponent<StaticModel>();
-
-
             unsigned int tileId = tile->GetGid();
+
 
             std::string path = "Models/";
             std::string filler = "";
@@ -388,15 +390,31 @@ void TileMapLayer3D::SetTileLayer(const TmxTileLayer2D* tileLayer)
             else 
                 filler = "0";
 //            std::string tileStr = path + terrainType + "Tile" + filler + "%d.mdl";       
-            std::string tileStr = path + "AssetPack/elephant.mdl";       
+            std::string tileStr = path + "AssetPack/elephant.mdl";
+            std::string matStr = "";       
 //            std::string tileStr;
-            
+            float xoffset;
+            float height;
+            float depth;
+            float scale = 0.17f;
+
+            // Set tile location
+//            tileNode->SetPosition(Vector3(info.TileIndexToPosition(x, y))+tile->GetModelOffset()+Vector3(0,0,-1));
+            if (land) { xoffset = 0.3f; depth = 2.2f; }
+            if (plant) { xoffset = 0.0f; depth = -3.0f; height = 0.0f; }
+            if (building) { xoffset = 0.0f; depth = 2.0f; height = -0.6f; }
+
             if (land) {
                 switch(tileId) {
                     case 1:
-                     tileStr = path + "AssetPack/cloud01.mdl";  
+                        tileStr = path + "AssetPack/castle-wall_stone.mdl";  
+                        matStr = path + "AssetPack/castle-wall_stone.txt";  
+                        scale = 0.12f;
                     break;
                     case 2:
+                        tileStr = path + "AssetPack/terrain-plane-plain.mdl";
+                        matStr = path + "AssetPack/terrain-plane-plain.txt";
+                        scale = 0.12f;
                     break;
                     case 3:
                     break;
@@ -416,21 +434,26 @@ void TileMapLayer3D::SetTileLayer(const TmxTileLayer2D* tileLayer)
             if (plant) {                  
                 switch(tileId) {
                     case 33:
-                     tileStr = path + "AssetPack/palm.mdl";  
+                        tileStr = path + "AssetPack/tree-forest.mdl";  
+                        matStr = path + "AssetPack/tree-forest.txt";  
                     break;
-                    case 2:
+                    case 34:
+                        tileStr = path + "AssetPack/tree-baobab.mdl";  
                     break;
-                    case 3:
+                    case 35:
+                        tileStr = path + "AssetPack/tree-birch02.mdl";  
                     break;
-                    case 4:
+                    case 36:
+                        tileStr = path + "AssetPack/tree-oak_T.mdl";
                     break;
-                    case 5:
+                    case 37:
+                        tileStr = path + "AssetPack/tree-lime.mdl";
                     break;
-                    case 6:
+                    case 38:
                     break;
-                    case 7:
+                    case 39:
                     break;
-                    case 8:
+                    case 40:
                     break;
                 };
             }
@@ -438,21 +461,30 @@ void TileMapLayer3D::SetTileLayer(const TmxTileLayer2D* tileLayer)
             if (building) {
                 switch(tileId) {
                     case 9:
-                     tileStr = path + "AssetPack/medieval-house_small.mdl";  
+                        tileStr = path + "AssetPack/castle-tower.mdl";  
+                        scale = 0.17f;
                     break;
-                    case 2:
+                    case 10:
+                        tileStr = path + "AssetPack/castle-tower-square.mdl";  
+                        scale = 0.17f;
                     break;
-                    case 3:
+                    case 11:
+                        tileStr = path + "AssetPack/castle-gate_small.mdl";  
+                        scale = 0.17f;
                     break;
-                    case 4:
+                    case 12:
+                        tileStr = path + "AssetPack/castle.mdl";  
+                        scale = 0.15f;
                     break;
-                    case 5:
+                    case 13:
+                        tileStr = path + "AssetPack/castle-gate.mdl";
+                        scale = 0.17f;
                     break;
-                    case 6:
+                    case 14:
                     break;
-                    case 7:
+                    case 15:
                     break;
-                    case 8:
+                    case 16:
                     break;
                 };
             }
@@ -462,19 +494,16 @@ void TileMapLayer3D::SetTileLayer(const TmxTileLayer2D* tileLayer)
             char buffer[100];
             sprintf(buffer, cstr, tileId);
 
-            float xoffset, height, depth;
-            // Set tile location
-//            tileNode->SetPosition(Vector3(info.TileIndexToPosition(x, y))+tile->GetModelOffset()+Vector3(0,0,-1));
-            if (land) { xoffset = 0.3f; depth = 0.1f; }
-            if (plant) { xoffset = 0.0f; depth = 0.2f; height = -0.6f; }
-            if (building) { xoffset = 0.0f; depth = 0.3f; height = -0.6f; }
     
             tileNode->SetPosition(Vector3(info.TileIndexToPosition(x, y))*1.0f+Vector3(xoffset,height,depth));
-            tileNode->SetScale(Vector3(0.17,0.17,0.17));
+            tileNode->SetScale(Vector3(scale, scale, scale));
             tileNode->SetRotation(Quaternion(180.0f,90.0f,90.0f));
 
             staticObject->SetModel(cache->GetResource<Model>(buffer));
-            staticObject->SetMaterial(cache->GetResource<Material>("Materials/LOWPOLY-COLORS.xml"));
+            String matFile = GetSubsystem<FileSystem>()->GetProgramDir() + "Data/" + matStr.c_str();
+ //           staticObject->SetMaterial(cache->GetResource<Material>("Materials/LOWPOLY-COLORS.xml"));
+            staticObject->ApplyMaterialList(matFile);
+
            // staticObject->SetMaterial(cache->GetResource<Material>("Materials/BROWN-DARK.xml"));
           //  staticObject->SetMaterial(cache->GetResource<Material>("Materials/GREEN.xml"));
 

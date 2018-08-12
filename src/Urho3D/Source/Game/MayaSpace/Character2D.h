@@ -58,6 +58,7 @@ public:
     bool forward_;
     float heading_;
 
+    int id_;
     int type_;
     
     int life_;

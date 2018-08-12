@@ -20,6 +20,8 @@
 // THE SOFTWARE.
 //
 
+#include <sstream>
+#include <string>
 #include <iostream>
 #include <Urho3D/Audio/Audio.h>
 #include <Urho3D/UI/Button.h>
@@ -254,13 +256,21 @@ void MayaSpace::CreateScene()
     player_->GetNode()->SetName("Bear-P1");
     player_->isAI_ = false;
     player_->life_ = 100; 
+    player_->id_ = 0;
 
-    // Create AI player character
-    modelNode = sample2D_->CreateCharacter(info, 0.0f, Vector3(3.5f, 16.0f, 0.0f), 0.1f, 2);
-    ai_ = modelNode->CreateComponent<Character2D>(); // Create a logic component to handle character behavior
-    ai_->GetNode()->SetName("Bear-P2");
-    ai_->isAI_ = true;
-    ai_->playerPos_ = player_->GetNode()->GetPosition();
+    using namespace std;
+    for (int i = 0; i < 1; i++) {
+
+        // Create AI player character
+        modelNode = sample2D_->CreateCharacter(info, 0.0f, Vector3(3.5f+Random(-2.0f,2.0f), 16.0f, 0.0f), 0.1f, 2);
+        ai_ = modelNode->CreateComponent<Character2D>(); // Create a logic component to handle character behavior
+        string name = "Bear-P" + i;
+        ai_->GetNode()->SetName(name.c_str());
+        ai_->isAI_ = true;
+        ai_->playerPos_ = player_->GetNode()->GetPosition();
+        ai_->id_ = 1+i;
+    }
+  
 
     // Generate physics collision shapes from the tmx file's objects located in "Physics" (top) layer
     TileMapLayer3D* tileMapLayer = tileMap->GetLayer(tileMap->GetNumLayers() - 1);
@@ -657,8 +667,8 @@ void MayaSpace::HandleUpdate(StringHash eventType, VariantMap& eventData)
     cameraNode_->GetComponent<Camera>()->SetZoom(zoom_);
 
 
-        URHO3D_LOGINFOF("delta=%f", delta);
-        URHO3D_LOGINFOF("factor=%f", factor);
+    //    URHO3D_LOGINFOF("delta=%f", delta);
+    //    URHO3D_LOGINFOF("factor=%f", factor);
 
 
     // Zoom in/out

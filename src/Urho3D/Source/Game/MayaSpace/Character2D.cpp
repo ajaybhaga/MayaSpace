@@ -30,6 +30,7 @@
 #include <Urho3D/Resource/ResourceCache.h>
 #include <Urho3D/UI/Text.h>
 #include <Urho3D/UI/UI.h>
+#include <Urho3D/IO/Log.h>
 #include <Urho3D/Graphics/AnimatedModel.h>
 #include <Urho3D/Graphics/Animation.h>
 #include <Urho3D/Graphics/AnimationState.h>
@@ -156,11 +157,18 @@ void Character2D::Update(float timeStep)
             }
 
             walk = true;
+                doJump_ = true;
 
             // Reset timer
             currMove_ = 0;
             doMove_ = false;
+
+            URHO3D_LOGINFOF("AI STATE [forward=%d, walk=%d, jump=%d, kick=%d]", forward_, walk, jump, kick);
+
         }
+
+
+
 
         
     } else {
@@ -391,7 +399,7 @@ void Character2D::Update(float timeStep)
   //          body->ApplyForceToCenter(moveDir * MOVE_SPEED / 2, true); // When climbing a slope, apply force (todo: replace by setting linear velocity to zero when will work)
     //    else
             node_->Translate(Vector3(moveDir.x_, moveDir.y_, moveDir.z_) * timeStep * 1.8f);
-            node_->Translate(Vector3(0, 0, -moveDir.z_) * timeStep * 0.99f);
+//            node_->Translate(Vector3(0, 0, 2.0) * timeStep * 1.0f);
 
         if (jump)
             body->ApplyLinearImpulse(Vector2(0.0f, 0.005f) * MOVE_SPEED, body->GetMassCenter(), true);
