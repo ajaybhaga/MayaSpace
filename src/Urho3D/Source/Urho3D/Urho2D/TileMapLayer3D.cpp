@@ -400,9 +400,9 @@ void TileMapLayer3D::SetTileLayer(const TmxTileLayer2D* tileLayer)
 
             // Set tile location
 //            tileNode->SetPosition(Vector3(info.TileIndexToPosition(x, y))+tile->GetModelOffset()+Vector3(0,0,-1));
-            if (land) { xoffset = 0.3f; depth = 2.2f; }
+            if (land) { xoffset = 0.3f; depth = 1.0f; }
             if (plant) { xoffset = 0.0f; depth = -3.0f; height = 0.0f; }
-            if (building) { xoffset = 0.0f; depth = 2.0f; height = -0.6f; }
+            if (building) { xoffset = 0.0f; depth = 1.2f; height = -0.6f; }
 
             if (land) {
                 switch(tileId) {
@@ -412,9 +412,11 @@ void TileMapLayer3D::SetTileLayer(const TmxTileLayer2D* tileLayer)
                         scale = 0.12f;
                     break;
                     case 2:
-                        tileStr = path + "AssetPack/terrain-plane-plain.mdl";
-                        matStr = path + "AssetPack/terrain-plane-plain.txt";
-                        scale = 0.12f;
+                        tileStr = path + "AssetPack/terrain-world-plain.mdl";
+                        matStr = path + "AssetPack/terrain-world-plain.txt";
+                        scale = 0.07f;
+                        height = 0.7f;
+                        depth = -0.9f;
                     break;
                     case 3:
                     break;
@@ -439,21 +441,31 @@ void TileMapLayer3D::SetTileLayer(const TmxTileLayer2D* tileLayer)
                     break;
                     case 34:
                         tileStr = path + "AssetPack/tree-baobab.mdl";  
+                        matStr = path + "AssetPack/tree-baobab.txt";  
                     break;
                     case 35:
                         tileStr = path + "AssetPack/tree-birch02.mdl";  
+                        matStr = path + "AssetPack/tree-birch02.txt";  
                     break;
                     case 36:
                         tileStr = path + "AssetPack/tree-oak_T.mdl";
+                        matStr = path + "AssetPack/tree-oak_T.txt";
                     break;
                     case 37:
                         tileStr = path + "AssetPack/tree-lime.mdl";
+                        matStr = path + "AssetPack/tree-lime.txt";
                     break;
                     case 38:
+                        tileStr = path + "AssetPack/grass01.mdl";
+                        matStr = path + "AssetPack/grass01.txt";
                     break;
                     case 39:
+                        tileStr = path + "AssetPack/flower01.mdl";
+                        matStr = path + "AssetPack/flower01.txt";
                     break;
                     case 40:
+                        tileStr = path + "AssetPack/flower02.mdl";
+                        matStr = path + "AssetPack/flower02.txt";
                     break;
                 };
             }
@@ -462,22 +474,27 @@ void TileMapLayer3D::SetTileLayer(const TmxTileLayer2D* tileLayer)
                 switch(tileId) {
                     case 9:
                         tileStr = path + "AssetPack/castle-tower.mdl";  
+                        matStr = path + "AssetPack/castle-tower.txt";  
                         scale = 0.17f;
                     break;
                     case 10:
                         tileStr = path + "AssetPack/castle-tower-square.mdl";  
+                        matStr = path + "AssetPack/castle-tower-square.txt";  
                         scale = 0.17f;
                     break;
                     case 11:
                         tileStr = path + "AssetPack/castle-gate_small.mdl";  
+                        matStr = path + "AssetPack/castle-gate_small.txt";  
                         scale = 0.17f;
                     break;
                     case 12:
                         tileStr = path + "AssetPack/castle.mdl";  
+                        matStr = path + "AssetPack/castle.txt";  
                         scale = 0.15f;
                     break;
                     case 13:
                         tileStr = path + "AssetPack/castle-gate.mdl";
+                        matStr = path + "AssetPack/castle-gate.txt";
                         scale = 0.17f;
                     break;
                     case 14:

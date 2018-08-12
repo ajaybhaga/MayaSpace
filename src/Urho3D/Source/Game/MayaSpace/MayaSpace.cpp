@@ -259,7 +259,7 @@ void MayaSpace::CreateScene()
     player_->id_ = 0;
 
     using namespace std;
-    for (int i = 0; i < 1; i++) {
+    for (int i = 0; i < 4; i++) {
 
         // Create AI player character
         modelNode = sample2D_->CreateCharacter(info, 0.0f, Vector3(3.5f+Random(-2.0f,2.0f), 16.0f, 0.0f), 0.1f, 2);
