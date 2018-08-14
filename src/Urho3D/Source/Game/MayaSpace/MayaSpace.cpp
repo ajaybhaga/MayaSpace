@@ -259,18 +259,21 @@ void MayaSpace::CreateScene()
     player_->id_ = 0;
 
     using namespace std;
-    for (int i = 0; i < 4; i++) {
+    for (int i = 0; i < NUM_AI; i++) {
 
         // Create AI player character
         modelNode = sample2D_->CreateCharacter(info, 0.0f, Vector3(3.5f+Random(-2.0f,2.0f), 16.0f, 0.0f), 0.1f, 2);
-        ai_ = modelNode->CreateComponent<Character2D>(); // Create a logic component to handle character behavior
+        ai_[i] = modelNode->CreateComponent<Character2D>(); // Create a logic component to handle character behavior
         string name = "Bear-P" + i;
-        ai_->GetNode()->SetName(name.c_str());
-        ai_->isAI_ = true;
-        ai_->playerPos_ = player_->GetNode()->GetPosition();
-        ai_->id_ = 1+i;
+        ai_[i]->GetNode()->SetName(name.c_str());
+        ai_[i]->isAI_ = true;
+        ai_[i]->playerPos_ = player_->GetNode()->GetPosition();
+        ai_[i]->id_ = 1+i;
+
+        ai_[i]->doMove_ = false;
+        ai_[i]->chooseMove_ = false;
+        ai_[i]->lastMove_ = ai_[i]->currMove_ = 0;
     }
-  
 
     // Generate physics collision shapes from the tmx file's objects located in "Physics" (top) layer
     TileMapLayer3D* tileMapLayer = tileMap->GetLayer(tileMap->GetNumLayers() - 1);
@@ -635,37 +638,46 @@ void MayaSpace::HandleUpdate(StringHash eventType, VariantMap& eventData)
             particleNode_->Remove();
     }
 
-    // Update player location for AI
-    ai_->playerPos_ = player_->GetNode()->GetPosition();
-    ai_->currMove_ += timeStep;
+    float zoom_ = cameraNode_->GetComponent<Camera>()->GetZoom();
+    float deltaSum;
 
-    if (ai_->currMove_-ai_->lastMove_ > 0.4f) {
-        ai_->doMove_ = true;
-    } else {
-        ai_->doMove_ = false;
+    // Determine zoom by getting average distance from all players
+    for (int i = 0; i < NUM_AI; i++) {
+
+        // Update player location for AI
+        ai_[i]->playerPos_ = player_->GetNode()->GetPosition();
+
+        URHO3D_LOGINFOF("ai[%d] currMove = %d", ai_[i]->id_, ai_[i]->currMove_);
+
+        // Update AI timer for next move
+        if (ai_[i]->currMove_-ai_[i]->lastMove_ > 6.0f) {
+            ai_[i]->doMove_ = true;
+            ai_[i]->chooseMove_ = true;
+            ai_[i]->lastMove_ = ai_[i]->currMove_;
+            URHO3D_LOGINFOF("ai[%d] = DO MOVE", i);
+        } else {
+            ai_[i]->currMove_ += timeStep;
+        }
+
+        Vector3 p1 = player_->GetNode()->GetPosition();
+        p1.z_ = 0;
+        Vector3 p2 = ai_[i]->GetNode()->GetPosition();
+        p2.z_= 0;
+        float delta = p1.DistanceToPoint(p2);
+        deltaSum += delta;
     }
 
-    float zoom_ = cameraNode_->GetComponent<Camera>()->GetZoom();
-    Vector3 p1 = player_->GetNode()->GetPosition();
-    p1.z_ = 0;
-    Vector3 p2 = ai_->GetNode()->GetPosition();
-    p2.z_= 0;
-    float delta = p1.DistanceToPoint(p2);
+    float avgDelta = ((float) deltaSum)/((float) NUM_AI);
     float factor;
 
-    if (delta > 2.0f) {
-        factor = 1.0f - delta*0.02f;
+    if (avgDelta > 2.0f) {
+        factor = 1.0f - avgDelta*0.02f;
     } else {
-        factor = 1.0f + delta*0.02f;
+        factor = 1.0f + avgDelta*0.02f;
     }
-
-
-
-
 
     zoom_ = Clamp(zoom_ * factor, CAMERA_MIN_DIST, CAMERA_MAX_DIST);
     cameraNode_->GetComponent<Camera>()->SetZoom(zoom_);
-
 
     //    URHO3D_LOGINFOF("delta=%f", delta);
     //    URHO3D_LOGINFOF("factor=%f", factor);
@@ -723,9 +735,11 @@ void MayaSpace::HandleUpdate(StringHash eventType, VariantMap& eventData)
     // AI
     if (ai_)
     {
-        // Set rotation already here so that it's updated every rendering frame instead of every physics frame
-        ai_->GetNode()->SetRotation(Quaternion(ai_->controls_.yaw_, Vector3::UP));
-        ai_->GetNode()->SetRotation(Quaternion(0.0f, -180.0f-ai_->heading_, 0.0f));
+        for (int i = 0; i < NUM_AI; i++) {
+            // Set rotation already here so that it's updated every rendering frame instead of every physics frame
+            ai_[i]->GetNode()->SetRotation(Quaternion(ai_[i]->controls_.yaw_, Vector3::UP));
+            ai_[i]->GetNode()->SetRotation(Quaternion(0.0f, -180.0f-ai_[i]->heading_, 0.0f));
+        }
     }
 
     // Update player powerbar

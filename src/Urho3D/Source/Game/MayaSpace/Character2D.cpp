@@ -56,12 +56,9 @@ Character2D::Character2D(Context* context) :
     aboveClimbable_(false),
     onSlope_(false)
 {
- 
     // Face model forward (right)
     heading_ = 270.0f;
-
     life_ = 100;
-
     type_ = 1;
 }
 
@@ -96,14 +93,8 @@ void Character2D::Update(float timeStep)
     }
 
     // Set temporary variables
-    auto* input = GetSubsystem<Input>();
     auto* body = GetComponent<RigidBody2D>();
-
     auto* animatedModel = GetComponent<AnimatedModel>();
-    bool onGround = false;
-    bool jump = false;
-    bool walk = false;
-    bool kick = false;
 
     // Collision detection (AABB query)
     Vector2 characterHalfSize = Vector2(0.16f, 0.16f);
@@ -111,147 +102,19 @@ void Character2D::Update(float timeStep)
     PODVector<RigidBody2D*> collidingBodies;
     physicsWorld->GetRigidBodies(collidingBodies, Rect(node_->GetWorldPosition2D() - characterHalfSize - Vector2(0.0f, 0.1f), node_->GetWorldPosition2D() + characterHalfSize));
 
-    // Set direction
-    Vector3 moveDir = Vector3::ZERO; // Reset
-
     if (collidingBodies.Size() > 1 && !isClimbing_)
-        onGround = true;
+        currState_.onGround = true;
 
-    if (isAI_) {
-
-        // Update movement direction
-            moveDir = moveDir - Vector3::FORWARD;
-
-        // Update frame
-            auto* model = node_->GetComponent<AnimatedModel>(true);
-                for (AnimationState* state : model->GetAnimationStates()) {
-                    state->AddTime(timeStep);
-                }
-
-    //            if (walk)
-                
- //               if (kick)
-///                    state = model->GetAnimationStates()[3];
-                
-      //          if (state)
-
-//            forward_ = false;
-        if (playerPos_.x_ < GetNode()->GetPosition().x_) { 
-            forward_ = false;
-        } else {
-
-            forward_ = true;
-        }
-
-        if (doMove_) {
-            int r = Random(1,3);
-            
-            switch (r) {
-                case 1:
-                case 2:
-                kick = true;
-                break;
-                case 3:
-                doJump_ = true;
-                break;
-            }
-
-            walk = true;
-                doJump_ = true;
-
-            // Reset timer
-            currMove_ = 0;
-            doMove_ = false;
-
-            URHO3D_LOGINFOF("AI STATE [forward=%d, walk=%d, jump=%d, kick=%d]", forward_, walk, jump, kick);
-
-        }
-
-
-
-
-        
-    } else {
-        // GAME CONTROLS
-
-            // Jump. Must release jump control between jumps
-            if (controls_.IsDown(BUTTON_A) || input->GetKeyDown('J'))
-            {
-                doJump_ = true;
-            }
-
-            if (controls_.IsDown(BUTTON_X) || input->GetKeyDown('R'))
-            {
-                kick = true;
-
-                // Progress animation
-                auto* model = node_->GetComponent<AnimatedModel>(true);
-                if (model->GetNumAnimationStates())
-                {
-                    AnimationState* state = model->GetAnimationStates()[3];
-                    state->AddTime(timeStep);
-                }
-
-            }
-            
-            // Dpad
-            if (controls_.IsDown(BUTTON_DPAD_UP))
-            {
-            }
-
-            if (controls_.IsDown(BUTTON_DPAD_DOWN))
-            {
-            }
-
-            if (controls_.IsDown(BUTTON_DPAD_RIGHT))
-            {
-            }
-
-        if (input->GetKeyDown('A') || input->GetKeyDown(KEY_LEFT) || controls_.IsDown(BUTTON_DPAD_LEFT))
-        {
-            moveDir = moveDir - Vector3::FORWARD;
-
-            auto* model = node_->GetComponent<AnimatedModel>(true);
-            if (model->GetNumAnimationStates())
-            {
-                AnimationState* state = model->GetAnimationStates()[0];
-                state->AddTime(timeStep);
-            }
-
-            forward_ = false;
-            walk = true;
-        }
-
-        if (input->GetKeyDown('D') || input->GetKeyDown(KEY_RIGHT) || controls_.IsDown(BUTTON_DPAD_RIGHT))
-        {
-            moveDir = moveDir - Vector3::FORWARD;
-            auto* model = node_->GetComponent<AnimatedModel>(true);
-            if (model->GetNumAnimationStates())
-            {
-                AnimationState* state = model->GetAnimationStates()[0];
-                state->AddTime(timeStep);
-                
-            }
-
-            forward_ = true;
-            walk = true;
-        }
-
-        // Jump
-        if ((onGround || aboveClimbable_) && (input->GetKeyPress('W') || input->GetKeyPress(KEY_UP) || controls_.IsDown(BUTTON_A)))
-            jump = true;
-
-        // END GAME CONTROLS
-    }
+    // Handle controller to update character state
+    currState_ = HandleController(timeStep);
 
     // Player mechanics
-//    if (onGround) {
+    if (currState_.onGround) {
         if (doJump_) {
-            jump = true;
+            currState_.jump = true;
             doJump_ = false;
         }
-  //  }
-
+    }
 
     if (forward_) {
         //  Update rotation of model to forward
@@ -263,7 +126,7 @@ void Character2D::Update(float timeStep)
         if (heading_ > 90.0f) { heading_ -= 2.4f; };      
     }
 
-    bool idle = (!walk && !jump);
+    bool idle = (!currState_.walk && !currState_.jump);
 
     // Set animation state
     auto* cache = GetSubsystem<ResourceCache>();
@@ -285,7 +148,7 @@ void Character2D::Update(float timeStep)
     auto* kickAnimation = cache->GetResource<Animation>("Models/bear1/Attack.ani");
 
 
-    if (walk) {
+    if (currState_.walk) {
 
         walkState_ = model->AddAnimationState(walkAnimation);
         // The state would fail to create (return null) if the animation was not found
@@ -332,7 +195,7 @@ void Character2D::Update(float timeStep)
     }
 
 
-    if (jump) {
+    if (currState_.jump) {
 
         AnimationState* jumpState_ = model->AddAnimationState(jumpAnimation);
         // The state would fail to create (return null) if the animation was not found
@@ -355,7 +218,7 @@ void Character2D::Update(float timeStep)
 
     }
 
-    if (kick) {
+    if (currState_.kick) {
 
         AnimationState* kickState_ = model->AddAnimationState(kickAnimation);
         // The state would fail to create (return null) if the animation was not found
@@ -378,54 +241,151 @@ void Character2D::Update(float timeStep)
 
     }
 
-       /* 
-
-    // Climb
-    if (isClimbing_)
-    {
-        if (!aboveClimbable_ && (input->GetKeyDown(KEY_UP) || input->GetKeyDown(KEY_W)))
-            moveDir = moveDir + Vector2(0.0f, 1.0f);
-
-        if (input->GetKeyDown(KEY_DOWN) || input->GetKeyDown(KEY_S))
-            moveDir = moveDir + Vector2(0.0f, -1.0f);
-    }
-*/
-
-
     // Move character
-    if (!moveDir.Equals(Vector3::ZERO) || jump)
+    if (!currState_.moveDir.Equals(Vector3::ZERO) || currState_.jump)
     {
+
+        URHO3D_LOGINFOF("AI[%d] MOVE DIR [x=%f, y=%f, z=%f]", id_, currState_.moveDir.x_,currState_.moveDir.y_, currState_.moveDir.z_);
+
 //        if (onSlope_)
   //          body->ApplyForceToCenter(moveDir * MOVE_SPEED / 2, true); // When climbing a slope, apply force (todo: replace by setting linear velocity to zero when will work)
     //    else
-            node_->Translate(Vector3(moveDir.x_, moveDir.y_, moveDir.z_) * timeStep * 1.8f);
+            node_->Translate(Vector3(currState_.moveDir.x_, currState_.moveDir.y_, currState_.moveDir.z_) * timeStep * 1.8f);
 //            node_->Translate(Vector3(0, 0, 2.0) * timeStep * 1.0f);
 
-        if (jump)
+        if (currState_.jump)
             body->ApplyLinearImpulse(Vector2(0.0f, 0.005f) * MOVE_SPEED, body->GetMassCenter(), true);
     }
+}
 
+PlayerState Character2D::HandleController(float timeStep)
+{
+    auto* input = GetSubsystem<Input>();
 
-  /*
-    // Animate
-    if (input->GetKeyDown(KEY_SPACE))
-    {
-        if (animatedSprite->GetAnimation() != "attack")
-        {
-            animatedSprite->SetAnimation("attack", LM_FORCE_LOOPED);
-            animatedSprite->SetSpeed(1.5f);
+    // Store previous state
+    prevState_ = currState_;
+    // Reset state
+    currState_.jump = false;
+    currState_.walk = false;
+    currState_.kick = false;
+    currState_.moveDir = Vector3::ZERO;
+
+        if (isAI_) {
+
+        // Update frame
+        auto* model = node_->GetComponent<AnimatedModel>(true);
+            for (AnimationState* state : model->GetAnimationStates()) {
+                state->AddTime(timeStep);
+            }
+
+        if (playerPos_.x_ < GetNode()->GetPosition().x_) { 
+            forward_ = false;
+        } else {
+
+            forward_ = true;
         }
+
+        if (chooseMove_) {
+            int r = Random(1,5);           
+            switch (r) {
+                case 1:
+                currState_.walk = true;
+                case 2:
+                currState_.kick = true;
+                break;
+                case 3:
+                doJump_ = true;
+                break;
+            }
+            URHO3D_LOGINFOF("CHOSE MOVE %d -> AI STATE [forward=%d, walk=%d, jump=%d, kick=%d]", r, forward_, currState_.walk, currState_.jump, currState_.kick);
+            chooseMove_ = false;
+        }
+
+        // Wait for move to complete
+        if ((currMove_-lastMove_) > 3.0f) {
+            // Reset timer
+            currMove_ = lastMove_;
+            doMove_ = false;
+            URHO3D_LOGINFOF("[%f] ai = MOVE COMPLETE", (currMove_-lastMove_));
+        }
+        
+    } else {
+        // GAME CONTROLS
+
+            // Jump. Must release jump control between jumps
+            if (controls_.IsDown(BUTTON_A) || input->GetKeyDown('J'))
+            {
+                doJump_ = true;
+            }
+
+            if (controls_.IsDown(BUTTON_X) || input->GetKeyDown('R'))
+            {
+                currState_.kick = true;
+
+                // Progress animation
+                auto* model = node_->GetComponent<AnimatedModel>(true);
+                if (model->GetNumAnimationStates())
+                {
+                    AnimationState* state = model->GetAnimationStates()[3];
+                    state->AddTime(timeStep);
+                }
+
+            }
+            
+            // Dpad
+            if (controls_.IsDown(BUTTON_DPAD_UP))
+            {
+            }
+
+            if (controls_.IsDown(BUTTON_DPAD_DOWN))
+            {
+            }
+
+            if (controls_.IsDown(BUTTON_DPAD_RIGHT))
+            {
+            }
+
+        if (input->GetKeyDown('A') || input->GetKeyDown(KEY_LEFT) || controls_.IsDown(BUTTON_DPAD_LEFT))
+        {
+            auto* model = node_->GetComponent<AnimatedModel>(true);
+            if (model->GetNumAnimationStates())
+            {
+                AnimationState* state = model->GetAnimationStates()[0];
+                state->AddTime(timeStep);
+            }
+
+            forward_ = false;
+            currState_.walk = true;
+        }
+
+        if (input->GetKeyDown('D') || input->GetKeyDown(KEY_RIGHT) || controls_.IsDown(BUTTON_DPAD_RIGHT))
+        {
+            auto* model = node_->GetComponent<AnimatedModel>(true);
+            if (model->GetNumAnimationStates())
+            {
+                AnimationState* state = model->GetAnimationStates()[0];
+                state->AddTime(timeStep);
+                
+            }
+
+            forward_ = true;
+            currState_.walk = true;
+        }
+
+        // Jump
+        if ((currState_.onGround || aboveClimbable_) && (input->GetKeyPress('W') || input->GetKeyPress(KEY_UP) || controls_.IsDown(BUTTON_A)))
+            currState_.jump = true;
+
+        // END GAME CONTROLS
+    }    
+
+    if (currState_.walk) {
+        // Update movement direction
+        currState_.moveDir = currState_.moveDir - Vector3::FORWARD;
     }
-    else if (!moveDir.Equals(Vector2::ZERO))
-    {
-        if (animatedSprite->GetAnimation() != "run")
-            animatedSprite->SetAnimation("run");
-    }
-    else if (animatedSprite->GetAnimation() != "idle")
-    {
-        animatedSprite->SetAnimation("idle");
-    }
-*/
+
+    // Return player state
+    return currState_;
 }
 
 void Character2D::HandleWoundedState(float timeStep)

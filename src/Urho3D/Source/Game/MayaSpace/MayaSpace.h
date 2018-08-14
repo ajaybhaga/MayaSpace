@@ -28,6 +28,8 @@
 class Character2D;
 class Sample2D;
 
+#define NUM_AI 5
+
 /// Urho2D platformer example.
 /// This sample demonstrates:
 ///    - Creating an orthogonal 2D scene from tile map file
@@ -76,7 +78,7 @@ private:
 
     /// The controllable character component.
     WeakPtr<Character2D> player_;
-    WeakPtr<Character2D> ai_;
+    WeakPtr<Character2D> ai_[NUM_AI];
 
     /// Flag for drawing debug geometry.
     bool drawDebug_{};

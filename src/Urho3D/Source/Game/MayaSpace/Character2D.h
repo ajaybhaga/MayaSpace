@@ -32,6 +32,14 @@ const float MOVE_SPEED = 30.0f;
 const float YAW_SENSITIVITY = 0.1f;
 const int LIFES = 3;
 
+struct PlayerState {
+    bool onGround;
+    bool jump;
+    bool walk;
+    bool kick;
+    Vector3 moveDir;
+};
+
 /// Character2D component controling Imp behavior.
 class Character2D : public LogicComponent
 {
@@ -50,6 +58,13 @@ public:
     void HandleWoundedState(float timeStep);
     /// Handle death of the player.
     void HandleDeath();
+    /// Handle controller
+    PlayerState HandleController(float timeStep);
+
+    // Previous state
+    PlayerState prevState_;
+    // Current state
+    PlayerState currState_;
 
     /// Movement controls. Assigned by the main program each frame.
     Controls controls_;
@@ -92,6 +107,7 @@ public:
 
     Vector3 playerPos_;
     bool doMove_;
+    bool chooseMove_;
     float lastMove_;
     float currMove_;
 
