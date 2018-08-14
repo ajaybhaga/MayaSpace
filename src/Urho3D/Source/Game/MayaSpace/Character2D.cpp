@@ -60,6 +60,8 @@ Character2D::Character2D(Context* context) :
     heading_ = 270.0f;
     life_ = 100;
     type_ = 1;
+    // Set true once hit ground
+    isReady_ = false;
 }
 
 void Character2D::RegisterObject(Context* context)
@@ -102,8 +104,12 @@ void Character2D::Update(float timeStep)
     PODVector<RigidBody2D*> collidingBodies;
     physicsWorld->GetRigidBodies(collidingBodies, Rect(node_->GetWorldPosition2D() - characterHalfSize - Vector2(0.0f, 0.1f), node_->GetWorldPosition2D() + characterHalfSize));
 
-    if (collidingBodies.Size() > 1 && !isClimbing_)
+    if (collidingBodies.Size() > 1 && !isClimbing_) {
         currState_.onGround = true;
+    }
+
+    
+//    URHO3D_LOGINFOF("CHAR[%d] POS [x=%f, y=%f]", id_, node_->GetWorldPosition2D().x_,node_->GetWorldPosition2D().y_);
 
     // Handle controller to update character state
     currState_ = HandleController(timeStep);
@@ -113,6 +119,12 @@ void Character2D::Update(float timeStep)
         if (doJump_) {
             currState_.jump = true;
             doJump_ = false;
+        }
+
+
+        // Player ready when near ground
+        if (node_->GetWorldPosition2D().y_ < 2.0f) {
+            isReady_ = true;
         }
     }
 
@@ -270,44 +282,65 @@ PlayerState Character2D::HandleController(float timeStep)
     currState_.kick = false;
     currState_.moveDir = Vector3::ZERO;
 
+    currMove_ += timeStep;
+//    URHO3D_LOGINFOF("[%f] ai[%d] -> diff time = %f", timeStep, id_,  currMove_-lastMove_);
+
         if (isAI_) {
 
-        // Update frame
-        auto* model = node_->GetComponent<AnimatedModel>(true);
-            for (AnimationState* state : model->GetAnimationStates()) {
-                state->AddTime(timeStep);
+            // Update AI timer for next move
+            if (currMove_-lastMove_ > 2.0f) {
+                chooseMove_ = true;
+                lastMove_ = currMove_;
+  //              URHO3D_LOGINFOF("ai[%d] = DO MOVE", id_);
             }
 
-        if (playerPos_.x_ < GetNode()->GetPosition().x_) { 
-            forward_ = false;
-        } else {
+            // Update frame
+            auto* model = node_->GetComponent<AnimatedModel>(true);
+                for (AnimationState* state : model->GetAnimationStates()) {
+                    state->AddTime(timeStep);
+                }
 
-            forward_ = true;
-        }
+            if (playerPos_.x_ < GetNode()->GetPosition().x_) { 
+                forward_ = false;
+            } else {
 
-        if (chooseMove_) {
-            int r = Random(1,5);           
-            switch (r) {
-                case 1:
-                currState_.walk = true;
-                case 2:
-                currState_.kick = true;
-                break;
-                case 3:
-                doJump_ = true;
-                break;
+                forward_ = true;
             }
-            URHO3D_LOGINFOF("CHOSE MOVE %d -> AI STATE [forward=%d, walk=%d, jump=%d, kick=%d]", r, forward_, currState_.walk, currState_.jump, currState_.kick);
-            chooseMove_ = false;
-        }
 
-        // Wait for move to complete
-        if ((currMove_-lastMove_) > 3.0f) {
-            // Reset timer
-            currMove_ = lastMove_;
-            doMove_ = false;
-            URHO3D_LOGINFOF("[%f] ai = MOVE COMPLETE", (currMove_-lastMove_));
-        }
+
+            if (chooseMove_) {
+                int r = Random(1,5);           
+                switch (r) {
+                    case 1:
+                    currState_.walk = true;
+                    case 2:
+                    currState_.kick = true;
+                    break;
+                    case 3:
+                    doJump_ = true;
+                    break;
+                }
+         //       URHO3D_LOGINFOF("CHOSE MOVE %d -> AI STATE [forward=%d, walk=%d, jump=%d, kick=%d]", r, forward_, currState_.walk, currState_.jump, currState_.kick);
+                chooseMove_ = false;
+                doMove_ = true;
+            }
+
+            // Wait for move to complete
+            if ((currMove_-lastMove_) > 2.0f) {
+                // Reset timer
+                lastMove_ = currMove_;
+                doMove_ = false;
+          //      URHO3D_LOGINFOF("[%f] ai = MOVE COMPLETE", (currMove_-lastMove_));
+            } else {
+                if (prevState_.walk)
+                    currState_.walk = true;
+
+                // If the AI is close enough, put the AI in idle mode
+               if ((abs(GetNode()->GetPosition().x_-playerPos_.x_)) < 0.05f) {
+                    currState_.walk = false;
+               }
+
+            }
         
     } else {
         // GAME CONTROLS
@@ -380,8 +413,15 @@ PlayerState Character2D::HandleController(float timeStep)
     }    
 
     if (currState_.walk) {
-        // Update movement direction
-        currState_.moveDir = currState_.moveDir - Vector3::FORWARD;
+
+        if (isAI_) {
+            // Slow down AI
+            // Update movement direction
+            currState_.moveDir = currState_.moveDir - Vector3::FORWARD * 0.3f;
+        } else {
+            // Update movement direction
+            currState_.moveDir = currState_.moveDir - Vector3::FORWARD;
+        }
     }
 
     // Return player state

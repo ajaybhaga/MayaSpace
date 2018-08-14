@@ -80,6 +80,7 @@
 
 #include "GameController.h"
 #include "Character2D.h"
+#include "Object2D.h"
 #include "Sample2D.h"
 #include "Utilities2D/Mover.h"
 #include "MayaSpace.h"
@@ -92,6 +93,8 @@ MayaSpace::MayaSpace(Context* context) :
 {
     // Register factory for the Character2D component so it can be created via CreateComponent
     Character2D::RegisterObject(context);
+    // Register factory for the Object2D component so it can be created via CreateComponent
+    Object2D::RegisterObject(context);
     // Register factory and attributes for the Mover component so it can be created via CreateComponent, and loaded / saved
     Mover::RegisterObject(context);
 }
@@ -231,6 +234,7 @@ void MayaSpace::CreateScene()
     lifeText->SetVisible(false);
 
 */
+    using namespace std;
 
 
 
@@ -250,6 +254,27 @@ void MayaSpace::CreateScene()
     tileMap->SetTmxFile(cache->GetResource<TmxFile2D>("Urho2D/Tilesets/MayaSpace_Level0.tmx"));
     const TileMapInfo2D& info = tileMap->GetInfo();
 
+
+    // Create ballon object
+    for (int i = 0; i < 4; i++) {
+        Node* ballonNode = sample2D_->CreateObject(info, 0.0f, Vector3(Random(-0.0f,8.0f), 16.0f, 0.0f), 0.1f, 1);
+        auto* obj_ = ballonNode->CreateComponent<Object2D>(); // Create a logic component to handle character behavior
+        string name = "Balloon-P" + i;
+        obj_->GetNode()->SetName(name.c_str());
+        obj_->id_ = i;
+        obj_->type_ = 1;
+    }
+
+    // Create cloud02 object
+    for (int i = 0; i < 10; i++) {
+        Node* cloudNode = sample2D_->CreateObject(info, 0.0f, Vector3(Random(-0.0f,8.0f), 16.0f, 0.0f), 0.1f, 2);
+        auto* obj_ = cloudNode->CreateComponent<Object2D>(); // Create a logic component to handle character behavior
+        string name = "Cluud02-P" + i;
+        obj_->GetNode()->SetName(name.c_str());
+        obj_->id_ = i;
+        obj_->type_ = 2;
+    }
+
     // Create player character
     Node* modelNode = sample2D_->CreateCharacter(info, 0.0f, Vector3(2.5f, 16.0f, 0.0f), 0.1f, 1);
     player_ = modelNode->CreateComponent<Character2D>(); // Create a logic component to handle character behavior
@@ -258,7 +283,6 @@ void MayaSpace::CreateScene()
     player_->life_ = 100; 
     player_->id_ = 0;
 
-    using namespace std;
     for (int i = 0; i < NUM_AI; i++) {
 
         // Create AI player character
@@ -411,7 +435,7 @@ void MayaSpace::HandleCollisionBegin(StringHash eventType, VariantMap& eventData
 
 
     // If hit node is an id more than the player, it's AI
-    if (hitNode->GetID() > character2DNode->GetID()) {
+    if (hitNode->GetID() > character2DNode->GetID() && player_->isReady_) {
         player_->life_ -= 10;
         auto* body = character2DNode->GetComponent<RigidBody2D>();
         auto* body2 = hitNode->GetComponent<RigidBody2D>();
@@ -646,18 +670,6 @@ void MayaSpace::HandleUpdate(StringHash eventType, VariantMap& eventData)
 
         // Update player location for AI
         ai_[i]->playerPos_ = player_->GetNode()->GetPosition();
-
-        URHO3D_LOGINFOF("ai[%d] currMove = %d", ai_[i]->id_, ai_[i]->currMove_);
-
-        // Update AI timer for next move
-        if (ai_[i]->currMove_-ai_[i]->lastMove_ > 6.0f) {
-            ai_[i]->doMove_ = true;
-            ai_[i]->chooseMove_ = true;
-            ai_[i]->lastMove_ = ai_[i]->currMove_;
-            URHO3D_LOGINFOF("ai[%d] = DO MOVE", i);
-        } else {
-            ai_[i]->currMove_ += timeStep;
-        }
 
         Vector3 p1 = player_->GetNode()->GetPosition();
         p1.z_ = 0;

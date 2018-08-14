@@ -70,8 +70,11 @@ public:
     CollisionPolygon2D* CreatePolygonShape(Node* node, TileMapObject2D* object);
     /// Build collision shape from Tiled 'Poly Line' objects.
     CollisionChain2D* CreatePolyLineShape(Node* node, TileMapObject2D* object);
-    /// Create Imp Spriter character.
+    /// Create Player character.
     Node* CreateCharacter(TileMapInfo2D info, float friction, Vector3 position, float scale, int type);
+    /// Create Object.
+    Node* CreateObject(TileMapInfo2D info, float friction, Vector3 position, float scale, int type);
+
     /// Create a trigger (will be cloned at each tmx placeholder).
     Node* CreateTrigger();
     /// Create an enemy (will be cloned at each tmx placeholder).
