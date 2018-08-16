@@ -453,110 +453,73 @@ Node* Sample2D::CreateObject(TileMapInfo2D info, float friction, Vector3 positio
     Node* modelNode = scene_->CreateChild("ObjNode");
 
     modelNode->SetPosition(position);
-    modelNode->SetScale(scale);
 
     // Create animated models
     const float MODEL_MOVE_SPEED = 2.0f;
     const float MODEL_ROTATE_SPEED = 100.0f;
     const BoundingBox bounds(Vector3(-20.0f, 0.0f, -20.0f), Vector3(20.0f, 0.0f, 20.0f));
 
-//        modelObject->SetModel(cache->GetResource<Model>("Models/Mutant/Mutant.mdl"));
-//        modelObject->SetMaterial(cache->GetResource<Material>("Models/Mutant/Materials/mutant_M.xml"));
-
-
-// Node* objectNode = scene_->CreateChild("Jack");
-//    objectNode->SetPosition(Vector3(0.0f, 1.0f, 0.0f));
-
-
-
     // rotate model by 180 ****************************
     Node* adjustNode = modelNode->CreateChild("AdjNode");
     Quaternion qAdjRot(180, Vector3(0,1,0) ); // rotate it by 180 
     adjustNode->SetRotation( qAdjRot );
 
-    // Create the rendering component + animation controller
-    //auto* modelObject = adjustNode->CreateComponent<AnimatedModel>();
-    //auto* modelObject = modelNode->CreateComponent<AnimatedModel>();
-
-//        modelObject->SetModel(cache->GetResource<Model>("Models/lario/Sphere.006.mdl"));
-//        modelObject->ApplyMaterialList(GetSubsystem<FileSystem>()->GetProgramDir() + "Data/Models/bear2/Cube.003.txt");
-/*
-        switch (type) {
-            case 1:
-            modelObject->SetModel(cache->GetResource<Model>("Models/bear1/Cube.003.mdl"));
-            modelObject->SetMaterial(cache->GetResource<Material>("Models/bear1/Materials/Material.xml"));
-            break;
-            case 2:
-            modelObject->SetModel(cache->GetResource<Model>("Models/bear2/Cube.003.mdl"));
-            modelObject->SetMaterial(cache->GetResource<Material>("Models/bear2/Materials/Material.xml"));
-            break;
-            case 3:
-            modelObject->SetModel(cache->GetResource<Model>("Models/bear3/Cube.003.mdl"));
-            modelObject->SetMaterial(cache->GetResource<Material>("Models/bear3/Materials/Material.xml"));
-            break;
-            case 4:
-            modelObject->SetModel(cache->GetResource<Model>("Models/bear4/Cube.003.mdl"));
-            modelObject->SetMaterial(cache->GetResource<Material>("Models/bear4/Materials/Material.xml"));
-            break;
-        }
-
-*/
-
-//            SharedPtr<Node> tileNode(GetNode()->CreateTemporaryChild("Tile"));
-//            unsigned int tileId = tile->GetGid();
-
-
-
-            std::string path = "Models/";
-            std::string filler = "";
-            std::string terrainType = "Land";
+    std::string path = "Models/";
+    std::string filler = "";
+    std::string terrainType = "Land";
 //            std::string tileStr = path + terrainType + "Tile" + filler + "%d.mdl";       
-            std::string tileStr = path + "AssetPack/elephant.mdl";
-            std::string matStr = "";       
+    std::string tileStr = path + "AssetPack/elephant.mdl";
+    std::string matStr = "";       
 //            std::string tileStr;
-            float xoffset;
-            float height;
-            float depth;
+    float xoffset;
+    float height;
+    float depth;
+    float boundingScale;
             // Set tile location
 //            tileNode->SetPosition(Vector3(info.TileIndexToPosition(x, y))+tile->GetModelOffset()+Vector3(0,0,-1));
             //if (land) { xoffset = 0.3f; depth = 1.0f; }
             //if (plant) { xoffset = 0.0f; depth = -3.0f; height = 0.0f; }
             //if (building) { xoffset = 0.0f; depth = 1.2f; height = -0.6f; }
 
-            switch(type) {
-                case 1:
-                    tileStr = path + "AssetPack/balloon.mdl";  
-                    matStr = path + "AssetPack/balloon.txt";  
-                    scale = 0.12f;
-                break;
-                case 2:
-                    tileStr = path + "AssetPack/cloud02.mdl";  
-                    matStr = path + "AssetPack/cloud02.txt";  
-                    scale = 0.12f;
-                break;
-                case 3:
-                    tileStr = path + "AssetPack/cloud03.mdl";  
-                    matStr = path + "AssetPack/cloud03.txt";  
-                    scale = 0.12f;
-                break;
-                case 4:
-                break;
-                case 5:
-                break;
-                case 6:
-                break;
-                case 7:
-                break;
-                case 8:
-                break;
-            };                    
+    switch(type) {
+        case 1:
+            tileStr = path + "AssetPack/balloon.mdl";  
+            matStr = path + "AssetPack/balloon.txt";  
+            scale = 0.12f;
+            boundingScale = 1.2f;
+        break;
+        case 2:
+            tileStr = path + "AssetPack/cloud02.mdl";  
+            matStr = path + "AssetPack/cloud02.txt";  
+            scale = 0.12f;
+            boundingScale = 1.2f;
+        break;
+        case 3:
+            tileStr = path + "AssetPack/pumkin.mdl";  
+            matStr = path + "AssetPack/pumkin.txt";  
+            scale = 0.19f;
+            boundingScale = 0.2f;
+        break;
+        case 4:
+        break;
+        case 5:
+        break;
+        case 6:
+        break;
+        case 7:
+        break;
+        case 8:
+        break;
+    };        
+    modelNode->SetScale(scale);
+            
 
-            const char *cstr = tileStr.c_str();
+    const char *cstr = tileStr.c_str();
 
-            char buffer[100];
-            sprintf(buffer, cstr, type);
-    
-            auto* staticObject = adjustNode->CreateComponent<StaticModel>();
+    char buffer[100];
+    sprintf(buffer, cstr, type);
+
+    auto* staticObject = adjustNode->CreateComponent<StaticModel>();
 
 //            staticObject->SetPosition(Vector3(info.TileIndexToPosition(x, y))*1.0f+Vector3(xoffset,height,depth));
 //            staticObject->SetScale(Vector3(scale, scale, scale));
@@ -582,8 +545,8 @@ Node* Sample2D::CreateObject(TileMapInfo2D info, float friction, Vector3 positio
     // Main bounding circle
     auto* shape = modelNode->CreateComponent<CollisionCircle2D>();
     shape->GetNode()->SetName("hit c");
-    shape->SetCenter(shape->GetCenter()+Vector2(0,+1.2f)); 
-    shape->SetRadius(1.0f); // Set shape size
+    shape->SetCenter(shape->GetCenter()+Vector2(0,0.2)); 
+    shape->SetRadius(boundingScale); // Set shape size
     shape->SetFriction(friction); // Set friction
     shape->SetRestitution(0.1f); // Bounce
     URHO3D_LOGINFOF("CREATE HIT id=%d, name=%s", shape->GetNode()->GetID(), shape->GetNode()->GetName());

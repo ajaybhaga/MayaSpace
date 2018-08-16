@@ -254,7 +254,7 @@ void MayaSpace::CreateScene()
     tileMap->SetTmxFile(cache->GetResource<TmxFile2D>("Urho2D/Tilesets/MayaSpace_Level0.tmx"));
     const TileMapInfo2D& info = tileMap->GetInfo();
 
-
+/*
     // Create ballon object
     for (int i = 0; i < 4; i++) {
         Node* ballonNode = sample2D_->CreateObject(info, 0.0f, Vector3(Random(-0.0f,8.0f), 16.0f, 0.0f), 0.1f, 1);
@@ -274,6 +274,18 @@ void MayaSpace::CreateScene()
         obj_->id_ = i;
         obj_->type_ = 2;
     }
+*/
+
+    // Create pumpkin object
+    for (int i = 0; i < 10; i++) {
+        Node* pumpkinNode = sample2D_->CreateObject(info, 0.0f, Vector3(Random(-0.0f,10.0f), 16.0f, 0.0f), 0.5f, 3);
+        auto* obj_ = pumpkinNode->CreateComponent<Object2D>(); // Create a logic component to handle character behavior
+        String name = "Pumpkin-P" + i;
+        obj_->GetNode()->SetName(name.CString());
+        obj_->id_ = i;
+        obj_->type_ = 3;
+    }
+
 
     // Create player character
     Node* modelNode = sample2D_->CreateCharacter(info, 0.0f, Vector3(2.5f, 16.0f, 0.0f), 0.1f, 1);
@@ -288,8 +300,8 @@ void MayaSpace::CreateScene()
         // Create AI player character
         modelNode = sample2D_->CreateCharacter(info, 0.0f, Vector3(3.5f+Random(-2.0f,2.0f), 16.0f, 0.0f), 0.1f, 2);
         ai_[i] = modelNode->CreateComponent<Character2D>(); // Create a logic component to handle character behavior
-        string name = "Bear-P" + i;
-        ai_[i]->GetNode()->SetName(name.c_str());
+        String name = "AI-Bear-P" + i;
+        ai_[i]->GetNode()->SetName(name.CString());
         ai_[i]->isAI_ = true;
         ai_[i]->playerPos_ = player_->GetNode()->GetPosition();
         ai_[i]->id_ = 1+i;
@@ -367,6 +379,7 @@ void MayaSpace::SubscribeToEvents()
     UnsubscribeFromEvent(E_SCENEUPDATE);
 }
 
+/*
 void MayaSpace::HandleNodeCollision(StringHash eventType, VariantMap& eventData) {
 
     using namespace PhysicsBeginContact2D;
@@ -388,15 +401,15 @@ void MayaSpace::HandleNodeCollision(StringHash eventType, VariantMap& eventData)
             auto contactNormal = contacts.ReadVector2();
             auto contactDistance = contacts.ReadFloat();
             auto contactImpulse = contacts.ReadFloat();
-            std::cout << "contact position " << contactPosition.ToString().CString() << std::endl;
-            std::cout << "contact normal " << contactNormal.ToString().CString() << std::endl;
-            std::cout << "contact distance " << contactDistance << std::endl;
-            std::cout << "contact impulse " << contactImpulse << std::endl;
+       //     std::cout << "contact position " << contactPosition.ToString().CString() << std::endl;
+       //     std::cout << "contact normal " << contactNormal.ToString().CString() << std::endl;
+       //     std::cout << "contact distance " << contactDistance << std::endl;
+       //     std::cout << "contact impulse " << contactImpulse << std::endl;
         }
 
         std::cout << std::endl;
 
-}
+}*/
 
 void MayaSpace::HandleCollisionBegin(StringHash eventType, VariantMap& eventData)
 {
@@ -407,7 +420,7 @@ void MayaSpace::HandleCollisionBegin(StringHash eventType, VariantMap& eventData
     String nodeName = hitNode->GetName();
     Node* character2DNode = scene_->GetChild("Bear-P1", true);
 
-
+//Pumpkin-P
     Node* p1Node = scene_->GetChild("Bear-P1", true);
     Node* p2Node = scene_->GetChild("Bear-P2", true);
 
@@ -416,7 +429,7 @@ void MayaSpace::HandleCollisionBegin(StringHash eventType, VariantMap& eventData
     auto* hitNodeB = static_cast<Node*>(eventData[PhysicsBeginContact2D::P_NODEB].GetPtr());
 
     URHO3D_LOGINFOF("hitNodeA=%d, hitNodeB=%d", hitNodeA, hitNodeB);
-    URHO3D_LOGINFOF("hitNodeA id=%d, hitNodeB id=%d", hitNodeA->GetID(), hitNodeB->GetName());
+    URHO3D_LOGINFOF("hitNodeA id=%s, hitNodeB id=%s", hitNodeA->GetName().CString(), hitNodeB->GetName().CString());
         Vector2 contactPosition;
         //
         MemoryBuffer contacts(eventData[PhysicsBeginContact2D::P_CONTACTS].GetBuffer());
@@ -425,13 +438,15 @@ void MayaSpace::HandleCollisionBegin(StringHash eventType, VariantMap& eventData
             auto contactNormal = contacts.ReadVector2();
             auto contactDistance = contacts.ReadFloat();
             auto contactImpulse = contacts.ReadFloat();
-            std::cout << "contact position " << contactPosition.ToString().CString() << std::endl;
-            std::cout << "contact normal " << contactNormal.ToString().CString() << std::endl;
-            std::cout << "contact distance " << contactDistance << std::endl;
-            std::cout << "contact impulse " << contactImpulse << std::endl;
+       //     std::cout << "contact position " << contactPosition.ToString().CString() << std::endl;
+       //     std::cout << "contact normal " << contactNormal.ToString().CString() << std::endl;
+       //     std::cout << "contact distance " << contactDistance << std::endl;
+       //     std::cout << "contact impulse " << contactImpulse << std::endl;
         }
 
         std::cout << std::endl;
+
+
 
 
     // If hit node is an id more than the player, it's AI

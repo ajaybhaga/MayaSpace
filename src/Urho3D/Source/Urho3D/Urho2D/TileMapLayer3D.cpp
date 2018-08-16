@@ -401,8 +401,8 @@ void TileMapLayer3D::SetTileLayer(const TmxTileLayer2D* tileLayer)
             // Set tile location
 //            tileNode->SetPosition(Vector3(info.TileIndexToPosition(x, y))+tile->GetModelOffset()+Vector3(0,0,-1));
             if (land) { xoffset = 0.3f; depth = 1.0f; }
-            if (plant) { xoffset = 0.0f; depth = -3.0f; height = 0.0f; }
-            if (building) { xoffset = 0.0f; depth = 1.2f; height = -0.6f; }
+            if (plant) { xoffset = 0.0f; depth = -0.5f; height = 0.0f; }
+            if (building) { xoffset = 0.0f; depth = 1.5f; height = -0.6f; }
 
             if (land) {
                 switch(tileId) {

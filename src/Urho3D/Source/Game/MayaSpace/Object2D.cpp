@@ -95,27 +95,36 @@ void Object2D::Update(float timeStep)
     // Handle controller to update character state
     currState_ = UpdateState(timeStep);
 
-    if (type_ == 1) {
-        // Balloon
- 
-    heading_ += 5.5f * Random(1.5f,8.5f);
-    if (heading_ > 360.f) {
-        heading_ = 0.0f;
-    }
+    // Object-specific behaviour
+    switch (type_) {
+        case 1:
+        // Balloon 
+        heading_ += 5.5f * Random(1.5f,8.5f);
+        if (heading_ > 360.f) {
+            heading_ = 0.0f;
+        }
 
         if (node_->GetWorldPosition2D().y_ < 3.0f)
            body->ApplyLinearImpulse(Vector2(0.0f, 0.005f) * 30.0f, body->GetMassCenter(), true);
-    }
 
-    if (type_ == 2) {
+        if (node_->GetWorldPosition2D().y_ < 1.0f)
+            body->ApplyLinearImpulse(Vector2(0.0f, 1.0f) * 0.1f, body->GetMassCenter(), true);
+
+
+        break;
+
+        case 2:
         // Cloud
         if (node_->GetWorldPosition2D().y_ < 6.0f)
            body->ApplyLinearImpulse(Vector2(0.0f, 0.005f) * 11.0f, body->GetMassCenter(), true);
+
+        if (node_->GetWorldPosition2D().y_ < 1.0f)
+            body->ApplyLinearImpulse(Vector2(0.0f, 1.0f) * 0.1f, body->GetMassCenter(), true);
+
+        break;
     }
 
-    if (node_->GetWorldPosition2D().y_ < 1.0f)
-        body->ApplyLinearImpulse(Vector2(0.0f, 1.0f) * 0.1f, body->GetMassCenter(), true);
-
+    // General object behaviour
     if (node_->GetWorldPosition2D().x_ < 0.2f) {
         body->ApplyLinearImpulse(Vector2(1.0f, 0.0f) * 0.1f, body->GetMassCenter(), true);
     }

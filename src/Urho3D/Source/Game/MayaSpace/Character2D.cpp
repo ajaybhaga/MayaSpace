@@ -257,13 +257,17 @@ void Character2D::Update(float timeStep)
     if (!currState_.moveDir.Equals(Vector3::ZERO) || currState_.jump)
     {
 
-        URHO3D_LOGINFOF("AI[%d] MOVE DIR [x=%f, y=%f, z=%f]", id_, currState_.moveDir.x_,currState_.moveDir.y_, currState_.moveDir.z_);
+        //URHO3D_LOGINFOF("AI[%d] MOVE DIR [x=%f, y=%f, z=%f]", id_, currState_.moveDir.x_,currState_.moveDir.y_, currState_.moveDir.z_);
 
 //        if (onSlope_)
   //          body->ApplyForceToCenter(moveDir * MOVE_SPEED / 2, true); // When climbing a slope, apply force (todo: replace by setting linear velocity to zero when will work)
     //    else
+
             node_->Translate(Vector3(currState_.moveDir.x_, currState_.moveDir.y_, currState_.moveDir.z_) * timeStep * 1.8f);
-//            node_->Translate(Vector3(0, 0, 2.0) * timeStep * 1.0f);
+
+        // Snap character back to z = 0
+        Vector3 pos = node_->GetPosition(); 
+        node_->SetPosition(Vector3(pos.x_, pos.y_, 0.0f));
 
         if (currState_.jump)
             body->ApplyLinearImpulse(Vector2(0.0f, 0.005f) * MOVE_SPEED, body->GetMassCenter(), true);
