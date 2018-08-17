@@ -280,7 +280,7 @@ void MayaSpace::CreateScene()
     for (int i = 0; i < 10; i++) {
         Node* pumpkinNode = sample2D_->CreateObject(info, 0.0f, Vector3(Random(-0.0f,10.0f), 16.0f, 0.0f), 0.5f, 3);
         auto* obj_ = pumpkinNode->CreateComponent<Object2D>(); // Create a logic component to handle character behavior
-        String name = "Pumpkin-P" + i;
+        String name = String("Pumpkin-P") + String(i);
         obj_->GetNode()->SetName(name.CString());
         obj_->id_ = i;
         obj_->type_ = 3;
@@ -300,7 +300,7 @@ void MayaSpace::CreateScene()
         // Create AI player character
         modelNode = sample2D_->CreateCharacter(info, 0.0f, Vector3(3.5f+Random(-2.0f,2.0f), 16.0f, 0.0f), 0.1f, 2);
         ai_[i] = modelNode->CreateComponent<Character2D>(); // Create a logic component to handle character behavior
-        String name = "AI-Bear-P" + i;
+        String name = String("AI-Bear-P") + String(i);
         ai_[i]->GetNode()->SetName(name.CString());
         ai_[i]->isAI_ = true;
         ai_[i]->playerPos_ = player_->GetNode()->GetPosition();
@@ -428,8 +428,37 @@ void MayaSpace::HandleCollisionBegin(StringHash eventType, VariantMap& eventData
     auto* hitNodeA = static_cast<Node*>(eventData[PhysicsBeginContact2D::P_NODEA].GetPtr());
     auto* hitNodeB = static_cast<Node*>(eventData[PhysicsBeginContact2D::P_NODEB].GetPtr());
 
-    URHO3D_LOGINFOF("hitNodeA=%d, hitNodeB=%d", hitNodeA, hitNodeB);
-    URHO3D_LOGINFOF("hitNodeA id=%s, hitNodeB id=%s", hitNodeA->GetName().CString(), hitNodeB->GetName().CString());
+    // Skip tile map collisions
+    if (!hitNodeA->GetName().Contains("TileMap")) {
+
+
+        String a1, a2, b1, b2;
+        
+        a1 = "Pumpkin";
+        b1 = "Bear-P1";
+        a2 = "Bear-P1";
+        b2 = "Pumpkin";
+
+        bool hit1 = hitNodeA->GetName().Contains(a1) && hitNodeB->GetName().Contains(b1);
+        bool hit2 = hitNodeA->GetName().Contains(a2) && hitNodeB->GetName().Contains(b2);
+
+        if (hit1 || hit2) {
+            // Bear P1 collides with pumpkin
+            URHO3D_LOGINFOF("hit1=%d, hit2=%d", hit1, hit2);
+
+            if (hit1) {
+                String nodeName = hitNode->GetName();
+                Node* pumpkinNode = scene_->GetChild(nodeName, true);
+                player_->life_ += 20;
+                pumpkinNode->Remove();
+            }
+        }
+
+        //hitNodeA id=Pumpkin-P4, hitNodeB id=Bear-P1
+/*
+        URHO3D_LOGINFOF("hitNodeA=%d, hitNodeB=%d", hitNodeA, hitNodeB);
+        URHO3D_LOGINFOF("hitNodeA id=%s, hitNodeB id=%s", hitNodeA->GetName().CString(), hitNodeB->GetName().CString());*/
+
         Vector2 contactPosition;
         //
         MemoryBuffer contacts(eventData[PhysicsBeginContact2D::P_CONTACTS].GetBuffer());
@@ -446,63 +475,58 @@ void MayaSpace::HandleCollisionBegin(StringHash eventType, VariantMap& eventData
 
         std::cout << std::endl;
 
+        // If hit node is an id more than the player, it's AI
+        if (hitNode->GetID() > character2DNode->GetID() && player_->isReady_) {
+            player_->life_ -= 10;
+            auto* body = character2DNode->GetComponent<RigidBody2D>();
+            auto* body2 = hitNode->GetComponent<RigidBody2D>();
 
+    //        Vector2 v = body->GetLinearVelocity()*-10.0f;
+    //        float a = body->GetAngularVelocity();
 
+            // Clear forces (should be performed by setting linear velocity to zero, but currently doesn't work)
+            body->SetLinearVelocity(Vector2::ZERO);
+            body->SetAwake(false);
+            body->SetAwake(true);
 
-    // If hit node is an id more than the player, it's AI
-    if (hitNode->GetID() > character2DNode->GetID() && player_->isReady_) {
-        player_->life_ -= 10;
-        auto* body = character2DNode->GetComponent<RigidBody2D>();
-        auto* body2 = hitNode->GetComponent<RigidBody2D>();
+            body2->SetLinearVelocity(Vector2::ZERO);
+            body2->SetAwake(false);
+            body2->SetAwake(true);
 
-//        Vector2 v = body->GetLinearVelocity()*-10.0f;
-//        float a = body->GetAngularVelocity();
+            URHO3D_LOGINFOF("PLAYER HIT by=%d", hitNode->GetID());
 
-        // Clear forces (should be performed by setting linear velocity to zero, but currently doesn't work)
-        body->SetLinearVelocity(Vector2::ZERO);
-        body->SetAwake(false);
-        body->SetAwake(true);
+            if (particleNode_)
+                particleNode_->Remove();
 
-        body2->SetLinearVelocity(Vector2::ZERO);
-        body2->SetAwake(false);
-        body2->SetAwake(true);
+            auto* cache = GetSubsystem<ResourceCache>();
+            auto* particleEffect = cache->GetResource<ParticleEffect2D>("Urho2D/sun.pex");
+            if (!particleEffect)
+                return;
 
-        URHO3D_LOGINFOF("PLAYER HIT by=%d", hitNode->GetID());
+            particleNode_ = scene_->CreateChild("ParticleEmitter2D");
+            auto* particleEmitter = particleNode_->CreateComponent<ParticleEmitter2D>();
+            particleEmitter->SetEffect(particleEffect);
 
-        if (particleNode_)
-            particleNode_->Remove();
+    /*        auto* greenSpiralEffect = cache->GetResource<ParticleEffect2D>("Urho2D/greenspiral.pex");
+            if (!greenSpiralEffect)
+                return;
 
-        auto* cache = GetSubsystem<ResourceCache>();
-        auto* particleEffect = cache->GetResource<ParticleEffect2D>("Urho2D/sun.pex");
-        if (!particleEffect)
-            return;
+            Node* greenSpiralNode = scene_->CreateChild("GreenSpiral");
+            auto* greenSpiralEmitter = greenSpiralNode->CreateComponent<ParticleEmitter2D>();
+            greenSpiralEmitter->SetEffect(greenSpiralEffect);
+    */
+            particleNode_->SetPosition(Vector3(contactPosition.x_, contactPosition.y_, 0.0));
 
-        particleNode_ = scene_->CreateChild("ParticleEmitter2D");
-        auto* particleEmitter = particleNode_->CreateComponent<ParticleEmitter2D>();
-        particleEmitter->SetEffect(particleEffect);
+            using namespace Update;
+            // Take the frame time step, which is stored as a float
+            float timeStep = eventData[P_TIMESTEP].GetFloat();
+            lastEmit_ = timeStep;
+            currEmit_ = 0;
 
-/*        auto* greenSpiralEffect = cache->GetResource<ParticleEffect2D>("Urho2D/greenspiral.pex");
-        if (!greenSpiralEffect)
-            return;
+    //        particleNode_->SetPosition(camera->ScreenToWorldPoint(Vector3(x / graphics->GetWidth(), y / graphics->GetHeight(), 10.0f)));
 
-        Node* greenSpiralNode = scene_->CreateChild("GreenSpiral");
-        auto* greenSpiralEmitter = greenSpiralNode->CreateComponent<ParticleEmitter2D>();
-        greenSpiralEmitter->SetEffect(greenSpiralEffect);
-*/
-        particleNode_->SetPosition(Vector3(contactPosition.x_, contactPosition.y_, 0.0));
-
-        using namespace Update;
-        // Take the frame time step, which is stored as a float
-        float timeStep = eventData[P_TIMESTEP].GetFloat();
-        lastEmit_ = timeStep;
-        currEmit_ = 0;
-
-//        particleNode_->SetPosition(camera->ScreenToWorldPoint(Vector3(x / graphics->GetWidth(), y / graphics->GetHeight(), 10.0f)));
-
+        }
     }
-
-
-
 
 
     // Handle ropes and ladders climbing
