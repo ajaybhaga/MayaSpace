@@ -107,6 +107,12 @@ void MayaSpace::Setup()
 
 void MayaSpace::Start()
 {
+
+    for (int i = 0; i < sizeof(particlePool_)/sizeof(*particlePool_); i++) {
+        particlePool_[i].used = false;
+        particlePool_[i].usedBy = -1;
+    }
+
     // Execute base class startup
     Game::Start();
 
@@ -432,28 +438,6 @@ void MayaSpace::HandleCollisionBegin(StringHash eventType, VariantMap& eventData
     if (!hitNodeA->GetName().Contains("TileMap")) {
 
 
-        String a1, a2, b1, b2;
-        
-        a1 = "Pumpkin";
-        b1 = "Bear-P1";
-        a2 = "Bear-P1";
-        b2 = "Pumpkin";
-
-        bool hit1 = hitNodeA->GetName().Contains(a1) && hitNodeB->GetName().Contains(b1);
-        bool hit2 = hitNodeA->GetName().Contains(a2) && hitNodeB->GetName().Contains(b2);
-
-        if (hit1 || hit2) {
-            // Bear P1 collides with pumpkin
-            URHO3D_LOGINFOF("hit1=%d, hit2=%d", hit1, hit2);
-
-            if (hit1) {
-                String nodeName = hitNode->GetName();
-                Node* pumpkinNode = scene_->GetChild(nodeName, true);
-                player_->life_ += 20;
-                pumpkinNode->Remove();
-            }
-        }
-
         //hitNodeA id=Pumpkin-P4, hitNodeB id=Bear-P1
 /*
         URHO3D_LOGINFOF("hitNodeA=%d, hitNodeB=%d", hitNodeA, hitNodeB);
@@ -475,6 +459,35 @@ void MayaSpace::HandleCollisionBegin(StringHash eventType, VariantMap& eventData
 
         std::cout << std::endl;
 
+        String a1, a2, b1, b2;
+        
+        a1 = "Pumpkin";
+        b1 = "Bear-P1";
+        a2 = "Bear-P1";
+        b2 = "Pumpkin";
+
+        bool hit1 = hitNodeA->GetName().Contains(a1) && hitNodeB->GetName().Contains(b1);
+        bool hit2 = hitNodeA->GetName().Contains(a2) && hitNodeB->GetName().Contains(b2);
+
+        if (hit1 || hit2) {
+            // Bear P1 collides with pumpkin
+            URHO3D_LOGINFOF("hit1=%d, hit2=%d", hit1, hit2);
+
+            if (hit1) {
+                String nodeName = hitNode->GetName();
+                Node* pumpkinNode = scene_->GetChild(nodeName, true);
+                player_->life_ += 20;
+                pumpkinNode->Remove();
+
+                // Take the frame time step, which is stored as a float
+                using namespace Update;
+                float timeStep = eventData[P_TIMESTEP].GetFloat();
+                SetParticleEmitter(hitNode->GetID(), contactPosition.x_, contactPosition.y_, 1, timeStep);
+
+            }
+        }
+
+
         // If hit node is an id more than the player, it's AI
         if (hitNode->GetID() > character2DNode->GetID() && player_->isReady_) {
             player_->life_ -= 10;
@@ -495,36 +508,10 @@ void MayaSpace::HandleCollisionBegin(StringHash eventType, VariantMap& eventData
 
             URHO3D_LOGINFOF("PLAYER HIT by=%d", hitNode->GetID());
 
-            if (particleNode_)
-                particleNode_->Remove();
-
-            auto* cache = GetSubsystem<ResourceCache>();
-            auto* particleEffect = cache->GetResource<ParticleEffect2D>("Urho2D/sun.pex");
-            if (!particleEffect)
-                return;
-
-            particleNode_ = scene_->CreateChild("ParticleEmitter2D");
-            auto* particleEmitter = particleNode_->CreateComponent<ParticleEmitter2D>();
-            particleEmitter->SetEffect(particleEffect);
-
-    /*        auto* greenSpiralEffect = cache->GetResource<ParticleEffect2D>("Urho2D/greenspiral.pex");
-            if (!greenSpiralEffect)
-                return;
-
-            Node* greenSpiralNode = scene_->CreateChild("GreenSpiral");
-            auto* greenSpiralEmitter = greenSpiralNode->CreateComponent<ParticleEmitter2D>();
-            greenSpiralEmitter->SetEffect(greenSpiralEffect);
-    */
-            particleNode_->SetPosition(Vector3(contactPosition.x_, contactPosition.y_, 0.0));
-
-            using namespace Update;
             // Take the frame time step, which is stored as a float
+            using namespace Update;
             float timeStep = eventData[P_TIMESTEP].GetFloat();
-            lastEmit_ = timeStep;
-            currEmit_ = 0;
-
-    //        particleNode_->SetPosition(camera->ScreenToWorldPoint(Vector3(x / graphics->GetWidth(), y / graphics->GetHeight(), 10.0f)));
-
+            SetParticleEmitter(hitNode->GetID(), contactPosition.x_, contactPosition.y_, 0, timeStep);
         }
     }
 
@@ -649,6 +636,67 @@ void MayaSpace::HandleCollisionBegin(StringHash eventType, VariantMap& eventData
         player_->onSlope_ = true;
 }
 
+
+void MayaSpace::SetParticleEmitter(int hitId, float contactX, float contactY, int type, float timeStep) {
+    // CREATE
+    auto* cache = GetSubsystem<ResourceCache>();
+    ParticleEffect2D* particleEffect; 
+
+    switch (type) {
+        case 0:
+        particleEffect = cache->GetResource<ParticleEffect2D>("Urho2D/sun.pex");
+        break;
+        case 1:
+        particleEffect = cache->GetResource<ParticleEffect2D>("Urho2D/greenspiral.pex");
+        break;
+    }
+
+    if (!particleEffect)
+        return;
+
+    for (int i = 0; i < sizeof(particlePool_)/sizeof(*particlePool_); i++) {
+        if (!particlePool_[i].used) {
+            particlePool_[i].used = true;
+            particlePool_[i].usedBy = hitId;
+            particlePool_[i].node = scene_->CreateChild("GreenSpiral");
+            auto* particleEmitter = particlePool_[i].node->CreateComponent<ParticleEmitter2D>();
+            particleEmitter->SetEffect(particleEffect);
+            particlePool_[i].node->SetPosition(Vector3(contactX, contactY, 0.0));
+            particlePool_[i].lastEmit = timeStep;
+            particlePool_[i].currEmit = 0;
+            particlePool_[i].timeout = 0.8f;
+
+            break;
+        }
+    }
+
+    URHO3D_LOGINFOF("PARTICLE EMITTER CREATED used by id=%d", hitId);
+}
+
+void MayaSpace::HandleUpdateParticlePool(float timeStep) {
+    // CREATE
+    auto* cache = GetSubsystem<ResourceCache>();
+/*    auto* particleEffect = cache->GetResource<ParticleEffect2D>("Urho2D/sun.pex");
+    if (!particleEffect)
+        return;
+*/
+    for (int i = 0; i < sizeof(particlePool_)/sizeof(*particlePool_); i++) {
+        if (particlePool_[i].used) {
+
+            particlePool_[i].currEmit += timeStep;
+
+            if (particlePool_[i].currEmit-particlePool_[i].lastEmit > particlePool_[i].timeout) {
+                if (particlePool_[i].node) {
+                    particlePool_[i].node->Remove();
+                    particlePool_[i].used = false;
+                    particlePool_[i].usedBy = -1;
+                }
+            }
+        }
+    }
+}
+
+
 void MayaSpace::HandleCollisionEnd(StringHash eventType, VariantMap& eventData)
 {
     // Get colliding node
@@ -691,15 +739,9 @@ void MayaSpace::HandleUpdate(StringHash eventType, VariantMap& eventData)
     using namespace Update;
     auto* input = GetSubsystem<Input>();
 
-
     // Take the frame time step, which is stored as a float
     float timeStep = eventData[P_TIMESTEP].GetFloat();
-    currEmit_ += timeStep;
-
-    if (currEmit_-lastEmit_ > 0.8f) {
-        if (particleNode_)
-            particleNode_->Remove();
-    }
+    HandleUpdateParticlePool(timeStep);
 
     float zoom_ = cameraNode_->GetComponent<Camera>()->GetZoom();
     float deltaSum;

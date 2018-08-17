@@ -30,6 +30,15 @@ class Sample2D;
 
 #define NUM_AI 5
 
+struct ParticlePool {
+    bool used; // Is particle emitter used?
+    int usedBy; // Node id using particle emitter
+    SharedPtr<Node> node; // Scene node
+    float lastEmit;
+    float currEmit;
+    float timeout;
+};
+
 /// Urho2D platformer example.
 /// This sample demonstrates:
 ///    - Creating an orthogonal 2D scene from tile map file
@@ -76,6 +85,10 @@ private:
     /// Handle 'PLAY' button released event.
     void HandlePlayButton(StringHash eventType, VariantMap& eventData);
 
+    void SetParticleEmitter(int hitId, float contactX, float contactY, int type, float timeStep);
+    void HandleUpdateParticlePool(float timeStep);
+
+
     /// The controllable character component.
     WeakPtr<Character2D> player_;
     WeakPtr<Character2D> ai_[NUM_AI];
@@ -84,8 +97,6 @@ private:
     bool drawDebug_{};
     /// Scaling factor based on tiles' aspect ratio.
     float moveSpeedScale_{};
-    float lastEmit_;
-    float currEmit_;
 
     /// Sample2D utility object.
     SharedPtr<Sample2D> sample2D_;
@@ -94,6 +105,6 @@ private:
     /// Powerbar Bkg P1 sprite.
     SharedPtr<Sprite> powerbarBkgP1Sprite_;
 
-    /// Particle scene node.
-    SharedPtr<Node> particleNode_;
+    /// Particle pool
+    ParticlePool particlePool_[20];
 };
