@@ -39,6 +39,7 @@
 #include <Urho3D/Graphics/AnimatedModel.h>
 #include <Urho3D/Graphics/Animation.h>
 #include <Urho3D/Graphics/AnimationState.h>
+#include <Urho3D/Graphics/BillboardSet.h>
 #include <Urho3D/Graphics/Camera.h>
 #include <Urho3D/Graphics/Graphics.h>
 #include <Urho3D/Graphics/GraphicsEvents.h>
@@ -315,6 +316,36 @@ void MayaSpace::CreateScene()
         ai_[i]->doMove_ = false;
         ai_[i]->chooseMove_ = false;
         ai_[i]->lastMove_ = ai_[i]->currMove_ = 0;
+
+        // Get AI position
+        Vector3 aiPos = ai_[i]->GetNode()->GetPosition();
+
+        // Create billboard sets (powerbars)
+        //const unsigned NUM_BILLBOARDNODES = 10;//NUM_AI;
+        const unsigned NUM_BILLBOARDS = 1;
+
+        Node* pbNode = scene_->CreateChild("PowerBar");
+//        smokeNode->SetPosition(Vector3(Random(200.0f) - 100.0f, Random(20.0f) + 10.0f, Random(200.0f) - 100.0f));
+        //pbNode->SetPosition(Vector3(3.5f+Random(-2.0f,2.0f), 20.0f, 0.0f));
+        pbNode->SetPosition(Vector3(-0.02f, 0.25f, 0.0f));
+//        pbNode->SetScale(Vector3(0.5f,0.5f,0.5f));
+        auto* billboardObject = pbNode->CreateComponent<BillboardSet>();
+        billboardObject->SetNumBillboards(NUM_BILLBOARDS);
+        billboardObject->SetMaterial(cache->GetResource<Material>("Materials/PowerBar.xml"));        
+        billboardObject->SetSorted(true);
+
+        for (unsigned j = 0; j < NUM_BILLBOARDS; ++j)
+        {
+            Billboard* bb = billboardObject->GetBillboard(j);
+//            bb->position_ = Vector3(Random(12.0f) - 6.0f, Random(8.0f) - 4.0f, -5.0f);
+            bb->position_ = Vector3(aiPos.x_, aiPos.y_, 0.0f);
+            bb->size_ = Vector2((256.0f/512.0f)*0.06f, (256.0f/144.0f)*0.06f);
+            bb->rotation_ = 90.0f; //Random() * 360.0f;
+            bb->enabled_ = true;
+
+            // After modifying the billboards, they need to be "committed" so that the BillboardSet updates its internals
+            billboardObject->Commit();
+        }
     }
 
     // Generate physics collision shapes from the tmx file's objects located in "Physics" (top) layer
@@ -348,6 +379,8 @@ void MayaSpace::CreateScene()
 
     // Create background
     sample2D_->CreateBackgroundSprite(info, 6.0, "Textures/HeightMap.png", true);
+
+
 
     // Check when scene is rendered
     SubscribeToEvent(E_ENDRENDERING, URHO3D_HANDLER(MayaSpace, HandleSceneRendered));
@@ -471,7 +504,7 @@ void MayaSpace::HandleCollisionBegin(StringHash eventType, VariantMap& eventData
 
         if (hit1 || hit2) {
             // Bear P1 collides with pumpkin
-            URHO3D_LOGINFOF("hit1=%d, hit2=%d", hit1, hit2);
+            //URHO3D_LOGINFOF("hit1=%d, hit2=%d", hit1, hit2);
 
             if (hit1) {
                 String nodeName = hitNode->GetName();
@@ -506,7 +539,7 @@ void MayaSpace::HandleCollisionBegin(StringHash eventType, VariantMap& eventData
             body2->SetAwake(false);
             body2->SetAwake(true);
 
-            URHO3D_LOGINFOF("PLAYER HIT by=%d", hitNode->GetID());
+            //URHO3D_LOGINFOF("PLAYER HIT by=%d", hitNode->GetID());
 
             // Take the frame time step, which is stored as a float
             using namespace Update;
@@ -533,8 +566,8 @@ void MayaSpace::HandleCollisionBegin(StringHash eventType, VariantMap& eventData
         }
     }
 
-    URHO3D_LOGINFOF("HIT id=%d, name=%s", hitNode->GetID(), hitNode->GetName());
-    URHO3D_LOGINFOF("character2DNode=%d", character2DNode->GetID());
+    //URHO3D_LOGINFOF("HIT id=%d, name=%s", hitNode->GetID(), hitNode->GetName());
+    //URHO3D_LOGINFOF("character2DNode=%d", character2DNode->GetID());
 
 
             auto* body = character2DNode->GetComponent<RigidBody2D>();
@@ -641,13 +674,18 @@ void MayaSpace::SetParticleEmitter(int hitId, float contactX, float contactY, in
     // CREATE
     auto* cache = GetSubsystem<ResourceCache>();
     ParticleEffect2D* particleEffect; 
+    Vector2 position;
 
     switch (type) {
         case 0:
         particleEffect = cache->GetResource<ParticleEffect2D>("Urho2D/sun.pex");
+        position.x_ = contactX;
+        position.y_ = contactY;
         break;
         case 1:
-        particleEffect = cache->GetResource<ParticleEffect2D>("Urho2D/greenspiral.pex");
+        particleEffect = cache->GetResource<ParticleEffect2D>("Urho2D/power.pex");
+        position.x_ = contactX;
+        position.y_ = contactY;
         break;
     }
 
@@ -661,7 +699,7 @@ void MayaSpace::SetParticleEmitter(int hitId, float contactX, float contactY, in
             particlePool_[i].node = scene_->CreateChild("GreenSpiral");
             auto* particleEmitter = particlePool_[i].node->CreateComponent<ParticleEmitter2D>();
             particleEmitter->SetEffect(particleEffect);
-            particlePool_[i].node->SetPosition(Vector3(contactX, contactY, 0.0));
+            particlePool_[i].node->SetPosition(Vector3(position.x_, position.y_, 0.0));
             particlePool_[i].lastEmit = timeStep;
             particlePool_[i].currEmit = 0;
             particlePool_[i].timeout = 0.8f;
@@ -763,7 +801,7 @@ void MayaSpace::HandleUpdate(StringHash eventType, VariantMap& eventData)
     float avgDelta = ((float) deltaSum)/((float) NUM_AI);
     float factor;
 
-    if (avgDelta > 2.0f) {
+    if (avgDelta > 5.0f) {
         factor = 1.0f - avgDelta*0.02f;
     } else {
         factor = 1.0f + avgDelta*0.02f;
@@ -839,6 +877,34 @@ void MayaSpace::HandleUpdate(StringHash eventType, VariantMap& eventData)
     IntVector2 v = powerbarBkgP1Sprite_->GetSize();    
     int power = int(((player_->life_)/100.0f)*(float)v.x_);
     powerbarP1Sprite_->SetSize(power, v.y_);
+
+
+    // Get the billboard scene nodes
+    PODVector<Node*> billboardNodes;
+    scene_->GetChildrenWithComponent<BillboardSet>(billboardNodes);
+
+    const float BILLBOARD_ROTATION_SPEED = 50.0f;
+
+    // Rotate the individual billboards within the billboard sets, then recommit to make the changes visible
+    for (unsigned i = 0; i < billboardNodes.Size(); ++i)
+    {
+        auto* billboardObject = billboardNodes[i]->GetComponent<BillboardSet>();
+
+        for (unsigned j = 0; j < billboardObject->GetNumBillboards(); ++j)
+        {
+            Billboard* bb = billboardObject->GetBillboard(j);
+//            bb->rotation_ += BILLBOARD_ROTATION_SPEED * timeStep;
+            Vector3 aiPos = ai_[i]->GetNode()->GetPosition();
+            bb->position_ = Vector3(aiPos.x_, aiPos.y_, 0.0f);
+       //       bb->position_ = Vector3(player_->GetNode()->GetPosition().x_, player_->GetNode()->GetPosition().y_, -5.0f);
+
+            
+        }
+
+        billboardObject->Commit();
+    }
+
+                URHO3D_LOGINFOF("player_ position x=%f, y=%f, z=%f", player_->GetNode()->GetPosition().x_, player_->GetNode()->GetPosition().y_, player_->GetNode()->GetPosition().z_);
 
 }
 

@@ -283,7 +283,11 @@ PlayerState Character2D::HandleController(float timeStep)
     // Reset state
     currState_.jump = false;
     currState_.walk = false;
-    currState_.kick = false;
+
+    // Let kick stay for 2 seconds
+    if (currMove_-currState_.lastKick > 2.0f) {
+        currState_.kick = false;
+    }
     currState_.moveDir = Vector3::ZERO;
 
     currMove_ += timeStep;
@@ -317,11 +321,18 @@ PlayerState Character2D::HandleController(float timeStep)
                 switch (r) {
                     case 1:
                     currState_.walk = true;
+                    // Store time
+                    currState_.lastWalk = currMove_;
                     case 2:
                     currState_.kick = true;
+                    URHO3D_LOGINFOF("AI KICK -> CHOSE MOVE %d -> AI STATE [forward=%d, walk=%d, jump=%d, kick=%d]", r, forward_, currState_.walk, currState_.jump, currState_.kick);
+                    // Store time
+                    currState_.lastKick = currMove_;
                     break;
                     case 3:
                     doJump_ = true;
+                    // Store time
+                    currState_.lastJump = currMove_;
                     break;
                 }
          //       URHO3D_LOGINFOF("CHOSE MOVE %d -> AI STATE [forward=%d, walk=%d, jump=%d, kick=%d]", r, forward_, currState_.walk, currState_.jump, currState_.kick);
@@ -340,7 +351,7 @@ PlayerState Character2D::HandleController(float timeStep)
                     currState_.walk = true;
 
                 // If the AI is close enough, put the AI in idle mode
-               if ((abs(GetNode()->GetPosition().x_-playerPos_.x_)) < 0.05f) {
+               if ((abs(GetNode()->GetPosition().x_-playerPos_.x_)) < 0.02f) {
                     currState_.walk = false;
                }
 

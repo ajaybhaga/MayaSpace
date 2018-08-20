@@ -35,8 +35,11 @@ const int LIFES = 3;
 struct PlayerState {
     bool onGround;
     bool jump;
+    float lastJump;
     bool walk;
+    float lastWalk;
     bool kick;
+    float lastKick;
     Vector3 moveDir;
 };
 
