@@ -23,6 +23,19 @@ endif()
 if(NOT DEFINED DOXYGEN_REPEAT_BRIEF)
     set(DOXYGEN_REPEAT_BRIEF YES)
 endif()
+if(NOT DEFINED DOXYGEN_ABBREVIATE_BRIEF)
+    set(DOXYGEN_ABBREVIATE_BRIEF "The $name class" 
+                         "The $name widget" 
+                         "The $name file" 
+                         is 
+                         provides 
+                         specifies 
+                         contains 
+                         represents 
+                         a 
+                         an 
+                         the)
+endif()
 if(NOT DEFINED DOXYGEN_ALWAYS_DETAILED_SEC)
     set(DOXYGEN_ALWAYS_DETAILED_SEC NO)
 endif()
@@ -67,6 +80,9 @@ if(NOT DEFINED DOXYGEN_OPTIMIZE_OUTPUT_VHDL)
 endif()
 if(NOT DEFINED DOXYGEN_MARKDOWN_SUPPORT)
     set(DOXYGEN_MARKDOWN_SUPPORT YES)
+endif()
+if(NOT DEFINED DOXYGEN_TOC_INCLUDE_HEADINGS)
+    set(DOXYGEN_TOC_INCLUDE_HEADINGS 0)
 endif()
 if(NOT DEFINED DOXYGEN_AUTOLINK_SUPPORT)
     set(DOXYGEN_AUTOLINK_SUPPORT YES)
@@ -227,11 +243,60 @@ endif()
 if(NOT DEFINED DOXYGEN_INPUT_ENCODING)
     set(DOXYGEN_INPUT_ENCODING UTF-8)
 endif()
+if(NOT DEFINED DOXYGEN_FILE_PATTERNS)
+    set(DOXYGEN_FILE_PATTERNS *.c 
+                         *.cc 
+                         *.cxx 
+                         *.cpp 
+                         *.c++ 
+                         *.java 
+                         *.ii 
+                         *.ixx 
+                         *.ipp 
+                         *.i++ 
+                         *.inl 
+                         *.idl 
+                         *.ddl 
+                         *.odl 
+                         *.h 
+                         *.hh 
+                         *.hxx 
+                         *.hpp 
+                         *.h++ 
+                         *.cs 
+                         *.d 
+                         *.php 
+                         *.php4 
+                         *.php5 
+                         *.phtml 
+                         *.inc 
+                         *.m 
+                         *.markdown 
+                         *.md 
+                         *.mm 
+                         *.dox 
+                         *.py 
+                         *.pyw 
+                         *.f90 
+                         *.f95 
+                         *.f03 
+                         *.f08 
+                         *.f 
+                         *.for 
+                         *.tcl 
+                         *.vhd 
+                         *.vhdl 
+                         *.ucf 
+                         *.qsf)
+endif()
 if(NOT DEFINED DOXYGEN_RECURSIVE)
     set(DOXYGEN_RECURSIVE NO)
 endif()
 if(NOT DEFINED DOXYGEN_EXCLUDE_SYMLINKS)
     set(DOXYGEN_EXCLUDE_SYMLINKS NO)
+endif()
+if(NOT DEFINED DOXYGEN_EXAMPLE_PATTERNS)
+    set(DOXYGEN_EXAMPLE_PATTERNS *)
 endif()
 if(NOT DEFINED DOXYGEN_EXAMPLE_RECURSIVE)
     set(DOXYGEN_EXAMPLE_RECURSIVE NO)

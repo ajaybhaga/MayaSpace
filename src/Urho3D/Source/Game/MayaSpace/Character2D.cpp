@@ -325,7 +325,7 @@ PlayerState Character2D::HandleController(float timeStep)
                     currState_.lastWalk = currMove_;
                     case 2:
                     currState_.kick = true;
-                    URHO3D_LOGINFOF("AI KICK -> CHOSE MOVE %d -> AI STATE [forward=%d, walk=%d, jump=%d, kick=%d]", r, forward_, currState_.walk, currState_.jump, currState_.kick);
+                    URHO3D_LOGINFOF("AI KICK -> CHOSE MOVE %d -> AI STATE [forward=%d, walk=%d, jump=%d, kick=%d]", r, forward_, currState_.walk, currState_.jump, currState_.kick);                    
                     // Store time
                     currState_.lastKick = currMove_;
                     break;

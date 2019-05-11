@@ -19,7 +19,11 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
 //
+/*
 
+    Written by Ajay Bhaga 2019
+
+*/
 #include <sstream>
 #include <string>
 #include <iostream>
@@ -262,7 +266,7 @@ void MayaSpace::CreateScene()
     const TileMapInfo2D& info = tileMap->GetInfo();
 
 /*
-    // Create ballon object
+    // Create balloon object
     for (int i = 0; i < 4; i++) {
         Node* ballonNode = sample2D_->CreateObject(info, 0.0f, Vector3(Random(-0.0f,8.0f), 16.0f, 0.0f), 0.1f, 1);
         auto* obj_ = ballonNode->CreateComponent<Object2D>(); // Create a logic component to handle character behavior
@@ -276,7 +280,7 @@ void MayaSpace::CreateScene()
     for (int i = 0; i < 10; i++) {
         Node* cloudNode = sample2D_->CreateObject(info, 0.0f, Vector3(Random(-0.0f,8.0f), 16.0f, 0.0f), 0.1f, 2);
         auto* obj_ = cloudNode->CreateComponent<Object2D>(); // Create a logic component to handle character behavior
-        string name = "Cluud02-P" + i;
+        string name = "Cloud02-P" + i;
         obj_->GetNode()->SetName(name.c_str());
         obj_->id_ = i;
         obj_->type_ = 2;
@@ -285,7 +289,7 @@ void MayaSpace::CreateScene()
 
     // Create pumpkin object
     for (int i = 0; i < 10; i++) {
-        Node* pumpkinNode = sample2D_->CreateObject(info, 0.0f, Vector3(Random(-0.0f,10.0f), 16.0f, 0.0f), 0.5f, 3);
+        Node* pumpkinNode = sample2D_->CreateObject(info, 0.0f, Vector3(Random(0.0f,14.0f), 10.0f, 0.0f), 0.5f, 3);
         auto* obj_ = pumpkinNode->CreateComponent<Object2D>(); // Create a logic component to handle character behavior
         String name = String("Pumpkin-P") + String(i);
         obj_->GetNode()->SetName(name.CString());
@@ -334,6 +338,17 @@ void MayaSpace::CreateScene()
         billboardObject->SetMaterial(cache->GetResource<Material>("Materials/PowerBar.xml"));        
         billboardObject->SetSorted(true);
 
+/*
+        Vector2 start(0.5f,0.5f);
+Vector2 end(1.0f,1.0f);
+
+    Vector2 offset = start;
+    Vector2 repeat = end - start;
+
+    // this doesn't do the same thing as the next two statements together...
+    mat->SetUVTransform(offset, 0, repeat);
+*/
+
         for (unsigned j = 0; j < NUM_BILLBOARDS; ++j)
         {
             Billboard* bb = billboardObject->GetBillboard(j);
@@ -343,6 +358,9 @@ void MayaSpace::CreateScene()
             bb->rotation_ = 90.0f; //Random() * 360.0f;
             bb->enabled_ = true;
 
+//            bb->uv_ = Rect(left,top,right,bottom);
+            bb->uv_ = Rect(0.0,0.5,1.0,1.0);
+            
             // After modifying the billboards, they need to be "committed" so that the BillboardSet updates its internals
             billboardObject->Commit();
         }
@@ -516,13 +534,25 @@ void MayaSpace::HandleCollisionBegin(StringHash eventType, VariantMap& eventData
                 using namespace Update;
                 float timeStep = eventData[P_TIMESTEP].GetFloat();
                 SetParticleEmitter(hitNode->GetID(), contactPosition.x_, contactPosition.y_, 1, timeStep);
+                sample2D_->PlaySoundEffect("Powerup.wav");
+
 
             }
         }
+  
+        
+        a1 = "Bear-P";
+        b1 = "Bear-P1";
+        a2 = "Bear-P1";
+        b2 = "Bear-P";
 
+        bool hit3 = hitNodeA->GetName().Contains(a1) && hitNodeB->GetName().Contains(b1);
+        bool hit4 = hitNodeA->GetName().Contains(a2) && hitNodeB->GetName().Contains(b2);
+
+        if ((hit3 || hit4) && player_->isReady_) {
 
         // If hit node is an id more than the player, it's AI
-        if (hitNode->GetID() > character2DNode->GetID() && player_->isReady_) {
+//        if (hitNode->GetID() > character2DNode->GetID() && player_->isReady_) {
             player_->life_ -= 10;
             auto* body = character2DNode->GetComponent<RigidBody2D>();
             auto* body2 = hitNode->GetComponent<RigidBody2D>();
@@ -545,6 +575,11 @@ void MayaSpace::HandleCollisionBegin(StringHash eventType, VariantMap& eventData
             using namespace Update;
             float timeStep = eventData[P_TIMESTEP].GetFloat();
             SetParticleEmitter(hitNode->GetID(), contactPosition.x_, contactPosition.y_, 0, timeStep);
+            sample2D_->PlaySoundEffect("explosion-sm.wav");
+            sample2D_->PlaySoundEffect("bam-motherfucker.wav");
+
+            
+
         }
     }
 
@@ -576,7 +611,6 @@ void MayaSpace::HandleCollisionBegin(StringHash eventType, VariantMap& eventData
 //            body->SetLinearVelocity(body->GetLinearVelocity()*-1.0f);
 //            body->SetAwake(false);
 //            body->SetAwake(true);
-        
 
 
     if (nodeName == "hit-body")
@@ -807,6 +841,8 @@ void MayaSpace::HandleUpdate(StringHash eventType, VariantMap& eventData)
         factor = 1.0f + avgDelta*0.02f;
     }
 
+    factor = 1.0f;
+
     zoom_ = Clamp(zoom_ * factor, CAMERA_MIN_DIST, CAMERA_MAX_DIST);
     cameraNode_->GetComponent<Camera>()->SetZoom(zoom_);
 
@@ -871,6 +907,17 @@ void MayaSpace::HandleUpdate(StringHash eventType, VariantMap& eventData)
             ai_[i]->GetNode()->SetRotation(Quaternion(ai_[i]->controls_.yaw_, Vector3::UP));
             ai_[i]->GetNode()->SetRotation(Quaternion(0.0f, -180.0f-ai_[i]->heading_, 0.0f));
         }
+
+/*
+        static int _sndCnt = 0;
+        float r = Random(-0.0f,5.0f);
+        if (r > 2.5f) {
+            _sndCnt++;
+        }
+
+        if (_sndCnt > 5) {
+            sample2D_->PlaySoundEffect("enemy01-laugh.wav");
+        }*/
     }
 
     // Update player powerbar
@@ -904,7 +951,7 @@ void MayaSpace::HandleUpdate(StringHash eventType, VariantMap& eventData)
         billboardObject->Commit();
     }
 
-                URHO3D_LOGINFOF("player_ position x=%f, y=%f, z=%f", player_->GetNode()->GetPosition().x_, player_->GetNode()->GetPosition().y_, player_->GetNode()->GetPosition().z_);
+                //URHO3D_LOGINFOF("player_ position x=%f, y=%f, z=%f", player_->GetNode()->GetPosition().x_, player_->GetNode()->GetPosition().y_, player_->GetNode()->GetPosition().z_);
 
 }
 
@@ -965,6 +1012,8 @@ void MayaSpace::ReloadScene(bool reInit)
 
 void MayaSpace::HandlePlayButton(StringHash eventType, VariantMap& eventData)
 {
+    sample2D_->PlaySoundEffect("enemy01-laugh.wav");
+
     // Remove fullscreen UI and unfreeze the scene
     auto* ui = GetSubsystem<UI>();
     if (static_cast<Text*>(ui->GetRoot()->GetChild("FullUI", true)))

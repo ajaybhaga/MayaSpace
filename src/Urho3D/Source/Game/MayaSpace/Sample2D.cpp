@@ -356,14 +356,35 @@ Node* Sample2D::CreateCharacter(TileMapInfo2D info, float friction, Vector3 posi
     shape->SetRestitution(0.1f); // Bounce
     URHO3D_LOGINFOF("CREATE HIT id=%d, name=%s", shape->GetNode()->GetID(), shape->GetNode()->GetName());
 
-    // Main bounding circle
-    shape = modelNode->CreateComponent<CollisionCircle2D>();
-    shape->GetNode()->SetName("hit c");
-    shape->SetCenter(shape->GetCenter()+Vector2(0,+1.2f)); 
-    shape->SetRadius(1.0f); // Set shape size
-    shape->SetFriction(friction); // Set friction
-    shape->SetRestitution(0.1f); // Bounce
-    URHO3D_LOGINFOF("CREATE HIT id=%d, name=%s", shape->GetNode()->GetID(), shape->GetNode()->GetName());
+        switch (type) {
+            case 1:
+            // player
+            // Main bounding circle
+            shape = modelNode->CreateComponent<CollisionCircle2D>();
+            shape->GetNode()->SetName("hit c");
+            shape->SetCenter(shape->GetCenter()+Vector2(0,+1.2f)); 
+            shape->SetRadius(1.0f); // Set shape size
+            shape->SetFriction(friction); // Set friction
+            shape->SetRestitution(0.1f); // Bounce
+            URHO3D_LOGINFOF("CREATE HIT id=%d, name=%s", shape->GetNode()->GetID(), shape->GetNode()->GetName());
+
+            break;
+
+            case 2:
+            // enemy
+            // Main bounding circle
+            shape = modelNode->CreateComponent<CollisionCircle2D>();
+            shape->GetNode()->SetName("hit c");
+            shape->SetCenter(shape->GetCenter()+Vector2(0,+3.2f)); 
+            shape->SetRadius(1.0f); // Set shape size
+            shape->SetFriction(friction); // Set friction
+            shape->SetRestitution(0.1f); // Bounce
+            URHO3D_LOGINFOF("CREATE HIT id=%d, name=%s", shape->GetNode()->GetID(), shape->GetNode()->GetName());
+
+            break;
+        }
+
+
 
 
     Vector2 min, max, center;
@@ -818,11 +839,10 @@ void Sample2D::CreateUIContent(const String& demoTitle, int remainingLifes, int 
     titleText->SetFont(font, 24);
     titleText->SetText(demoTitle);
 
-/// TODO: Update later
     // Create the image
     auto* spriteUI = fullUI->CreateChild<BorderImage>("Sprite");
-    spriteUI->SetTexture(cache->GetResource<Texture2D>("Textures/MayaSpaceLogo.png"));
-    spriteUI->SetSize(255, 128);
+    spriteUI->SetTexture(cache->GetResource<Texture2D>("Textures/BZLogo-lg.png"));
+    spriteUI->SetSize(700, 328);
     spriteUI->SetAlignment(HA_CENTER, VA_CENTER);
     spriteUI->SetPosition(0, - ui->GetRoot()->GetHeight() / 4);
 

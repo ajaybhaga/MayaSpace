@@ -66,8 +66,8 @@ void Game::Setup()
 {
     // Modify engine startup parameters
     engineParameters_[EP_WINDOW_TITLE] = GetTypeName();
-    engineParameters_[EP_WINDOW_WIDTH] = 1280;
-    engineParameters_[EP_WINDOW_HEIGHT] = 800;
+    engineParameters_[EP_WINDOW_WIDTH] = 1080;
+    engineParameters_[EP_WINDOW_HEIGHT] = 1080;
     engineParameters_[EP_LOG_NAME]     = GetSubsystem<FileSystem>()->GetAppPreferencesDir("urho3d", "logs") + GetTypeName() + ".log";
     engineParameters_[EP_FULL_SCREEN]  = false;
     engineParameters_[EP_HEADLESS]     = false;
@@ -167,7 +167,7 @@ void Game::CreateLogo()
 {
     // Get logo texture
     ResourceCache* cache = GetSubsystem<ResourceCache>();
-    Texture2D* logoTexture = cache->GetResource<Texture2D>("Textures/MayaSpaceLogo.png");
+    Texture2D* logoTexture = cache->GetResource<Texture2D>("Textures/BZLogo.png");
     if (!logoTexture)
         return;
 
@@ -206,7 +206,7 @@ void Game::SetWindowTitleAndIcon()
     Graphics* graphics = GetSubsystem<Graphics>();
     Image* icon = cache->GetResource<Image>("Textures/UrhoIcon.png");
     graphics->SetWindowIcon(icon);
-    graphics->SetWindowTitle("MayaSpace v0.1 by Ajay Bhaga");
+    graphics->SetWindowTitle("Bad Zindagi: Demo Scene - MayaSpace by Ajay Bhaga");
 }
 
 void Game::CreateConsoleAndDebugHud()
