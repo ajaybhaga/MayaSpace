@@ -305,6 +305,7 @@ void MayaSpace::CreateScene()
     player_->isAI_ = false;
     player_->life_ = 100; 
     player_->id_ = 0;
+    player_->type_ = 1;
 
     for (int i = 0; i < NUM_AI; i++) {
 
@@ -316,6 +317,7 @@ void MayaSpace::CreateScene()
         ai_[i]->isAI_ = true;
         ai_[i]->playerPos_ = player_->GetNode()->GetPosition();
         ai_[i]->id_ = 1+i;
+        ai_[i]->type_ = 2;
 
         ai_[i]->doMove_ = false;
         ai_[i]->chooseMove_ = false;

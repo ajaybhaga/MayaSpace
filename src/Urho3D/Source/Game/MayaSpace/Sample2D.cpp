@@ -242,8 +242,9 @@ Node* Sample2D::CreateCharacter(TileMapInfo2D info, float friction, Vector3 posi
 
         switch (type) {
             case 1:
-            modelObject->SetModel(cache->GetResource<Model>("Models/bear1/Cube.003.mdl"));
+            modelObject->SetModel(cache->GetResource<Model>("Models/bear1/Cube.001.mdl"));
             modelObject->SetMaterial(cache->GetResource<Material>("Models/bear1/Materials/Material.xml"));
+
             break;
             case 2:
             modelObject->SetModel(cache->GetResource<Model>("Models/bear2/Cube.003.mdl"));
@@ -363,7 +364,7 @@ Node* Sample2D::CreateCharacter(TileMapInfo2D info, float friction, Vector3 posi
             shape = modelNode->CreateComponent<CollisionCircle2D>();
             shape->GetNode()->SetName("hit c");
             shape->SetCenter(shape->GetCenter()+Vector2(0,+1.2f)); 
-            shape->SetRadius(1.0f); // Set shape size
+            shape->SetRadius(1.2f); // Set shape size
             shape->SetFriction(friction); // Set friction
             shape->SetRestitution(0.1f); // Bounce
             URHO3D_LOGINFOF("CREATE HIT id=%d, name=%s", shape->GetNode()->GetID(), shape->GetNode()->GetName());
@@ -375,8 +376,10 @@ Node* Sample2D::CreateCharacter(TileMapInfo2D info, float friction, Vector3 posi
             // Main bounding circle
             shape = modelNode->CreateComponent<CollisionCircle2D>();
             shape->GetNode()->SetName("hit c");
-            shape->SetCenter(shape->GetCenter()+Vector2(0,+3.2f)); 
-            shape->SetRadius(1.0f); // Set shape size
+//            shape->SetCenter(shape->GetCenter()+Vector2(0,-0.8f)); 
+            shape->SetCenter(shape->GetCenter()+Vector2(0,-0.2f)); 
+
+            shape->SetRadius(1.8); // Set shape size
             shape->SetFriction(friction); // Set friction
             shape->SetRestitution(0.1f); // Bounce
             URHO3D_LOGINFOF("CREATE HIT id=%d, name=%s", shape->GetNode()->GetID(), shape->GetNode()->GetName());

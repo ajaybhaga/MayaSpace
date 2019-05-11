@@ -1,6 +1,6 @@
 <material>
-	<technique name="Techniques/Diff.xml"/>
+	<technique name="Techniques/DiffAlpha.xml"/>
 	<texture name="Textures/Panda Texture.png" unit="diffuse"/>
-	<parameter name="MatDiffColor" value="0.8 0.8 0.8 1"/>
-	<parameter name="MatSpecColor" value="0.196842 0.196842 0.196842 50"/>
+	<parameter name="MatDiffColor" value="0.64 0.64 0.64 1"/>
+	<parameter name="MatSpecColor" value="0.5 0.5 0.5 50"/>
 </material>

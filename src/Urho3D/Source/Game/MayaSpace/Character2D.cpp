@@ -154,10 +154,33 @@ void Character2D::Update(float timeStep)
     auto* kickAnimation = cache->GetResource<Animation>("Models/Mutant/Mutant_Kick.ani");
 */
 
-    auto* walkAnimation = cache->GetResource<Animation>("Models/bear1/Run.ani");
-    auto* idleAnimation = cache->GetResource<Animation>("Models/bear1/Idle.ani");
-    auto* jumpAnimation = cache->GetResource<Animation>("Models/bear1/Jump.ani");
-    auto* kickAnimation = cache->GetResource<Animation>("Models/bear1/Attack.ani");
+
+    String walkAnimStr = "";
+    String idleAnimStr = "";
+    String jumpAnimStr = "";
+    String attackAnimStr = "";
+
+
+    switch (type_) { 
+        case 1:
+            walkAnimStr = "Models/bear1/Run.ani";
+            idleAnimStr = "Models/bear1/Idle.ani";
+            jumpAnimStr = "Models/bear1/Jump.ani";
+            attackAnimStr = "Models/bear1/Attack.ani";
+        break;
+        case 2:
+            walkAnimStr = "Models/bear2/Run.ani";
+            idleAnimStr = "Models/bear2/Idle.ani";
+            jumpAnimStr = "Models/bear2/Jump.ani";
+            attackAnimStr = "Models/bear2/Attack.ani";
+        break;
+
+    }
+
+    auto* walkAnimation = cache->GetResource<Animation>(walkAnimStr);
+    auto* idleAnimation = cache->GetResource<Animation>(idleAnimStr);
+    auto* jumpAnimation = cache->GetResource<Animation>(jumpAnimStr);
+    auto* kickAnimation = cache->GetResource<Animation>(attackAnimStr);
 
 
     if (currState_.walk) {
