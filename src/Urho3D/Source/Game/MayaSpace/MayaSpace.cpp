@@ -530,7 +530,9 @@ void MayaSpace::HandleCollisionBegin(StringHash eventType, VariantMap& eventData
                 String nodeName = hitNode->GetName();
                 Node* pumpkinNode = scene_->GetChild(nodeName, true);
                 player_->life_ += 20;
-                pumpkinNode->Remove();
+                if (pumpkinNode) {
+                    pumpkinNode->Remove();
+                }
 
                 // Take the frame time step, which is stored as a float
                 using namespace Update;
@@ -1014,7 +1016,8 @@ void MayaSpace::ReloadScene(bool reInit)
 
 void MayaSpace::HandlePlayButton(StringHash eventType, VariantMap& eventData)
 {
-    sample2D_->PlaySoundEffect("enemy01-laugh.wav");
+//    sample2D_->PlaySoundEffect("enemy01-laugh.wav");
+//    sample2D_->PlaySoundEffect("BAY-r1.wav");
 
     // Remove fullscreen UI and unfreeze the scene
     auto* ui = GetSubsystem<UI>();
@@ -1038,4 +1041,5 @@ void MayaSpace::HandlePlayButton(StringHash eventType, VariantMap& eventData)
     // Hide mouse cursor
     auto* input = GetSubsystem<Input>();
     input->SetMouseVisible(false);
+
 }
