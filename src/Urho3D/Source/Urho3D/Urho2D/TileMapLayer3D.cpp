@@ -42,6 +42,7 @@
 
 
 #include "../DebugNew.h"
+#include <string>
 
 namespace Urho3D
 {

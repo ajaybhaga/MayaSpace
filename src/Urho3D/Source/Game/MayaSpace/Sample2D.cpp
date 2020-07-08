@@ -72,6 +72,7 @@
 #include <Urho3D/Graphics/Zone.h>
 #include <Urho3D/Resource/ResourceCache.h>
 
+#include <string>
 #include "Utilities2D/Mover.h"
 #include "Sample2D.h"
 #include "Character2D.h"
@@ -242,21 +243,26 @@ Node* Sample2D::CreateCharacter(TileMapInfo2D info, float friction, Vector3 posi
 
         switch (type) {
             case 1:
-            modelObject->SetModel(cache->GetResource<Model>("Models/bear1/Cube.001.mdl"));
-            modelObject->SetMaterial(cache->GetResource<Material>("Models/bear1/Materials/Material.xml"));
+            modelObject->SetModel(cache->GetResource<Model>("Models/sprite1/sprite1.mdl"));
+            modelObject->SetMaterial(cache->GetResource<Material>("Models/sprite1/Materials/Material.011.xml;Models/sprite1/Materials/Material.012.xml;Models/sprite1/Materials/Material.019.xml"));
 
             break;
             case 2:
-            modelObject->SetModel(cache->GetResource<Model>("Models/bear2/Cube.003.mdl"));
-            modelObject->SetMaterial(cache->GetResource<Material>("Models/bear2/Materials/Material.xml"));
+            modelObject->SetModel(cache->GetResource<Model>("Models/sprite1/sprite1.mdl"));
+            //modelObject->SetMaterial(cache->GetResource<Material>("Models/bear2/Materials/Material.xml"));
+            modelObject->SetMaterial(cache->GetResource<Material>("Models/sprite1/Materials/Material.011.xml;Models/sprite1/Materials/Material.012.xml;Models/sprite1/Materials/Material.019.xml"));
+
             break;
             case 3:
-            modelObject->SetModel(cache->GetResource<Model>("Models/bear3/Cube.003.mdl"));
-            modelObject->SetMaterial(cache->GetResource<Material>("Models/bear3/Materials/Material.xml"));
+            modelObject->SetModel(cache->GetResource<Model>("Models/sprite1/sprite1.mdl"));
+            //modelObject->SetMaterial(cache->GetResource<Material>("Models/bear3/Materials/Material.xml"));
+            modelObject->SetMaterial(cache->GetResource<Material>("Models/sprite1/Materials/Material.011.xml;Models/sprite1/Materials/Material.012.xml;Models/sprite1/Materials/Material.019.xml"));
+
             break;
             case 4:
-            modelObject->SetModel(cache->GetResource<Model>("Models/bear4/Cube.003.mdl"));
-            modelObject->SetMaterial(cache->GetResource<Material>("Models/bear4/Materials/Material.xml"));
+            modelObject->SetModel(cache->GetResource<Model>("Models/sprite1/sprite1.mdl"));
+            //modelObject->SetMaterial(cache->GetResource<Material>("Models/bear4/Materials/Material.xml"));
+            modelObject->SetMaterial(cache->GetResource<Material>("Models/sprite1/Materials/Material.011.xml;Models/sprite1/Materials/Material.012.xml;Models/sprite1/Materials/Material.019.xml"));
             break;
         }
 

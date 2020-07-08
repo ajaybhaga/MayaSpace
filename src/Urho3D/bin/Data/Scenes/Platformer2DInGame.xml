@@ -143,8 +143,8 @@
 			<attribute name="Scale" value="1 1 1" />
 			<attribute name="Variables" />
 			<component type="AnimatedModel" id="119">
-				<attribute name="Model" value="Model;Models/bear1/Cube.003.mdl" />
-				<attribute name="Material" value="Material;Models/bear1/Materials/Material.xml" />
+				<attribute name="Model" value="Model;Models/sprite1/sprite1.mdl" />
+				<attribute name="Material" value="Material;Models/sprite1/Materials/Material.011.xml;Models/sprite1/Materials/Material.012.xml;Models/sprite1/Materials/Material.019.xml" />
 				<attribute name="Cast Shadows" value="true" />
 				<attribute name="Bone Animation Enabled">
 					<variant type="Bool" value="true" />
@@ -166,25 +166,25 @@
 				</attribute>
 				<attribute name="Animation States">
 					<variant type="Int" value="4" />
-					<variant type="ResourceRef" value="Animation;Models/bear1/Run.ani" />
+					<variant type="ResourceRef" value="Animation;Models/sprite1/sprite1_07_05.ani" />
 					<variant type="String" value="Bone" />
 					<variant type="Bool" value="true" />
 					<variant type="Float" value="0" />
 					<variant type="Float" value="0" />
 					<variant type="Int" value="0" />
-					<variant type="ResourceRef" value="Animation;Models/bear1/Idle.ani" />
+					<variant type="ResourceRef" value="Animation;Models/sprite1/sprite1_07_05.ani" />
 					<variant type="String" value="Bone" />
 					<variant type="Bool" value="true" />
 					<variant type="Float" value="1" />
 					<variant type="Float" value="0.436359" />
 					<variant type="Int" value="0" />
-					<variant type="ResourceRef" value="Animation;Models/bear1/Jump.ani" />
+					<variant type="ResourceRef" value="Animation;Models/sprite1/sprite1_07_05.ani" />
 					<variant type="String" value="Bone" />
 					<variant type="Bool" value="false" />
 					<variant type="Float" value="0" />
 					<variant type="Float" value="0" />
 					<variant type="Int" value="0" />
-					<variant type="ResourceRef" value="Animation;Models/bear1/Attack.ani" />
+					<variant type="ResourceRef" value="Animation;Models/sprite1/sprite1_07_05.ani" />
 					<variant type="String" value="Bone" />
 					<variant type="Bool" value="false" />
 					<variant type="Float" value="0" />

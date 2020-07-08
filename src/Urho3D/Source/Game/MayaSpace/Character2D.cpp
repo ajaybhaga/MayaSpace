@@ -163,16 +163,16 @@ void Character2D::Update(float timeStep)
 
     switch (type_) { 
         case 1:
-            walkAnimStr = "Models/bear1/Run.ani";
-            idleAnimStr = "Models/bear1/Idle.ani";
-            jumpAnimStr = "Models/bear1/Jump.ani";
-            attackAnimStr = "Models/bear1/Attack.ani";
+            walkAnimStr = "Models/sprite1/sprite1_07_05.ani";
+            idleAnimStr = "Models/sprite1/sprite1_07_05.ani";
+            jumpAnimStr = "Models/sprite1/sprite1_07_05.ani";
+            attackAnimStr = "Models/sprite1/sprite1_07_05.ani";
         break;
         case 2:
-            walkAnimStr = "Models/bear2/Run.ani";
-            idleAnimStr = "Models/bear2/Idle.ani";
-            jumpAnimStr = "Models/bear2/Jump.ani";
-            attackAnimStr = "Models/bear2/Attack.ani";
+            walkAnimStr = "Models/sprite1/sprite1_07_05.ani";
+            idleAnimStr = "Models/sprite1/sprite1_07_05.ani";
+            jumpAnimStr = "Models/sprite1/sprite1_07_05.ani";
+            attackAnimStr = "Models/sprite1/sprite1_07_05.ani";
         break;
 
     }
@@ -291,6 +291,11 @@ void Character2D::Update(float timeStep)
         // Snap character back to z = 0
         Vector3 pos = node_->GetPosition(); 
         node_->SetPosition(Vector3(pos.x_, pos.y_, 0.0f));
+//        node_->
+
+  //              node_->SetPosition(Vector3(-10.0f, 0.0f, 0.0f));
+        node_->SetScale(0.005f);
+
 
         if (currState_.jump)
             body->ApplyLinearImpulse(Vector2(0.0f, 0.005f) * MOVE_SPEED, body->GetMassCenter(), true);
@@ -536,7 +541,8 @@ void Character2D::HandleDeath()
     input->SetMouseVisible(true);
 
     // Put character outside of the scene and magnify him
-    node_->SetPosition(Vector3(-20.0f, 0.0f, 0.0f));
+//    node_->SetPosition(Vector3(-20.0f, 0.0f, 0.0f));
+    node_->SetPosition(Vector3(-10.0f, 0.0f, 0.0f));
     node_->SetScale(1.2f);
 
     // Play death animation once

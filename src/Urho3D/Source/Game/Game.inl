@@ -206,7 +206,7 @@ void Game::SetWindowTitleAndIcon()
     Graphics* graphics = GetSubsystem<Graphics>();
     Image* icon = cache->GetResource<Image>("Textures/UrhoIcon.png");
     graphics->SetWindowIcon(icon);
-    graphics->SetWindowTitle("Bad Zindagi: Demo Scene - MayaSpace by Ajay Bhaga");
+    graphics->SetWindowTitle("MayaSpace v0.1");
 }
 
 void Game::CreateConsoleAndDebugHud()
