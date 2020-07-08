@@ -62,6 +62,7 @@ Character2D::Character2D(Context* context) :
     type_ = 1;
     // Set true once hit ground
     isReady_ = false;
+    doJump_ = true;
 }
 
 void Character2D::RegisterObject(Context* context)
@@ -161,7 +162,7 @@ void Character2D::Update(float timeStep)
     String attackAnimStr = "";
 
 
-    switch (type_) { 
+    switch (type_) {
         case 1:
             walkAnimStr = "Models/sprite1/sprite1_07_05.ani";
             idleAnimStr = "Models/sprite1/sprite1_07_05.ani";
@@ -182,10 +183,14 @@ void Character2D::Update(float timeStep)
     auto* jumpAnimation = cache->GetResource<Animation>(jumpAnimStr);
     auto* kickAnimation = cache->GetResource<Animation>(attackAnimStr);
 
+    walkState_ = model->AddAnimationState(walkAnimation);
+//    idleState_ = model->AddAnimationState(idleAnimation);
+//    jumpState_ = model->AddAnimationState(jumpAnimation);
+//    kickState_ = model->AddAnimationState(kickAnimation);
+
 
     if (currState_.walk) {
 
-        walkState_ = model->AddAnimationState(walkAnimation);
         // The state would fail to create (return null) if the animation was not found
         if (walkState_)
         {
@@ -193,10 +198,11 @@ void Character2D::Update(float timeStep)
             walkState_->SetWeight(1.0f);
             walkState_->AddTime(timeStep);
             walkState_->SetLooped(true);
+//            walkState_->SetTime(0.0f);
+
         }
     } else {
 
-        walkState_ = model->AddAnimationState(walkAnimation);
         // The state would fail to create (return null) if the animation was not found
         if (walkState_)
         {
@@ -205,10 +211,9 @@ void Character2D::Update(float timeStep)
             walkState_->SetTime(0.0f);
         }
     }
-
+/*
     if (idle) {
 
-        idleState_ = model->AddAnimationState(idleAnimation);
         // The state would fail to create (return null) if the animation was not found
         if (idleState_)
         {
@@ -219,12 +224,11 @@ void Character2D::Update(float timeStep)
         }
     } else {
 
-        AnimationState* idleState_ = model->AddAnimationState(idleAnimation);
         // The state would fail to create (return null) if the animation was not found
         if (idleState_)
         {
             // Enable full blending weight and looping
-            idleState_->SetWeight(0.0f);
+            idleState_->SetWeight(1.0f);
             idleState_->SetTime(0.0f);
         }
     }
@@ -232,7 +236,6 @@ void Character2D::Update(float timeStep)
 
     if (currState_.jump) {
 
-        AnimationState* jumpState_ = model->AddAnimationState(jumpAnimation);
         // The state would fail to create (return null) if the animation was not found
         if (jumpState_)
         {
@@ -242,12 +245,11 @@ void Character2D::Update(float timeStep)
         }
     } else {
 
-         AnimationState* jumpState_ = model->AddAnimationState(jumpAnimation);
         // The state would fail to create (return null) if the animation was not found
         if (jumpState_)
         {
             // Enable full blending weight and looping
-            jumpState_->SetWeight(0.0f);
+            jumpState_->SetWeight(1.0f);
             jumpState_->SetTime(0.0f);
         }
 
@@ -255,7 +257,6 @@ void Character2D::Update(float timeStep)
 
     if (currState_.kick) {
 
-        AnimationState* kickState_ = model->AddAnimationState(kickAnimation);
         // The state would fail to create (return null) if the animation was not found
         if (kickState_)
         {
@@ -270,11 +271,11 @@ void Character2D::Update(float timeStep)
         if (kickState_)
         {
             // Enable full blending weight and looping
-            kickState_->SetWeight(0.0f);
+            kickState_->SetWeight(1.0f);
             kickState_->SetTime(0.0f);
         }
 
-    }
+    }*/
 
     // Move character
     if (!currState_.moveDir.Equals(Vector3::ZERO) || currState_.jump)
@@ -289,12 +290,15 @@ void Character2D::Update(float timeStep)
             node_->Translate(Vector3(currState_.moveDir.x_, currState_.moveDir.y_, currState_.moveDir.z_) * timeStep * 1.8f);
 
         // Snap character back to z = 0
-        Vector3 pos = node_->GetPosition(); 
+        Vector3 pos = node_->GetPosition();
+
         node_->SetPosition(Vector3(pos.x_, pos.y_, 0.0f));
 //        node_->
 
-  //              node_->SetPosition(Vector3(-10.0f, 0.0f, 0.0f));
-        node_->SetScale(0.005f);
+//                node_->SetPosition(Vector3(-10.0f, 0.0f, 0.0f));
+    //    node_->SetScale(0.0024f);
+//        node_->SetScale(0.001f);
+        node_->SetScale(0.0001f);
 
 
         if (currState_.jump)
@@ -321,22 +325,25 @@ PlayerState Character2D::HandleController(float timeStep)
     currMove_ += timeStep;
 //    URHO3D_LOGINFOF("[%f] ai[%d] -> diff time = %f", timeStep, id_,  currMove_-lastMove_);
 
+    if (timeStep > 0) {
         if (isAI_) {
 
             // Update AI timer for next move
-            if (currMove_-lastMove_ > 2.0f) {
+            if (currMove_ - lastMove_ > 2.0f) {
                 chooseMove_ = true;
                 lastMove_ = currMove_;
-  //              URHO3D_LOGINFOF("ai[%d] = DO MOVE", id_);
+                //              URHO3D_LOGINFOF("ai[%d] = DO MOVE", id_);
             }
 
             // Update frame
-            auto* model = node_->GetComponent<AnimatedModel>(true);
-                for (AnimationState* state : model->GetAnimationStates()) {
-                    state->AddTime(timeStep);
-                }
+            auto *model = node_->GetComponent<AnimatedModel>(true);
+            for (AnimationState *state : model->GetAnimationStates()) {
+                state->AddTime(timeStep);
+                //URHO3D_LOGINFOF("update frame -> timeStep %f", timeStep);
 
-            if (playerPos_.x_ < GetNode()->GetPosition().x_) { 
+            }
+
+            if (playerPos_.x_ < GetNode()->GetPosition().x_) {
                 forward_ = false;
             } else {
 
@@ -345,125 +352,118 @@ PlayerState Character2D::HandleController(float timeStep)
 
 
             if (chooseMove_) {
-                int r = Random(1,5);           
+                int r = Random(1, 5);
                 switch (r) {
                     case 1:
-                    currState_.walk = true;
-                    // Store time
-                    currState_.lastWalk = currMove_;
+                        currState_.walk = true;
+                        // Store time
+                        currState_.lastWalk = currMove_;
                     case 2:
-                    currState_.kick = true;
-                    URHO3D_LOGINFOF("AI KICK -> CHOSE MOVE %d -> AI STATE [forward=%d, walk=%d, jump=%d, kick=%d]", r, forward_, currState_.walk, currState_.jump, currState_.kick);                    
-                    // Store time
-                    currState_.lastKick = currMove_;
-                    break;
+                        currState_.kick = true;
+                        URHO3D_LOGINFOF("AI KICK -> CHOSE MOVE %d -> AI STATE [forward=%d, walk=%d, jump=%d, kick=%d]",
+                                        r, forward_, currState_.walk, currState_.jump, currState_.kick);
+                        // Store time
+                        currState_.lastKick = currMove_;
+                        break;
                     case 3:
-                    doJump_ = true;
-                    // Store time
-                    currState_.lastJump = currMove_;
-                    break;
+                        doJump_ = true;
+                        // Store time
+                        currState_.lastJump = currMove_;
+                        break;
                 }
-         //       URHO3D_LOGINFOF("CHOSE MOVE %d -> AI STATE [forward=%d, walk=%d, jump=%d, kick=%d]", r, forward_, currState_.walk, currState_.jump, currState_.kick);
+                //       URHO3D_LOGINFOF("CHOSE MOVE %d -> AI STATE [forward=%d, walk=%d, jump=%d, kick=%d]", r, forward_, currState_.walk, currState_.jump, currState_.kick);
                 chooseMove_ = false;
                 doMove_ = true;
             }
 
             // Wait for move to complete
-            if ((currMove_-lastMove_) > 2.0f) {
+            if ((currMove_ - lastMove_) > 2.0f) {
                 // Reset timer
                 lastMove_ = currMove_;
                 doMove_ = false;
-          //      URHO3D_LOGINFOF("[%f] ai = MOVE COMPLETE", (currMove_-lastMove_));
+                //      URHO3D_LOGINFOF("[%f] ai = MOVE COMPLETE", (currMove_-lastMove_));
             } else {
                 if (prevState_.walk)
                     currState_.walk = true;
 
                 // If the AI is close enough, put the AI in idle mode
-               if ((abs(GetNode()->GetPosition().x_-playerPos_.x_)) < 0.02f) {
+                if ((abs(GetNode()->GetPosition().x_ - playerPos_.x_)) < 0.02f) {
                     currState_.walk = false;
-               }
+                }
 
             }
-        
-    } else {
-        // GAME CONTROLS
+
+        } else {
+            // GAME CONTROLS
 
             // Jump. Must release jump control between jumps
-            if (controls_.IsDown(BUTTON_A) || input->GetKeyDown('J'))
-            {
+            if (controls_.IsDown(BUTTON_A) || input->GetKeyDown('J')) {
                 doJump_ = true;
             }
 
-            if (controls_.IsDown(BUTTON_X) || input->GetKeyDown('R'))
-            {
+            if (controls_.IsDown(BUTTON_X) || input->GetKeyDown('R')) {
                 currState_.kick = true;
 
                 // Progress animation
-                auto* model = node_->GetComponent<AnimatedModel>(true);
-                if (model->GetNumAnimationStates())
-                {
-                    AnimationState* state = model->GetAnimationStates()[3];
+                auto *model = node_->GetComponent<AnimatedModel>(true);
+                if (model->GetNumAnimationStates()) {
+                    AnimationState *state = model->GetAnimationStates()[3];
                     state->AddTime(timeStep);
                 }
 
             }
-            
+
             // Dpad
-            if (controls_.IsDown(BUTTON_DPAD_UP))
-            {
+            if (controls_.IsDown(BUTTON_DPAD_UP)) {
             }
 
-            if (controls_.IsDown(BUTTON_DPAD_DOWN))
-            {
+            if (controls_.IsDown(BUTTON_DPAD_DOWN)) {
             }
 
-            if (controls_.IsDown(BUTTON_DPAD_RIGHT))
-            {
+            if (controls_.IsDown(BUTTON_DPAD_RIGHT)) {
             }
 
-        if (input->GetKeyDown('A') || input->GetKeyDown(KEY_LEFT) || controls_.IsDown(BUTTON_DPAD_LEFT))
-        {
-            auto* model = node_->GetComponent<AnimatedModel>(true);
-            if (model->GetNumAnimationStates())
-            {
-                AnimationState* state = model->GetAnimationStates()[0];
-                state->AddTime(timeStep);
+            if (input->GetKeyDown('A') || input->GetKeyDown(KEY_LEFT) || controls_.IsDown(BUTTON_DPAD_LEFT)) {
+                auto *model = node_->GetComponent<AnimatedModel>(true);
+                if (model->GetNumAnimationStates()) {
+                    AnimationState *state = model->GetAnimationStates()[0];
+                    state->AddTime(timeStep);
+                }
+
+                forward_ = false;
+                currState_.walk = true;
             }
 
-            forward_ = false;
-            currState_.walk = true;
+            if (input->GetKeyDown('D') || input->GetKeyDown(KEY_RIGHT) || controls_.IsDown(BUTTON_DPAD_RIGHT)) {
+                auto *model = node_->GetComponent<AnimatedModel>(true);
+                if (model->GetNumAnimationStates()) {
+                    AnimationState *state = model->GetAnimationStates()[0];
+                    state->AddTime(timeStep);
+
+                }
+
+                forward_ = true;
+                currState_.walk = true;
+            }
+
+            // Jump
+            if ((currState_.onGround || aboveClimbable_) &&
+                (input->GetKeyPress('W') || input->GetKeyPress(KEY_UP) || controls_.IsDown(BUTTON_A)))
+                currState_.jump = true;
+
+            // END GAME CONTROLS
         }
 
-        if (input->GetKeyDown('D') || input->GetKeyDown(KEY_RIGHT) || controls_.IsDown(BUTTON_DPAD_RIGHT))
-        {
-            auto* model = node_->GetComponent<AnimatedModel>(true);
-            if (model->GetNumAnimationStates())
-            {
-                AnimationState* state = model->GetAnimationStates()[0];
-                state->AddTime(timeStep);
-                
+        if (currState_.walk) {
+
+            if (isAI_) {
+                // Slow down AI
+                // Update movement direction
+                currState_.moveDir = currState_.moveDir - Vector3::FORWARD * 0.3f;
+            } else {
+                // Update movement direction
+                currState_.moveDir = currState_.moveDir - Vector3::FORWARD;
             }
-
-            forward_ = true;
-            currState_.walk = true;
-        }
-
-        // Jump
-        if ((currState_.onGround || aboveClimbable_) && (input->GetKeyPress('W') || input->GetKeyPress(KEY_UP) || controls_.IsDown(BUTTON_A)))
-            currState_.jump = true;
-
-        // END GAME CONTROLS
-    }    
-
-    if (currState_.walk) {
-
-        if (isAI_) {
-            // Slow down AI
-            // Update movement direction
-            currState_.moveDir = currState_.moveDir - Vector3::FORWARD * 0.3f;
-        } else {
-            // Update movement direction
-            currState_.moveDir = currState_.moveDir - Vector3::FORWARD;
         }
     }
 

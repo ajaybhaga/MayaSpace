@@ -28,7 +28,7 @@
 class Character2D;
 class Sample2D;
 
-#define NUM_AI 5
+#define NUM_AI 3
 
 struct ParticlePool {
     bool used; // Is particle emitter used?

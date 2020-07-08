@@ -891,7 +891,8 @@ void MayaSpace::HandleUpdate(StringHash eventType, VariantMap& eventData)
        // player_->controls_.pitch_ = Clamp(player_->controls_.pitch_, -80.0f, 80.0f);
         // Set rotation already here so that it's updated every rendering frame instead of every physics frame
         player_->GetNode()->SetRotation(Quaternion(player_->controls_.yaw_, Vector3::UP));
-        player_->GetNode()->SetRotation(Quaternion(0.0f, -180.0f-player_->heading_, 0.0f));
+      //  player_->GetNode()->SetRotation(Quaternion(0.0f, -180.0f-player_->heading_, 0.0f));
+        player_->GetNode()->SetRotation(Quaternion(-90.0f, player_->heading_+180.0f, 0.0f));
 
     }
 
@@ -909,7 +910,9 @@ void MayaSpace::HandleUpdate(StringHash eventType, VariantMap& eventData)
         for (int i = 0; i < NUM_AI; i++) {
             // Set rotation already here so that it's updated every rendering frame instead of every physics frame
             ai_[i]->GetNode()->SetRotation(Quaternion(ai_[i]->controls_.yaw_, Vector3::UP));
-            ai_[i]->GetNode()->SetRotation(Quaternion(0.0f, -180.0f-ai_[i]->heading_, 0.0f));
+            //ai_[i]->GetNode()->SetRotation(Quaternion(0.0f, -180.0f-ai_[i]->heading_, 0.0f));
+            ai_[i]->GetNode()->SetRotation(Quaternion(-90.0f, ai_[i]->heading_+180.0f, 0.0f));
+
         }
 
 /*

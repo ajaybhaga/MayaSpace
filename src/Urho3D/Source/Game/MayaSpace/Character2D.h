@@ -85,7 +85,8 @@ public:
     bool doJump_;
     AnimationState* walkState_; 
     AnimationState* idleState_;
-    AnimationState* jumpState_; 
+    AnimationState* jumpState_;
+    AnimationState* kickState_;
 
     /// Flag when player is wounded.
     bool wounded_;
