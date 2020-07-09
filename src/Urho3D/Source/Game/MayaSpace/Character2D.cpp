@@ -130,10 +130,12 @@ void Character2D::Update(float timeStep)
     }
 
     if (forward_) {
+//        heading_ = 270.0f;
         //  Update rotation of model to forward
         if (heading_ < 270.0f) { heading_ += 2.4f; };
         if (heading_ > 270.0f) { heading_ -= 2.4f; };
     } else {
+  //      heading_ = 90.0f;
         //  Update rotation of model to back
         if (heading_ < 90.0f) { heading_ += 2.4f; };
         if (heading_ > 90.0f) { heading_ -= 2.4f; };      
@@ -287,18 +289,19 @@ void Character2D::Update(float timeStep)
   //          body->ApplyForceToCenter(moveDir * MOVE_SPEED / 2, true); // When climbing a slope, apply force (todo: replace by setting linear velocity to zero when will work)
     //    else
 
-            node_->Translate(Vector3(currState_.moveDir.x_, currState_.moveDir.y_, currState_.moveDir.z_) * timeStep * 1.8f);
+        //node_->Translate(Vector3(currState_.moveDir.x_, currState_.moveDir.y_, currState_.moveDir.z_) * timeStep * 1.8f);
 
         // Snap character back to z = 0
         Vector3 pos = node_->GetPosition();
 
-        node_->SetPosition(Vector3(pos.x_, pos.y_, 0.0f));
+      //  node_->SetPosition(Vector3(pos.x_, pos.y_, 0.0f));
 //        node_->
 
 //                node_->SetPosition(Vector3(-10.0f, 0.0f, 0.0f));
     //    node_->SetScale(0.0024f);
 //        node_->SetScale(0.001f);
-        node_->SetScale(0.0001f);
+//        node_->SetScale(0.0001f);
+        node_->SetScale(0.01f);
 
 
         if (currState_.jump)
@@ -462,7 +465,7 @@ PlayerState Character2D::HandleController(float timeStep)
                 currState_.moveDir = currState_.moveDir - Vector3::FORWARD * 0.3f;
             } else {
                 // Update movement direction
-                currState_.moveDir = currState_.moveDir - Vector3::FORWARD;
+//                currState_.moveDir = currState_.moveDir - Vector3::FORWARD;
             }
         }
     }

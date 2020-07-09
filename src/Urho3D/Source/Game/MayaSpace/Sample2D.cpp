@@ -188,27 +188,6 @@ CollisionChain2D* Sample2D::CreatePolyLineShape(Node* node, TileMapObject2D* obj
 
 Node* Sample2D::CreateCharacter(TileMapInfo2D info, float friction, Vector3 position, float scale, int type)
 {
-    /*
-    auto* cache = GetSubsystem<ResourceCache>();
-    Node* spriteNode = scene_->CreateChild("Imp");
-    spriteNode->SetPosition(position);
-    spriteNode->SetScale(scale);
-    auto* animatedSprite = spriteNode->CreateComponent<AnimatedSprite2D>();
-    // Get scml file and Play "idle" anim
-    auto* animationSet = cache->GetResource<AnimationSet2D>("Urho2D/imp/imp.scml");
-    animatedSprite->SetAnimationSet(animationSet);
-    animatedSprite->SetAnimation("idle");
-    animatedSprite->SetLayer(3); // Put character over tile map (which is on layer 0) and over Orcs (which are on layer 2)
-    auto* impBody = spriteNode->CreateComponent<RigidBody2D>();
-    impBody->SetBodyType(BT_DYNAMIC);
-    impBody->SetAllowSleep(false);
-    auto* shape = spriteNode->CreateComponent<CollisionCircle2D>();
-    shape->SetRadius(1.1f); // Set shape size
-    shape->SetFriction(friction); // Set friction
-    shape->SetRestitution(0.1f); // Bounce
-
-    return spriteNode;*/
-
     auto* cache = GetSubsystem<ResourceCache>();
     Node* modelNode = scene_->CreateChild("CharNode");
 
@@ -218,28 +197,16 @@ Node* Sample2D::CreateCharacter(TileMapInfo2D info, float friction, Vector3 posi
     // Create animated models
     const float MODEL_MOVE_SPEED = 2.0f;
     const float MODEL_ROTATE_SPEED = 100.0f;
-    const BoundingBox bounds(Vector3(-20.0f, 0.0f, -20.0f), Vector3(20.0f, 0.0f, 20.0f));
-
-//        modelObject->SetModel(cache->GetResource<Model>("Models/Mutant/Mutant.mdl"));
-//        modelObject->SetMaterial(cache->GetResource<Material>("Models/Mutant/Materials/mutant_M.xml"));
-
-
-// Node* objectNode = scene_->CreateChild("Jack");
-//    objectNode->SetPosition(Vector3(0.0f, 1.0f, 0.0f));
-
 
 
     // rotate model by 180 ****************************
     Node* adjustNode = modelNode->CreateChild("AdjNode");
-    Quaternion qAdjRot(180, Vector3(0,1,0) ); // rotate it by 180 
+    Quaternion qAdjRot(180, Vector3(0,1,0) ); // rotate it by 180
     adjustNode->SetRotation( qAdjRot );
 
     // Create the rendering component + animation controller
     auto* modelObject = adjustNode->CreateComponent<AnimatedModel>();
     //auto* modelObject = modelNode->CreateComponent<AnimatedModel>();
-
-//        modelObject->SetModel(cache->GetResource<Model>("Models/lario/Sphere.006.mdl"));
-//        modelObject->ApplyMaterialList(GetSubsystem<FileSystem>()->GetProgramDir() + "Data/Models/bear2/Cube.003.txt");
 
         switch (type) {
             case 1:
@@ -270,74 +237,6 @@ Node* Sample2D::CreateCharacter(TileMapInfo2D info, float friction, Vector3 posi
         modelObject->SetCastShadows(true);
 
 
-
-
-
-        // Create an AnimationState for a walk animation. Its time position will need to be manually updated to advance the
-        // animation, The alternative wouldbe to use an AnimationController component which updates the animation automatically,
-        // but we need to update the model's position manually in any case
-    /*
-       // Set animation state
-    auto* walkAnimation = cache->GetResource<Animation>("Models/Mutant/Mutant_Walk.ani");
-    auto* idleAnimation = cache->GetResource<Animation>("Models/Mutant/Mutant_Idle0.ani");
-    auto* jumpAnimation = cache->GetResource<Animation>("Models/Mutant/Mutant_Jump.ani");
-    auto* kickAnimation = cache->GetResource<Animation>("Models/Mutant/Mutant_Kick.ani");
-*/
-/*
-        AnimationState* walkState = modelObject->AddAnimationState(walkAnimation);
-        // The state would fail to create (return null) if the animation was not found
-        if (walkState)
-        {
-            // Enable full blending weight and looping
-            walkState->SetWeight(1.0f);
-            walkState->SetLooped(true);
-            walkState->SetTime(0);
-        }
-
-        AnimationState* idleState = modelObject->AddAnimationState(idleAnimation);
-        // The state would fail to create (return null) if the animation was not found
-        if (idleState)
-        {
-            // Enable full blending weight and looping
-            idleState->SetWeight(1.0f);
-            idleState->SetLooped(true);
-            idleState->SetTime(0);
-        }
-
-        AnimationState* jumpState = modelObject->AddAnimationState(jumpAnimation);
-        // The state would fail to create (return null) if the animation was not found
-        if (jumpState)
-        {
-            // Enable full blending weight and looping
-            jumpState->SetWeight(1.0f);
-            jumpState->SetLooped(false);
-            jumpState->SetTime(0);
-        }
-
-        AnimationState* kickState = modelObject->AddAnimationState(kickAnimation);
-        // The state would fail to create (return null) if the animation was not found
-        if (kickState)
-        {
-            // Enable full blending weight and looping
-            kickState->SetWeight(1.0f);
-            kickState->SetLooped(false);
-            kickState->SetTime(0);
-        }
-
-        // Create our custom Mover component that will move & animate the model during each frame's update
-        auto* mover = modelNode->CreateComponent<Mover>();
-        mover->SetParameters(MODEL_MOVE_SPEED, MODEL_ROTATE_SPEED, bounds);
-   // }
-*/
-/*
-    auto* animatedSprite = spriteNode->CreateComponent<AnimatedSprite2D>();
-    // Get scml file and Play "idle" anim
-    auto* animationSet = cache->GetResource<AnimationSet2D>("Urho2D/imp/imp.scml");
-    animatedSprite->SetAnimationSet(animationSet);
-    animatedSprite->SetAnimation("idle");
-    animatedSprite->SetLayer(3); // Put character over tile map (which is on layer 0) and over Orcs (which are on layer 2) */
-
-
     auto* impBody = modelNode->CreateComponent<RigidBody2D>();
     //impBody->SetBodyType(BT_STATIC);
 //    impBody->SetMassCenter()
@@ -348,6 +247,8 @@ Node* Sample2D::CreateCharacter(TileMapInfo2D info, float friction, Vector3 posi
 
 
     auto* shape = modelNode->CreateComponent<CollisionCircle2D>();
+    /*
+    shape = modelNode->CreateComponent<CollisionCircle2D>();
     shape->GetNode()->SetName("hit a");
     //shape->SetCenter(Vector2(position.x_, position.y_)); 
     shape->SetRadius(0.04f); // Set shape size
@@ -357,20 +258,20 @@ Node* Sample2D::CreateCharacter(TileMapInfo2D info, float friction, Vector3 posi
 
     shape = modelNode->CreateComponent<CollisionCircle2D>();
     shape->GetNode()->SetName("hit b");
-    shape->SetCenter(shape->GetCenter()+Vector2(0,+1.2f)); 
-    shape->SetRadius(0.12f); // Set shape size
+    shape->SetCenter(shape->GetCenter()+Vector2(0,-1.2f));
+    shape->SetRadius(4.12f); // Set shape size
     shape->SetFriction(friction); // Set friction
     shape->SetRestitution(0.1f); // Bounce
     URHO3D_LOGINFOF("CREATE HIT id=%d, name=%s", shape->GetNode()->GetID(), shape->GetNode()->GetName());
-
+*/
         switch (type) {
             case 1:
             // player
             // Main bounding circle
             shape = modelNode->CreateComponent<CollisionCircle2D>();
             shape->GetNode()->SetName("hit c");
-            shape->SetCenter(shape->GetCenter()+Vector2(0,+1.2f)); 
-            shape->SetRadius(1.2f); // Set shape size
+            shape->SetCenter(shape->GetCenter()+Vector2(30.0f,0.0f));
+            shape->SetRadius(8.0f); // Set shape size
             shape->SetFriction(friction); // Set friction
             shape->SetRestitution(0.1f); // Bounce
             URHO3D_LOGINFOF("CREATE HIT id=%d, name=%s", shape->GetNode()->GetID(), shape->GetNode()->GetName());
@@ -403,15 +304,23 @@ Node* Sample2D::CreateCharacter(TileMapInfo2D info, float friction, Vector3 posi
             
                 URHO3D_LOGINFOF("bone=%d", bone.name_);
 //            center = Vector2(bone.boundingBox_.max_.x_-bone.boundingBox_.min_.x_, bone.boundingBox_.max_.y_-bone.boundingBox_.min_.y_);
+/*
              center = Vector2(bone.boundingBox_.max_.x_-bone.boundingBox_.min_.x_, bone.boundingBox_.max_.y_-bone.boundingBox_.min_.y_);
             max = Vector2(std::max(max.x_, bone.boundingBox_.max_.x_), std::max(max.y_, bone.boundingBox_.max_.y_));
             min = Vector2(std::min(min.x_, bone.boundingBox_.min_.x_), std::min(min.y_, bone.boundingBox_.min_.y_));
+*/
+
+            center = Vector2(bone.boundingBox_.max_.x_-bone.boundingBox_.min_.x_, bone.boundingBox_.max_.z_-bone.boundingBox_.min_.z_);
+            max = Vector2(std::max(max.x_, bone.boundingBox_.max_.x_), std::max(max.y_, bone.boundingBox_.max_.z_));
+            min = Vector2(std::min(min.x_, bone.boundingBox_.min_.x_), std::min(min.y_, bone.boundingBox_.min_.z_));
 
                 URHO3D_LOGINFOF("center=(%f, %f)", center.x_, center.y_);
 
         //        bone.boundingBox_.max_.x_ - , bone.boundingBox_.max_.y_ - bone.boundingBox_.min_.y_)
         }
 
+
+/* PLAYER HIT TESTS
                 shape = modelNode->CreateComponent<CollisionCircle2D>();
                 shape->GetNode()->SetName("hit-right");
                 shape->SetCenter(Vector2((max.x_),center.y_+0.4f));
@@ -427,6 +336,10 @@ Node* Sample2D::CreateCharacter(TileMapInfo2D info, float friction, Vector3 posi
                 shape->SetFriction(friction); // Set friction
                 shape->SetRestitution(0.1f); // Bounce
                 URHO3D_LOGINFOF("CREATE HIT id=%d, name=%s", shape->GetNode()->GetID(), shape->GetNode()->GetName());
+
+                */
+
+
 
 //        boneNode1->SetPosition(skeleton.GetRootBone()-->initialPosition_);
 /*

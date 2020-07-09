@@ -299,7 +299,8 @@ void MayaSpace::CreateScene()
 
 
     // Create player character
-    Node* modelNode = sample2D_->CreateCharacter(info, 0.0f, Vector3(2.5f, 16.0f, 0.0f), 0.1f, 1);
+//    Node* modelNode = sample2D_->CreateCharacter(info, 0.0f, Vector3(2.5f, 16.0f, 0.0f), 1.0f, 1);
+    Node* modelNode = sample2D_->CreateCharacter(info, 0.0f, Vector3(2.5f, 2.0f, 0.0f), 1.0f, 1);
     player_ = modelNode->CreateComponent<Character2D>(); // Create a logic component to handle character behavior
     player_->GetNode()->SetName("Bear-P1");
     player_->isAI_ = false;
@@ -890,7 +891,7 @@ void MayaSpace::HandleUpdate(StringHash eventType, VariantMap& eventData)
         // Limit pitch
        // player_->controls_.pitch_ = Clamp(player_->controls_.pitch_, -80.0f, 80.0f);
         // Set rotation already here so that it's updated every rendering frame instead of every physics frame
-        player_->GetNode()->SetRotation(Quaternion(player_->controls_.yaw_, Vector3::UP));
+     //   player_->GetNode()->SetRotation(Quaternion(player_->controls_.yaw_, Vector3::UP));
       //  player_->GetNode()->SetRotation(Quaternion(0.0f, -180.0f-player_->heading_, 0.0f));
         player_->GetNode()->SetRotation(Quaternion(-90.0f, player_->heading_+180.0f, 0.0f));
 
