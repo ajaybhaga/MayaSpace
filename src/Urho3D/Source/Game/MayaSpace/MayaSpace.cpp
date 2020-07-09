@@ -893,7 +893,8 @@ void MayaSpace::HandleUpdate(StringHash eventType, VariantMap& eventData)
         // Set rotation already here so that it's updated every rendering frame instead of every physics frame
      //   player_->GetNode()->SetRotation(Quaternion(player_->controls_.yaw_, Vector3::UP));
       //  player_->GetNode()->SetRotation(Quaternion(0.0f, -180.0f-player_->heading_, 0.0f));
-        player_->GetNode()->SetRotation(Quaternion(-90.0f, player_->heading_+180.0f, 0.0f));
+
+        player_->GetNode()->SetRotation(Quaternion(0.0f, player_->heading_, 0.0));
 
     }
 
