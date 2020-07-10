@@ -210,26 +210,26 @@ Node* Sample2D::CreateCharacter(TileMapInfo2D info, float friction, Vector3 posi
 
         switch (type) {
             case 1:
-            modelObject->SetModel(cache->GetResource<Model>("Models/sprite1/sprite1.mdl"));
-            modelObject->SetMaterial(cache->GetResource<Material>("Material;Models/sprite1/Materials/Material.011.xml;Models/sprite1/Materials/Material.012.xml;Models/sprite1/Materials/Material.019.xml"));
+            modelObject->SetModel(cache->GetResource<Model>("Models/spritePlayerA/sprite1.mdl"));
+            modelObject->SetMaterial(cache->GetResource<Material>("Material;Models/spritePlayerA/Materials/Material.011.xml;Models/spritePlayerA/Materials/Material.012.xml;Models/spritePlayerA/Materials/Material.019.xml"));
 
             break;
             case 2:
-            modelObject->SetModel(cache->GetResource<Model>("Models/sprite1/sprite1.mdl"));
+            modelObject->SetModel(cache->GetResource<Model>("Models/spritePlayerA/sprite1.mdl"));
             //modelObject->SetMaterial(cache->GetResource<Material>("Models/bear2/Materials/Material.xml"));
-            modelObject->SetMaterial(cache->GetResource<Material>("Material;Models/sprite1/Materials/Material.011.xml;Models/sprite1/Materials/Material.012.xml;Models/sprite1/Materials/Material.019.xml"));
+            modelObject->SetMaterial(cache->GetResource<Material>("Material;Models/spritePlayerA/Materials/Material.011.xml;Models/spritePlayerA/Materials/Material.012.xml;Models/spritePlayerA/Materials/Material.019.xml"));
 
             break;
             case 3:
-            modelObject->SetModel(cache->GetResource<Model>("Models/sprite1/sprite1.mdl"));
+            modelObject->SetModel(cache->GetResource<Model>("Models/spritePlayerA/sprite1.mdl"));
             //modelObject->SetMaterial(cache->GetResource<Material>("Models/bear3/Materials/Material.xml"));
-            modelObject->SetMaterial(cache->GetResource<Material>("Material;Models/sprite1/Materials/Material.011.xml;Models/sprite1/Materials/Material.012.xml;Models/sprite1/Materials/Material.019.xml"));
+            modelObject->SetMaterial(cache->GetResource<Material>("Material;Models/spritePlayerA/Materials/Material.011.xml;Models/spritePlayerA/Materials/Material.012.xml;Models/spritePlayerA/Materials/Material.019.xml"));
 
             break;
             case 4:
-            modelObject->SetModel(cache->GetResource<Model>("Models/sprite1/sprite1.mdl"));
+            modelObject->SetModel(cache->GetResource<Model>("Models/spritePlayerA/sprite1.mdl"));
             //modelObject->SetMaterial(cache->GetResource<Material>("Models/bear4/Materials/Material.xml"));
-            modelObject->SetMaterial(cache->GetResource<Material>("Material;Models/sprite1/Materials/Material.011.xml;Models/sprite1/Materials/Material.012.xml;Models/sprite1/Materials/Material.019.xml"));
+            modelObject->SetMaterial(cache->GetResource<Material>("Material;Models/spritePlayerA/Materials/Material.011.xml;Models/spritePlayerA/Materials/Material.012.xml;Models/spritePlayerA/Materials/Material.019.xml"));
             break;
         }
 
@@ -284,9 +284,9 @@ Node* Sample2D::CreateCharacter(TileMapInfo2D info, float friction, Vector3 posi
             shape = modelNode->CreateComponent<CollisionCircle2D>();
             shape->GetNode()->SetName("hit c");
 //            shape->SetCenter(shape->GetCenter()+Vector2(0,-0.8f)); 
-            shape->SetCenter(shape->GetCenter()+Vector2(0,-0.2f)); 
+            shape->SetCenter(shape->GetCenter()+Vector2(0,15.0f));
 
-            shape->SetRadius(1.8); // Set shape size
+            shape->SetRadius(14.0); // Set shape size
             shape->SetFriction(friction); // Set friction
             shape->SetRestitution(0.1f); // Bounce
             URHO3D_LOGINFOF("CREATE HIT id=%d, name=%s", shape->GetNode()->GetID(), shape->GetNode()->GetName());

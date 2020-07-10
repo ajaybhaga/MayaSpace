@@ -100,7 +100,7 @@ void Character2D::Update(float timeStep)
     auto* animatedModel = GetComponent<AnimatedModel>();
 
     // Collision detection (AABB query)
-    Vector2 characterHalfSize = Vector2(0.16f, 0.16f);
+    Vector2 characterHalfSize = Vector2(0.05f, 0.05f);
     auto* physicsWorld = GetScene()->GetComponent<PhysicsWorld2D>();
     PODVector<RigidBody2D*> collidingBodies;
     physicsWorld->GetRigidBodies(collidingBodies, Rect(node_->GetWorldPosition2D() - characterHalfSize - Vector2(0.0f, 0.1f), node_->GetWorldPosition2D() + characterHalfSize));
@@ -152,18 +152,22 @@ void Character2D::Update(float timeStep)
     String jumpAnimStr = "";
     String attackAnimStr = "";
 
+    //sprite1_0008_Walking0010017_WushuKicks001.ani
+    //sprite1_0008_Walking0010008_Walking001.ani
+    //sprite1_0008_Walking0010018_DanceTurns001.ani
+
     switch (type_) {
         case 1:
-            walkAnimStr = "Models/sprite1/sprite1_07_05.ani";
-            idleAnimStr = "Models/sprite1/sprite1_07_05.ani";
-            jumpAnimStr = "Models/sprite1/sprite1_07_05.ani";
-            attackAnimStr = "Models/sprite1/sprite1_07_05.ani";
+            walkAnimStr = "Models/spritePlayerA/sprite1_0008_Walking0010008_Walking001.ani";
+            idleAnimStr = "Models/spritePlayerA/sprite1_0008_Walking0010008_Walking001.ani";
+            jumpAnimStr = "Models/spritePlayerA/sprite1_0008_Walking0010018_DanceTurns001.ani";
+            attackAnimStr = "Models/spritePlayerA/sprite1_0008_Walking0010017_WushuKicks001.ani";
         break;
         case 2:
-            walkAnimStr = "Models/sprite1/sprite1_07_05.ani";
-            idleAnimStr = "Models/sprite1/sprite1_07_05.ani";
-            jumpAnimStr = "Models/sprite1/sprite1_07_05.ani";
-            attackAnimStr = "Models/sprite1/sprite1_07_05.ani";
+            walkAnimStr = "Models/spritePlayerA/sprite1_0008_Walking0010008_Walking001.ani";
+            idleAnimStr = "Models/spritePlayerA/sprite1_0008_Walking0010008_Walking001.ani";
+            jumpAnimStr = "Models/spritePlayerA/sprite1_0008_Walking0010018_DanceTurns001.ani";
+            attackAnimStr = "Models/spritePlayerA/sprite1_0008_Walking0010017_WushuKicks001.ani";
         break;
 
     }
@@ -173,17 +177,17 @@ void Character2D::Update(float timeStep)
     auto* jumpAnimation = cache->GetResource<Animation>(jumpAnimStr);
     auto* kickAnimation = cache->GetResource<Animation>(attackAnimStr);
 
-    walkState_ = model->AddAnimationState(walkAnimation);
-//    idleState_ = model->AddAnimationState(idleAnimation);
-//    jumpState_ = model->AddAnimationState(jumpAnimation);
-//    kickState_ = model->AddAnimationState(kickAnimation);
 
 
     if (currState_.walk) {
 
+        model->RemoveAllAnimationStates();
+        walkState_ = model->AddAnimationState(walkAnimation);
+
         // The state would fail to create (return null) if the animation was not found
         if (walkState_)
         {
+
             // Enable full blending weight and looping
             walkState_->SetWeight(1.0f);
             walkState_->AddTime(timeStep);
@@ -203,6 +207,7 @@ void Character2D::Update(float timeStep)
     }
 /*
     if (idle) {
+        idleState_ = model->AddAnimationState(idleAnimation);
 
         // The state would fail to create (return null) if the animation was not found
         if (idleState_)
@@ -222,9 +227,12 @@ void Character2D::Update(float timeStep)
             idleState_->SetTime(0.0f);
         }
     }
-
+*/
 
     if (currState_.jump) {
+
+        model->RemoveAllAnimationStates();
+        jumpState_ = model->AddAnimationState(jumpAnimation);
 
         // The state would fail to create (return null) if the animation was not found
         if (jumpState_)
@@ -244,8 +252,9 @@ void Character2D::Update(float timeStep)
         }
 
     }
-
+/*
     if (currState_.kick) {
+        kickState_ = model->AddAnimationState(kickAnimation);
 
         // The state would fail to create (return null) if the animation was not found
         if (kickState_)
@@ -289,7 +298,7 @@ void Character2D::Update(float timeStep)
     //    node_->SetScale(0.0024f);
 //        node_->SetScale(0.001f);
 //        node_->SetScale(0.0001f);
-        node_->SetScale(0.01f);
+         node_->SetScale(0.01f);
 
 
         if (currState_.jump)

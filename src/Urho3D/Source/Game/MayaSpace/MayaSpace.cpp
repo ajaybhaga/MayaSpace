@@ -134,7 +134,7 @@ void MayaSpace::Start()
     UI* ui = GetSubsystem<UI>();
 
     // Create the UI content
-    sample2D_->CreateUIContent("MayaSpace v0.1", player_->remainingLifes_, player_->remainingCoins_);
+    sample2D_->CreateUIContent("MayaSpace Game Engine v0.1", player_->remainingLifes_, player_->remainingCoins_);
 //    auto* ui = GetSubsystem<UI>();
     Button* playButton = static_cast<Button*>(ui->GetRoot()->GetChild("PlayButton", true));
     SubscribeToEvent(playButton, E_RELEASED, URHO3D_HANDLER(MayaSpace, HandlePlayButton));
@@ -203,7 +203,7 @@ void MayaSpace::CreateScene()
     powerbarP1Sprite_->SetSize(textureWidth, textureHeight);
     powerbarP1Sprite_->SetHotSpot(textureWidth, textureHeight);
     powerbarP1Sprite_->SetAlignment(HA_LEFT, VA_TOP);
-    powerbarP1Sprite_->SetPosition(Vector2(300.0f,80.0f));
+    powerbarP1Sprite_->SetPosition(Vector2(300.0f,50.0f));
     powerbarP1Sprite_->SetOpacity(1.0f);
     // Set a low priority so that other UI elements can be drawn on top
     powerbarP1Sprite_->SetPriority(-100);
@@ -212,7 +212,7 @@ void MayaSpace::CreateScene()
     powerbarBkgP1Sprite_->SetSize(textureWidth, textureHeight);
     powerbarBkgP1Sprite_->SetHotSpot(textureWidth, textureHeight);
     powerbarBkgP1Sprite_->SetAlignment(HA_LEFT, VA_TOP);
-    powerbarBkgP1Sprite_->SetPosition(Vector2(300.0f,80.0f));
+    powerbarBkgP1Sprite_->SetPosition(Vector2(300.0f,50.0f));
     powerbarBkgP1Sprite_->SetOpacity(0.2f);
     // Set a low priority so that other UI elements can be drawn on top
     powerbarBkgP1Sprite_->SetPriority(-100);
@@ -222,7 +222,7 @@ void MayaSpace::CreateScene()
 
     // Create the UI for displaying the remaining lifes
     auto* lifeUI = ui->GetRoot()->CreateChild<BorderImage>("Life2");
-    lifeUI->SetTexture(cache->GetResource<Texture2D>("Textures/bear2d.png"));
+    lifeUI->SetTexture(cache->GetResource<Texture2D>("Textures/jiva2d.png"));
     lifeUI->SetSize(60, 60);
     lifeUI->SetAlignment(HA_LEFT, VA_TOP);
     lifeUI->SetPosition(-5, 15);
@@ -230,10 +230,10 @@ void MayaSpace::CreateScene()
 
     auto* lifeText = lifeUI->CreateChild<Text>("LifeText2");
     lifeText->SetAlignment(HA_CENTER, VA_CENTER);
-    lifeText->SetPosition(90.0f, -20.0);
-    lifeText->SetFont(font, 24);
+    lifeText->SetPosition(2.0f, -30.0);
+    lifeText->SetFont(font, 12);
     lifeText->SetTextEffect(TE_SHADOW);
-    lifeText->SetText(String("Bear"));
+    lifeText->SetText(String("Jiva"));
     lifeText->SetVisible(true);
 
 /*
@@ -913,7 +913,8 @@ void MayaSpace::HandleUpdate(StringHash eventType, VariantMap& eventData)
             // Set rotation already here so that it's updated every rendering frame instead of every physics frame
             ai_[i]->GetNode()->SetRotation(Quaternion(ai_[i]->controls_.yaw_, Vector3::UP));
             //ai_[i]->GetNode()->SetRotation(Quaternion(0.0f, -180.0f-ai_[i]->heading_, 0.0f));
-            ai_[i]->GetNode()->SetRotation(Quaternion(-90.0f, ai_[i]->heading_+180.0f, 0.0f));
+            //ai_[i]->GetNode()->SetRotation(Quaternion(-90.0f, ai_[i]->heading_+180.0f, 0.0f));
+            ai_[i]->GetNode()->SetRotation(Quaternion(0.0f, ai_[i]->heading_, 0.0));
 
         }
 
