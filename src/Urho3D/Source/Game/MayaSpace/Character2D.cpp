@@ -159,12 +159,16 @@ void Character2D::Update(float timeStep)
     switch (type_) {
         case 1:
             walkAnimStr = "Models/spritePlayerA/sprite1_0008_Walking0010008_Walking001.ani";
+
+          //  walkAnimStr = "Models/spritePlayerA/sprite1_0008_Walking0010008_Walking001.ani";
             idleAnimStr = "Models/spritePlayerA/sprite1_0008_Walking0010008_Walking001.ani";
             jumpAnimStr = "Models/spritePlayerA/sprite1_0008_Walking0010018_DanceTurns001.ani";
             attackAnimStr = "Models/spritePlayerA/sprite1_0008_Walking0010017_WushuKicks001.ani";
         break;
         case 2:
             walkAnimStr = "Models/spritePlayerA/sprite1_0008_Walking0010008_Walking001.ani";
+
+            // walkAnimStr = "Models/spritePlayerA/sprite1_0008_Walking0010008_Walking001.ani";
             idleAnimStr = "Models/spritePlayerA/sprite1_0008_Walking0010008_Walking001.ani";
             jumpAnimStr = "Models/spritePlayerA/sprite1_0008_Walking0010018_DanceTurns001.ani";
             attackAnimStr = "Models/spritePlayerA/sprite1_0008_Walking0010017_WushuKicks001.ani";
@@ -192,7 +196,7 @@ void Character2D::Update(float timeStep)
             walkState_->SetWeight(1.0f);
             walkState_->AddTime(timeStep);
             walkState_->SetLooped(true);
-//            walkState_->SetTime(0.0f);
+            //walkState_->SetTime(0.0f);
 
         }
     } else {
