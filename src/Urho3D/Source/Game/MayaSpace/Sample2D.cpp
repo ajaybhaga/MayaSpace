@@ -208,28 +208,29 @@ Node* Sample2D::CreateCharacter(TileMapInfo2D info, float friction, Vector3 posi
     auto* modelObject = adjustNode->CreateComponent<AnimatedModel>();
     //auto* modelObject = modelNode->CreateComponent<AnimatedModel>();
 
+    ///code/dev/MayaSpace/src/Urho3D/bin/Data/Models/spriteBase/Models/BodyFrame.002.mdl
         switch (type) {
             case 1:
-            modelObject->SetModel(cache->GetResource<Model>("Models/spritePlayerA/sprite1.mdl"));
-            modelObject->SetMaterial(cache->GetResource<Material>("Material;Models/spritePlayerA/Materials/Material.011.xml;Models/spritePlayerA/Materials/Material.012.xml;Models/spritePlayerA/Materials/Material.019.xml"));
+            modelObject->SetModel(cache->GetResource<Model>("Models/spriteBase/Models/spriteBase01.mdl"));
+            modelObject->SetMaterial(cache->GetResource<Material>("Material;Models/spriteBase/Materials/Material.011.xml;Models/spriteBase/Materials/Material.012.xml;Models/spriteBase/Materials/Material.019.xml"));
 
             break;
             case 2:
-            modelObject->SetModel(cache->GetResource<Model>("Models/spritePlayerA/sprite1.mdl"));
+            modelObject->SetModel(cache->GetResource<Model>("Models/spriteBase/Models/spriteBase01.mdl"));
             //modelObject->SetMaterial(cache->GetResource<Material>("Models/bear2/Materials/Material.xml"));
-            modelObject->SetMaterial(cache->GetResource<Material>("Material;Models/spritePlayerA/Materials/Material.011.xml;Models/spritePlayerA/Materials/Material.012.xml;Models/spritePlayerA/Materials/Material.019.xml"));
+            modelObject->SetMaterial(cache->GetResource<Material>("Material;Models/spriteBase/Materials/Material.011.xml;Models/spriteBase/Materials/Material.012.xml;Models/spriteBase/Materials/Material.019.xml"));
 
             break;
             case 3:
-            modelObject->SetModel(cache->GetResource<Model>("Models/spritePlayerA/sprite1.mdl"));
+            modelObject->SetModel(cache->GetResource<Model>("Models/spriteBase/Models/spriteBase01.mdl"));
             //modelObject->SetMaterial(cache->GetResource<Material>("Models/bear3/Materials/Material.xml"));
-            modelObject->SetMaterial(cache->GetResource<Material>("Material;Models/spritePlayerA/Materials/Material.011.xml;Models/spritePlayerA/Materials/Material.012.xml;Models/spritePlayerA/Materials/Material.019.xml"));
+            modelObject->SetMaterial(cache->GetResource<Material>("Material;Models/spriteBase/Materials/Material.011.xml;Models/spriteBase/Materials/Material.012.xml;Models/spriteBase/Materials/Material.019.xml"));
 
             break;
             case 4:
-            modelObject->SetModel(cache->GetResource<Model>("Models/spritePlayerA/sprite1.mdl"));
+            modelObject->SetModel(cache->GetResource<Model>("Models/spriteBase/Models/spriteBase01.mdl"));
             //modelObject->SetMaterial(cache->GetResource<Material>("Models/bear4/Materials/Material.xml"));
-            modelObject->SetMaterial(cache->GetResource<Material>("Material;Models/spritePlayerA/Materials/Material.011.xml;Models/spritePlayerA/Materials/Material.012.xml;Models/spritePlayerA/Materials/Material.019.xml"));
+            modelObject->SetMaterial(cache->GetResource<Material>("Material;Models/spriteBase/Materials/Material.011.xml;Models/spriteBase/Materials/Material.012.xml;Models/spriteBase/Materials/Material.019.xml"));
             break;
         }
 

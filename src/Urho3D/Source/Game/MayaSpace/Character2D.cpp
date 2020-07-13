@@ -158,20 +158,26 @@ void Character2D::Update(float timeStep)
 
     switch (type_) {
         case 1:
-            walkAnimStr = "Models/spritePlayerA/sprite1_0008_Walking0010008_Walking001.ani";
 
+            ///code/dev/MayaSpace/src/Urho3D/bin/Data/Models/spriteBase/Models/0008_Walking001_0008_Walking001_0018_DanceTurns001_0008_Walking.ani
+            walkAnimStr = "Models/spriteBase/Models/Movements.ani";
+
+            idleAnimStr = jumpAnimStr = attackAnimStr = walkAnimStr;
           //  walkAnimStr = "Models/spritePlayerA/sprite1_0008_Walking0010008_Walking001.ani";
-            idleAnimStr = "Models/spritePlayerA/sprite1_0008_Walking0010008_Walking001.ani";
-            jumpAnimStr = "Models/spritePlayerA/sprite1_0008_Walking0010018_DanceTurns001.ani";
-            attackAnimStr = "Models/spritePlayerA/sprite1_0008_Walking0010017_WushuKicks001.ani";
+//            idleAnimStr = "Models/spritePlayerA/sprite1_0008_Walking0010008_Walking001.ani";
+ //           jumpAnimStr = "Models/spritePlayerA/sprite1_0008_Walking0010018_DanceTurns001.ani";
+  //          attackAnimStr = "Models/spritePlayerA/sprite1_0008_Walking0010017_WushuKicks001.ani";
         break;
         case 2:
-            walkAnimStr = "Models/spritePlayerA/sprite1_0008_Walking0010008_Walking001.ani";
+//            walkAnimStr = "Models/spriteBase/Models/0008_Walking001_0008_Walking001_0018_DanceTurns001_0008_Walking.ani";
+            walkAnimStr = "Models/spriteBase/Models/Movements.ani";
+
+            idleAnimStr = jumpAnimStr = attackAnimStr = walkAnimStr;
 
             // walkAnimStr = "Models/spritePlayerA/sprite1_0008_Walking0010008_Walking001.ani";
-            idleAnimStr = "Models/spritePlayerA/sprite1_0008_Walking0010008_Walking001.ani";
-            jumpAnimStr = "Models/spritePlayerA/sprite1_0008_Walking0010018_DanceTurns001.ani";
-            attackAnimStr = "Models/spritePlayerA/sprite1_0008_Walking0010017_WushuKicks001.ani";
+//            idleAnimStr = "Models/spritePlayerA/sprite1_0008_Walking0010008_Walking001.ani";
+//            jumpAnimStr = "Models/spritePlayerA/sprite1_0008_Walking0010018_DanceTurns001.ani";
+ //           attackAnimStr = "Models/spritePlayerA/sprite1_0008_Walking0010017_WushuKicks001.ani";
         break;
 
     }
@@ -302,7 +308,7 @@ void Character2D::Update(float timeStep)
     //    node_->SetScale(0.0024f);
 //        node_->SetScale(0.001f);
 //        node_->SetScale(0.0001f);
-         node_->SetScale(0.01f);
+    //     node_->SetScale(0.4f);
 
 
         if (currState_.jump)

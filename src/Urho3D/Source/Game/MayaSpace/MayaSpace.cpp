@@ -107,7 +107,13 @@ MayaSpace::MayaSpace(Context* context) :
 void MayaSpace::Setup()
 {
     Game::Setup();
-    engineParameters_[EP_SOUND] = true;
+
+    // Enable sound
+    //engineParameters_[EP_SOUND] = true;
+
+    // Disable sound
+    engineParameters_[EP_SOUND] = false;
+
 }
 
 void MayaSpace::Start()
@@ -896,6 +902,15 @@ void MayaSpace::HandleUpdate(StringHash eventType, VariantMap& eventData)
 
         player_->GetNode()->SetRotation(Quaternion(0.0f, player_->heading_, 0.0));
 
+
+        player_->GetNode()->SetScale(0.5f);
+        auto* model_ = player_->GetNode()->GetComponent<AnimatedModel>(true);
+
+        Skeleton& skeleton = model_->GetSkeleton();
+        Bone* rootBone = skeleton.GetRootBone();
+        Bone* startBone = rootBone;
+
+
     }
 
     // Clamp player life
@@ -976,6 +991,25 @@ void MayaSpace::HandlePostUpdate(StringHash eventType, VariantMap& eventData)
 
 void MayaSpace::HandlePostRenderUpdate(StringHash eventType, VariantMap& eventData)
 {
+    // Mesh and bones do not match -> bones are too big
+    // Scale down bone
+//    player_->
+    auto* model_ = player_->GetNode()->GetComponent<AnimatedModel>(true);
+            //node_->GetComponent<AnimatedModel>(true);
+
+
+  //  if (!model_ || !animation_)
+  //      return;
+
+    Skeleton& skeleton = model_->GetSkeleton();
+    Bone* rootBone = skeleton.GetRootBone();
+    Bone* startBone = rootBone;
+
+    if (!rootBone)
+        return;
+
+//    startBone->initialScale_(Vector3(0.01f, 0.01f, 0.01f));
+
     if (drawDebug_)
     {
         auto* physicsWorld = scene_->GetComponent<PhysicsWorld2D>();
@@ -984,6 +1018,10 @@ void MayaSpace::HandlePostRenderUpdate(StringHash eventType, VariantMap& eventDa
         Node* tileMapNode = scene_->GetChild("TileMap", true);
         auto* map = tileMapNode->GetComponent<TileMap3D>();
         map->DrawDebugGeometry(scene_->GetComponent<DebugRenderer>(), false);
+
+        // bones. Note that debug geometry has to be separately requested each frame. Disable depth test so that we can see the
+        // bones properly
+        GetSubsystem<Renderer>()->DrawDebugGeometry(false);
     }
 }
 

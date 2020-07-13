@@ -38,7 +38,7 @@ class Character2D;
 using namespace Urho3D;
 
 const float CAMERA_MIN_DIST = 1.5f;
-const float CAMERA_MAX_DIST = 6.0f;
+const float CAMERA_MAX_DIST = 50.0f;
 
 /// Convenient functions for Urho2D samples:
 ///    - Generate collision shapes from a tmx file objects
