@@ -200,13 +200,37 @@ void Game::CreateLogo()
     logoSprite_->SetPriority(-100);
 }
 
+#include <iostream>
+#include <fstream>
+#include <string>
+#include <ctime>
+
+std::string datetime()
+{
+    time_t rawtime;
+    struct tm * timeinfo;
+    char buffer[80];
+
+    time (&rawtime);
+    timeinfo = localtime(&rawtime);
+
+    strftime(buffer,80,"%d-%m-%Y %H:%M",timeinfo);
+    return std::string(buffer);
+}
+
+
 void Game::SetWindowTitleAndIcon()
 {
     ResourceCache* cache = GetSubsystem<ResourceCache>();
     Graphics* graphics = GetSubsystem<Graphics>();
     Image* icon = cache->GetResource<Image>("Textures/UrhoIcon.png");
     graphics->SetWindowIcon(icon);
-    graphics->SetWindowTitle("MayaSpace Game Engine v0.1 - by Ajay Bhaga");
+
+    std::string s;
+    s = s.append("MayaSpace Engine Build ").append(datetime()).append(" by Ajay Bhaga");
+
+    graphics->SetWindowTitle(s.c_str());
+    //sprintf("MayaSpace Engine Build " " by Ajay Bhaga", __DATE__));
 }
 
 void Game::CreateConsoleAndDebugHud()

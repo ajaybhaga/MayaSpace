@@ -187,22 +187,24 @@ void Character2D::Update(float timeStep)
     auto* jumpAnimation = cache->GetResource<Animation>(jumpAnimStr);
     auto* kickAnimation = cache->GetResource<Animation>(attackAnimStr);
 
+    // model->RemoveAllAnimationStates(); // -> this clears the timesteps also
+
+    // AddAnimationState includes an existence check
+    walkState_ = model->AddAnimationState(walkAnimation);
+    idleState_ = model->AddAnimationState(idleAnimation);
+    jumpState_ = model->AddAnimationState(jumpAnimation);
+    kickState_ = model->AddAnimationState(kickAnimation);
 
 
     if (currState_.walk) {
 
-        model->RemoveAllAnimationStates();
-        walkState_ = model->AddAnimationState(walkAnimation);
-
         // The state would fail to create (return null) if the animation was not found
         if (walkState_)
         {
-
             // Enable full blending weight and looping
             walkState_->SetWeight(1.0f);
             walkState_->AddTime(timeStep);
             walkState_->SetLooped(true);
-            //walkState_->SetTime(0.0f);
 
         }
     } else {
@@ -215,8 +217,11 @@ void Character2D::Update(float timeStep)
             walkState_->SetTime(0.0f);
         }
     }
-/*
+
+    /*
     if (idle) {
+
+        model->RemoveAllAnimationStates();
         idleState_ = model->AddAnimationState(idleAnimation);
 
         // The state would fail to create (return null) if the animation was not found
@@ -237,7 +242,7 @@ void Character2D::Update(float timeStep)
             idleState_->SetTime(0.0f);
         }
     }
-*/
+
 
     if (currState_.jump) {
 
@@ -262,8 +267,10 @@ void Character2D::Update(float timeStep)
         }
 
     }
-/*
+
     if (currState_.kick) {
+
+        model->RemoveAllAnimationStates();
         kickState_ = model->AddAnimationState(kickAnimation);
 
         // The state would fail to create (return null) if the animation was not found
@@ -275,7 +282,8 @@ void Character2D::Update(float timeStep)
         }
     } else {
 
-         AnimationState* kickState_ = model->AddAnimationState(kickAnimation);
+        model->RemoveAllAnimationStates();
+        AnimationState* kickState_ = model->AddAnimationState(kickAnimation);
         // The state would fail to create (return null) if the animation was not found
         if (kickState_)
         {
@@ -302,12 +310,9 @@ void Character2D::Update(float timeStep)
         Vector3 pos = node_->GetPosition();
 
       //  node_->SetPosition(Vector3(pos.x_, pos.y_, 0.0f));
-//        node_->
 
 //                node_->SetPosition(Vector3(-10.0f, 0.0f, 0.0f));
     //    node_->SetScale(0.0024f);
-//        node_->SetScale(0.001f);
-//        node_->SetScale(0.0001f);
     //     node_->SetScale(0.4f);
 
 
@@ -417,7 +422,7 @@ PlayerState Character2D::HandleController(float timeStep)
                 // Progress animation
                 auto *model = node_->GetComponent<AnimatedModel>(true);
                 if (model->GetNumAnimationStates()) {
-                    AnimationState *state = model->GetAnimationStates()[3];
+                    AnimationState *state = model->GetAnimationStates()[0];
                     state->AddTime(timeStep);
                 }
 
@@ -434,23 +439,21 @@ PlayerState Character2D::HandleController(float timeStep)
             }
 
             if (input->GetKeyDown('A') || input->GetKeyDown(KEY_LEFT) || controls_.IsDown(BUTTON_DPAD_LEFT)) {
-                auto *model = node_->GetComponent<AnimatedModel>(true);
-                if (model->GetNumAnimationStates()) {
-                    AnimationState *state = model->GetAnimationStates()[0];
-                    state->AddTime(timeStep);
-                }
+                walkState_->AddTime(timeStep);
 
                 forward_ = false;
                 currState_.walk = true;
             }
 
             if (input->GetKeyDown('D') || input->GetKeyDown(KEY_RIGHT) || controls_.IsDown(BUTTON_DPAD_RIGHT)) {
-                auto *model = node_->GetComponent<AnimatedModel>(true);
+/*                auto *model = node_->GetComponent<AnimatedModel>(true);
                 if (model->GetNumAnimationStates()) {
                     AnimationState *state = model->GetAnimationStates()[0];
                     state->AddTime(timeStep);
 
                 }
+*/
+                walkState_->AddTime(timeStep);
 
                 forward_ = true;
                 currState_.walk = true;

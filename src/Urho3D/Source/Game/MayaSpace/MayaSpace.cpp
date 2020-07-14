@@ -21,7 +21,7 @@
 //
 /*
 
-    Written by Ajay Bhaga 2019
+    Written by Ajay Bhaga 2019/2020
 
 */
 #include <sstream>
@@ -241,6 +241,38 @@ void MayaSpace::CreateScene()
     lifeText->SetTextEffect(TE_SHADOW);
     lifeText->SetText(String("Jiva"));
     lifeText->SetVisible(true);
+
+    // Debug text
+
+    debugText1_ = lifeUI->CreateChild<Text>("DebugText1");
+    debugText1_->SetAlignment(HA_CENTER, VA_CENTER);
+    debugText1_->SetPosition(500.0f, 60.0);
+    debugText1_->SetFont(font, 10);
+    debugText1_->SetTextEffect(TE_SHADOW);
+    debugText1_->SetVisible(true);
+    std::string debugData1;
+    debugData1.append("Test debug data 1");
+    debugText1_->SetText(debugData1.c_str());
+
+    debugText2_ = lifeUI->CreateChild<Text>("DebugText2");
+    debugText2_->SetAlignment(HA_CENTER, VA_CENTER);
+    debugText2_->SetPosition(500.0f, 80.0);
+    debugText2_->SetFont(font, 10);
+    debugText2_->SetTextEffect(TE_SHADOW);
+    debugText2_->SetVisible(true);
+    std::string debugData2;
+    debugData2.append("Test debug data 2");
+    debugText2_->SetText(debugData2.c_str());
+
+    debugText3_ = lifeUI->CreateChild<Text>("DebugText3");
+    debugText3_->SetAlignment(HA_CENTER, VA_CENTER);
+    debugText3_->SetPosition(500.0f, 100.0);
+    debugText3_->SetFont(font, 10);
+    debugText3_->SetTextEffect(TE_SHADOW);
+    debugText3_->SetVisible(true);
+    std::string debugData3;
+    debugData3.append("Test debug data 3");
+    debugText3_->SetText(debugData3.c_str());
 
 /*
     auto* lifeText = ui->GetRoot()->CreateChild<Text>("LifeText2");
@@ -976,7 +1008,37 @@ void MayaSpace::HandleUpdate(StringHash eventType, VariantMap& eventData)
         billboardObject->Commit();
     }
 
-                //URHO3D_LOGINFOF("player_ position x=%f, y=%f, z=%f", player_->GetNode()->GetPosition().x_, player_->GetNode()->GetPosition().y_, player_->GetNode()->GetPosition().z_);
+
+//    text->SetText("Test");
+//    te
+
+    char str[40];
+
+    Vector3 pos = player_->GetNode()->GetPosition();
+    sprintf (str, "%f,%f,%f", pos.x_, pos.y_, pos.z_);
+
+    std::string playerInfo;
+    playerInfo.clear();
+    playerInfo.append("Player position (x,y,z) -> ").append(str);
+    debugText1_->SetText(playerInfo.c_str());
+
+    Vector3 vel = player_->currState_.moveDir;
+    sprintf (str, "%f,%f,%f", vel.x_, vel.y_, vel.z_);
+
+    playerInfo.clear();
+    playerInfo.append("Player velocity (x,y,z) -> ").append(str);
+    debugText2_->SetText(playerInfo.c_str());
+
+
+
+//    Vector3 vel = player_
+    sprintf (str, "%d,%d,%d", player_->currState_.onGround, player_->currState_.jump, player_->currState_.kick);
+
+    playerInfo.clear();
+    playerInfo.append("Player state (onGround,jump,kick) -> ").append(str);
+    debugText3_->SetText(playerInfo.c_str());
+
+    //URHO3D_LOGINFOF("player_ position x=%f, y=%f, z=%f", player_->GetNode()->GetPosition().x_, player_->GetNode()->GetPosition().y_, player_->GetNode()->GetPosition().z_);
 
 }
 
