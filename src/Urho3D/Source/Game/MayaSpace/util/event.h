@@ -1,5 +1,5 @@
 //
-// MunvoAgentSim
+// AgentSim
 //
 // C++ Implementation by Ajay Bhaga
 //
@@ -12,6 +12,8 @@
 #include <vector>
 #include <memory>
 #include <iostream>
+
+namespace SimpleEvent {
 
 class EventHandler {
 public:
@@ -47,4 +49,5 @@ public:
     Event &operator-=(const EventHandler::Func &handler);
 };
 
+};
 #endif //EANN_SIMPLE_EVENT_H

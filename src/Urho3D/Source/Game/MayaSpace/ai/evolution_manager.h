@@ -10,7 +10,7 @@
 
 #include "genetic_algorithm.h"
 #include "agent_controller.h"
-
+#include "../util/event.h"
 
 // Singleton class for managing the evolutionary processes.
 class EvolutionManager {
@@ -41,7 +41,7 @@ public:
     int agentsAliveCount = 0;
 
     // Event for when all agents have died.
-    Event allAgentsDied;
+    SimpleEvent::Event allAgentsDied;
 
     const std::vector<Agent*> &getAgents() const;
     const std::vector<AgentController*> &getAgentControllers() const;

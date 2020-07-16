@@ -25,8 +25,6 @@
 #include <sys/types.h>
 #include <dirent.h>
 
-#include "util/random_d.h"
-#include "util/event.h"
 #include "ai/genotype.h"
 #include "ai/neural_layer.h"
 #include "ai/genetic_algorithm.h"

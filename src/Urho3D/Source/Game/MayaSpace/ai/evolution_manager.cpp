@@ -7,9 +7,6 @@
 
 #include "../shared_libs.h"
 
-// Create the random number generator
-static random_d rd{0.0, 1.0};
-
 bool directoryExists(const char *dname){
     DIR *di = opendir(dname); // open the directory
     if(di) return true; // can open=>return true
@@ -213,11 +210,8 @@ void EvolutionManager::onGATermination() {
 // Restart the algorithm after a specific wait time
 void EvolutionManager::restartAlgorithm(float wait) {
 
-    // ignore wait, use 2 seconds for now
-    using namespace std::chrono_literals;
-    std::cout << "[" << currentDateTime() << "] Evolution Manager - waiting 2s before restart." << std::endl << std::flush;
-    auto start = std::chrono::high_resolution_clock::now();
-    std::this_thread::sleep_for(2s);
+    // TODO: implement wait, ignoring wait
+
     std::cout << "[" << currentDateTime() << "] Evolution Manager - restarting algorithm..." << std::endl << std::flush;
 
     startEvolution();
@@ -272,7 +266,7 @@ void EvolutionManager::mutateAllButBestTwo(std::vector<Genotype*> newPopulation)
     int i = 0;
     for (int i = 2; i < newPopulation.size(); i++) {
 
-        if (rd() < DefMutationProb) {
+        if (Random(0.0f,1.0f) < DefMutationProb) {
             getInstance()->getGeneticAlgorithm()->mutateGenotype(newPopulation[i], DefMutationProb, DefMutationAmount);
         }
     }
@@ -281,7 +275,7 @@ void EvolutionManager::mutateAllButBestTwo(std::vector<Genotype*> newPopulation)
 void EvolutionManager::mutateAll(std::vector<Genotype*> newPopulation) {
 
      for (int i = 0; i < newPopulation.size(); i++) {
-         if (rd() < DefMutationProb) {
+         if (Random(0.0f,1.0f) < DefMutationProb) {
              getInstance()->getGeneticAlgorithm()->mutateGenotype(newPopulation[i], DefMutationProb, DefMutationAmount);
          }
      }
@@ -328,17 +322,14 @@ std::vector<Genotype*> *EvolutionManager::randomRecombination(std::vector<Genoty
         newPopulation->emplace_back(intermediatePopulation0);
         newPopulation->emplace_back(intermediatePopulation1);
 
-        // Create the random number generator
-        random_d rd{0.0, std::round(intermediatePopulation.size())};
-
         while (newPopulation->size() < newPopulationSize) {
 
             // Get two random indices that are not the same.
-            int randomIndex1 = (int) rd();
+            int randomIndex1 = (int) Random(0.0, std::round(intermediatePopulation.size()));
             int randomIndex2;
 
             do {
-                randomIndex2 = (int) rd();
+                randomIndex2 = (int) Random(0.0, std::round(intermediatePopulation.size()));
             } while (randomIndex2 == randomIndex1);
 
             getInstance()->getGeneticAlgorithm()->completeCrossover(intermediatePopulation[randomIndex1], intermediatePopulation[randomIndex2],
@@ -378,7 +369,7 @@ std::vector<Genotype*> *EvolutionManager::remainderStochasticSampling(std::vecto
     for (int i = 0; i < currentPopulation.size(); i++) {
 
             float remainder = currentPopulation[i]->fitness - (int) currentPopulation[i]->fitness;
-        if (rd() < remainder) {
+        if (Random(0.0f,1.0f) < remainder) {
             Genotype *g = new Genotype(currentPopulation[i]->getParameterCopy());
             intermediatePopulation->emplace_back(g);
         }

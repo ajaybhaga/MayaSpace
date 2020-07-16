@@ -212,13 +212,13 @@ void MayaSpace::ShowEvolutionManagerStats() {
                 break;
 
             case maxRows-5:
-                sprintf(strText[i], "agent[0].x: %f, agent[0].y: %f, agent[0].z: %f", agents[0]->getPosition().x, agents[0]->getPosition().y, agents[0]->getPosition().z);
+                sprintf(strText[i], "agent[0].x: %f, agent[0].y: %f, agent[0].z: %f", agents[0]->getPosition().x_, agents[0]->getPosition().y_, agents[0]->getPosition().z_);
                 break;
             case maxRows-6:
-                sprintf(strText[i], "agent[0].winX: %f, agent[0].winY: %f, agent[0].winZ: %f", agents[0]->getWinPos().x, agents[0]->getWinPos().y, agents[0]->getWinPos().z);
+                sprintf(strText[i], "agent[0].winX: %f, agent[0].winY: %f, agent[0].winZ: %f", agents[0]->getWinPos().x_, agents[0]->getWinPos().y_, agents[0]->getWinPos().z_);
                 break;
             case maxRows-7:
-                sprintf(strText[i], "", agents[0]->getPosition().z);
+                sprintf(strText[i], "", agents[0]->getPosition().z_);
                 break;
 
             case maxRows-8:
@@ -238,8 +238,8 @@ void MayaSpace::ShowEvolutionManagerStats() {
 
         }
 
-        if (strText[i])
-            renderText(5, 5 + (10 * i), strText[i], NULL);
+ //       if (strText[i])
+//            renderText(5, 5 + (10 * i), strText[i], NULL);
 
     }
 
@@ -252,15 +252,15 @@ void MayaSpace::ShowEvolutionManagerStats() {
 
         sprintf(c, "Agent:  %s\nagent[%d].x: %f\nagent[%d].y: %f\nagent[%d].z: %f",
                 agents[i]->getName(),
-                i, agents[i]->getPosition().x,
-                i, agents[i]->getPosition().y,
-                i, agents[i]->getPosition().z);
+                i, agents[i]->getPosition().x_,
+                i, agents[i]->getPosition().y_,
+                i, agents[i]->getPosition().z_);
 
-        renderPanel(agents[i]->getWinPos().x, agents[i]->getWinPos().y, 200.0f, 100.0f, c);
+       // renderPanel(agents[i]->getWinPos().x_, agents[i]->getWinPos().y_, 200.0f, 100.0f, c);
 
         if (agents[i]->genotype) {
-            renderParameters(agents[i]->getWinPos().x + 90.0f, agents[i]->getWinPos().y - 80.0f,
-                             agents[i]->genotype->getParameterCopy());
+       //     renderParameters(agents[i]->getWinPos().x_ + 90.0f, agents[i]->getWinPos().y_ - 80.0f,
+       //                      agents[i]->genotype->getParameterCopy());
         }
     }
     delete[] c;

@@ -8,7 +8,6 @@
 #ifndef EANN_SIMPLE_AGENT_CONTROLLER_H
 #define EANN_SIMPLE_AGENT_CONTROLLER_H
 
-#include "../util/event.h"
 #include "genotype.h"
 #include "neural_layer.h"
 #include "genetic_algorithm.h"
@@ -35,6 +34,7 @@ public:
     void update(float duration);
     void die();
     void checkpointCaptured();
+
     float getCurrentCompletionReward();
     void setCurrentCompletionReward(float reward);
     const std::vector<Sensor> &getSensors() const;

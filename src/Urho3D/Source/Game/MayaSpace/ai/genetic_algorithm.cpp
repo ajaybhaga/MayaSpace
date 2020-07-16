@@ -8,9 +8,6 @@
 #include <algorithm>
 #include "../shared_libs.h"
 
-// Create the random number generator
-static random_d rd{0, 1};
-
 GeneticAlgorithm::GeneticAlgorithm(int genotypeParamCount, int populationSize) {
 
     this->populationSize = populationSize;
@@ -179,7 +176,7 @@ void GeneticAlgorithm::defaultMutationOperator(std::vector<Genotype*> newPopulat
 
 
         for (int i = 0; i < newPopulation.size(); i++) {
-            if (rd() < DefMutationPerc) {
+            if (Random(0.0f,1.0f) < DefMutationPerc) {
                 mutateGenotype(newPopulation[i], DefMutationProb, DefMutationAmount);
             }
         }
@@ -198,7 +195,7 @@ void GeneticAlgorithm::completeCrossover(Genotype *parent1, Genotype *parent2, f
     // Iterate over all parameters randomly swapping
     for (int i = 0; i < parameterCount; i++) {
 
-        if (rd() < swapChance) {
+        if (Random(0.0f,1.0f) < swapChance) {
             // Swap parameters
             off1Parameters[i] = parent2->getParameter(i);
             off2Parameters[i] = parent1->getParameter(i);
@@ -218,9 +215,9 @@ void GeneticAlgorithm::mutateGenotype(Genotype *genotype, float mutationProb, fl
 
     for (int i = 0; i < genotype->getParameterCount(); i++) {
 
-        if (rd() < mutationProb) {
+        if (Random(0.0f,1.0f) < mutationProb) {
             // Mutate by random amount in range [-mutationAmount, mutationAmount]
-            genotype->setParameter(i, genotype->getParameter(i) + (float)rd() * (mutationAmount * 2) - mutationAmount);
+            genotype->setParameter(i, genotype->getParameter(i) + (float)Random(0.0f,1.0f) * (mutationAmount * 2) - mutationAmount);
         }
     }
 }

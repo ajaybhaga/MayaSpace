@@ -37,9 +37,9 @@ public:
     GeneticAlgorithm(int genotypeParamCount, int populationSize);
     ~GeneticAlgorithm();
 
-    Event terminationCriterion;
-    Event algorithmTerminated;
-    Event fitnessCalculationFinished;
+    SimpleEvent::Event terminationCriterion;
+    SimpleEvent::Event algorithmTerminated;
+    SimpleEvent::Event fitnessCalculationFinished;
 
     void start();
     void evaluationFinished();

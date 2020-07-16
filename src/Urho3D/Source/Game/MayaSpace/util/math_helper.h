@@ -9,6 +9,7 @@
 #define EANN_SIMPLE_MATH_HELPER_H
 
 #include <string>
+#include <math.h>       /* exp */
 
 class MathHelper {
 public:

@@ -73,6 +73,11 @@ void Sensor::update() {
     float hitDistance = 0.0;
 
 //    sphere.radius = (this->target-this->center).magnitude();
+
+
+// DISABLED CYCLONE ENGINE //
+/* Agent hit code
+
     CollisionSphere sphere = this->getCollisionSphere(this->center, Vector3(1.0, 1.0, 1.0));
 
     for (int i = 0; i < agents.size(); i++) {
@@ -104,7 +109,7 @@ void Sensor::update() {
             }
         }
     }
-
+*/
 
     /*
     // Send raycast into direction of sensor
@@ -163,7 +168,7 @@ void Sensor::setOffset(const Vector3 &offset) {
 
 void Sensor::setDirection(const Vector3 &direction) {
     Sensor::direction = direction;
-    this->direction.normalize();
+    this->direction.Normalize();
 }
 
 const Vector3 &Sensor::getCenter() const {

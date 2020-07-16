@@ -7,7 +7,7 @@
 
 #include "../shared_libs.h"
 #include "agent_fsm.h"
-#include "util/math_helper.h"
+#include "../util/math_helper.h"
 
 class EvolutionManager;
 //class MathHelper;
@@ -115,8 +115,10 @@ void AgentController::update(float duration) {
     this->movement->setInputs(controlInputs);
     this->movement->update(duration);
 
+
+    // TODO: Integrate with Urho display engine
     // Update screen coordinates of agent
-    this->agent->setWinPos(MathHelper::translateGLToWindowCoordinates(this->agent->getPosition().x, this->agent->getPosition().y, this->agent->getPosition().z));
+//    this->agent->setWinPos(MathHelper::translateGLToWindowCoordinates(this->agent->getPosition().x, this->agent->getPosition().y, this->agent->getPosition().z));
 
     // Agent timed out, death by timeout
     if (timeSinceLastCheckpoint > MAX_CHECKPOINT_DELAY) {
@@ -139,7 +141,7 @@ void AgentController::checkpointCaptured() {
     timeSinceLastCheckpoint = 0;
 }
 
-float AgentController::getCurrentCompletionRewaRandom(0.0f,1.0f) {
+float AgentController::getCurrentCompletionReward() {
     if (agent)
         return agent->genotype->evaluation;
     else

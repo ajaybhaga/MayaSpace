@@ -29,9 +29,6 @@ public:
 
     std::shared_ptr<AgentController> agentController;
 
-    // Event for when agent hits wall.
-    Event hitWall;
-
 private:
 
     // Movement constants

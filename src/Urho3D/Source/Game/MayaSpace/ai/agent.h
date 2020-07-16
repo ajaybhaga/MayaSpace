@@ -9,6 +9,7 @@
 #define EANN_SIMPLE_AGENT_H
 
 #include "../shared_libs.h"
+#include "../util/event.h"
 
 class Agent {
 public:
@@ -30,7 +31,7 @@ public:
     NeuralNetwork *ffn;
 
     // Flag when the agent died (stopped participating in the simulation).
-    Event agentDied;
+    SimpleEvent::Event agentDied;
 
     // Whether this agent is currently alive (actively participating in the simulation).
     bool isAlive();

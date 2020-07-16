@@ -28,10 +28,7 @@ endif ()
 set (TARGET_NAME MayaSpace)
 
 # Define source files
-define_source_files (EXTRA_H_FILES ${COMMON_SAMPLE_H_FILES} ./Sample2D.h ./Sample2D.cpp ../Utilities2D/Mover.h ../Utilities2D/Mover.cpp ai/genotype.cpp ai/genotype.h util/random_d.h ai/genetic_algorithm.cpp ai/genetic_algorithm.h ai/evolution_manager.cpp ai/evolution_manager.h ai/agent.cpp ai/agent.h ai/neural_layer.cpp ai/neural_layer.h ai/neural_network.cpp ai/neural_network.h util/math_helper.cpp util/math_helper.h util/event.cpp util/event.h ai/agent_controller.cpp ai/agent_controller.h shared_libs.h util/grid.cpp util/grid.h ai/sensor.cpp ai/sensor.h app.cpp app.h ai/agent_movement.cpp ai/agent_movement.h ai/fsm_event_data.cpp ai/fsm_event_data.h ai/fsm.cpp ai/fsm.h util/semaphore.h ai/agent_fsm.cpp ai/agent_fsm.h)
-
-#add_executable(MunvoAgentSim ai/genotype.cpp ai/genotype.h util/random_d.h ai/genetic_algorithm.cpp ai/genetic_algorithm.h ai/evolution_manager.cpp ai/evolution_manager.h ai/agent.cpp ai/agent.h util/listener.cpp util/listener.h ai/neural_layer.cpp ai/neural_layer.h ai/neural_network.cpp ai/neural_network.h util/math_helper.cpp util/math_helper.h util/event.cpp util/event.h ai/agent_controller.cpp ai/agent_controller.h shared_libs.h util/grid.cpp util/grid.h ai/sensor.cpp ai/sensor.h app.cpp environment.cpp environment.h ai/agent_movement.cpp ai/agent_movement.h block.h ai/fsm_event_data.cpp ai/fsm_event_data.h ai/fsm.cpp ai/fsm.h util/semaphore.h ai/agent_fsm.cpp ai/agent_fsm.h)
-
+define_source_files (EXTRA_H_FILES ${COMMON_SAMPLE_H_FILES} ./Sample2D.h ./Sample2D.cpp ../Utilities2D/Mover.h ../Utilities2D/Mover.cpp ai/genotype.cpp ai/genotype.h util/random_d.h ai/genetic_algorithm.cpp ai/genetic_algorithm.h ai/evolution_manager.cpp ai/evolution_manager.h ai/agent.cpp ai/agent.h ai/neural_layer.cpp ai/neural_layer.h ai/neural_network.cpp ai/neural_network.h util/math_helper.cpp util/math_helper.h util/event.cpp util/event.h ai/agent_controller.cpp ai/agent_controller.h shared_libs.h ai/sensor.cpp ai/sensor.h app.cpp app.h ai/agent_movement.cpp ai/agent_movement.h ai/fsm_event_data.cpp ai/fsm_event_data.h ai/fsm.cpp ai/fsm.h util/semaphore.h ai/agent_fsm.cpp ai/agent_fsm.h util/event.cpp util/event.h)
 
 # Setup target with resource copying
 setup_main_executable ()

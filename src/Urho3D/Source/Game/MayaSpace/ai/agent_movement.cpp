@@ -44,20 +44,20 @@ void AgentMovement::applyInput(float deltaTime) {
     // Agent can only accelerate further if velocity is lower than engineForce * MAX_VEL
     bool canAccelerate = true;
     if (verticalInput < 0) {
-        canAccelerate = velocity[1] > verticalInput * MAX_VEL;
+        canAccelerate = velocity.y_ > verticalInput * MAX_VEL;
     } else if (verticalInput > 0) {
-        canAccelerate = velocity[1] < verticalInput * MAX_VEL;
+        canAccelerate = velocity.y_ < verticalInput * MAX_VEL;
     }
 
     // Set velocity
     if (canAccelerate) {
-        velocity[1] += (float) verticalInput * ACCELERATION * deltaTime;
+        velocity.y_ += (float) verticalInput * ACCELERATION * deltaTime;
 
         // Clamp velocity
-        if (velocity[1] > MAX_VEL) {
-            velocity[1] = MAX_VEL;
-        } else if (velocity[1] < -MAX_VEL) {
-            velocity[1] = -MAX_VEL;
+        if (velocity.y_ > MAX_VEL) {
+            velocity.y_ = MAX_VEL;
+        } else if (velocity.y_ < -MAX_VEL) {
+            velocity.y_ = -MAX_VEL;
         }
     }
 
@@ -85,7 +85,7 @@ void AgentMovement::applyVelocity(float deltaTime) {
 
 
 /*    velocity[0] += rdx();
-    velocity[1] += rdx();
+    velocity.y_ += rdx();
     velocity[2] += rdx();
 */
 
@@ -97,17 +97,17 @@ void AgentMovement::applyVelocity(float deltaTime) {
 void AgentMovement::applyFriction(float deltaTime) {
 
     if (verticalInput == 0) {
-        if (velocity[1] > 0) {
-            velocity[1] -= VEL_FRICT * deltaTime;
-            if (velocity[1] < 0) {
-                velocity[1] = 0;
+        if (velocity.y_ > 0) {
+            velocity.y_ -= VEL_FRICT * deltaTime;
+            if (velocity.y_ < 0) {
+                velocity.y_ = 0;
             }
         }
 
-        if (velocity[1] < 0) {
-            velocity[1] += VEL_FRICT * deltaTime;
-            if (velocity[1] > 0) {
-                velocity[1] = 0;
+        if (velocity.y_ < 0) {
+            velocity.y_ += VEL_FRICT * deltaTime;
+            if (velocity.y_ > 0) {
+                velocity.y_ = 0;
             }
         }
     }
