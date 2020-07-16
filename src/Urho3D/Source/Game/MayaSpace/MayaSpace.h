@@ -88,8 +88,13 @@ private:
     void SetParticleEmitter(int hitId, float contactX, float contactY, int type, float timeStep);
     void HandleUpdateParticlePool(float timeStep);
 
+    // Init Genetic Algorithm sprite generator
+    void InitEvolutionSpriteGenerator();
 
-    /// The controllable character component.
+    // Display Genetic Algorithm Evolution Manager statistics
+    void ShowEvolutionManagerStats();
+
+        /// The controllable character component.
     WeakPtr<Character2D> player_;
     WeakPtr<Character2D> ai_[NUM_AI];
 

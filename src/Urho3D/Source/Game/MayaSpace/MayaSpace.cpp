@@ -91,6 +91,9 @@
 #include "MayaSpace.h"
 
 
+// AgentSim shared libs
+#include "shared_libs.h"
+
 URHO3D_DEFINE_APPLICATION_MAIN(MayaSpace)
 
 MayaSpace::MayaSpace(Context* context) :
@@ -114,6 +117,153 @@ void MayaSpace::Setup()
     // Disable sound
     engineParameters_[EP_SOUND] = false;
 
+}
+
+void MayaSpace::InitEvolutionSpriteGenerator() {
+
+    std::cout << "Evolution Manager -> starting..." << std::endl;
+    EvolutionManager::getInstance()->startEvolution();
+
+    // Create shape for each agent
+    std::vector<Agent*> agents = EvolutionManager::getInstance()->getAgents();
+    for (int i = 0; i < agents.size(); i++) {
+        // Randomly place agents
+        //       agents[i]->setPosition(cyclone::Vector3(rd(), rd(), rd()));
+    }
+
+    // DISABLED CYCLONE PHYSICS CODE //
+    /*
+           // Create agent -> collision sphere
+           cyclone::CollisionSphere cs;
+           cs.body = new cyclone::RigidBody();
+           agentCollSpheres.emplace_back(cs);
+
+           cs.radius = 0.25f;
+           cs.body->setMass(5.0f);
+           cs.body->setDamping(0.9f, 0.9f);
+           cyclone::Matrix3 it;
+           it.setDiagonal(5.0f, 5.0f, 5.0f);
+           cs.body->setPosition(agents[i]->getPosition());
+           cs.body->setInertiaTensor(it);
+           cs.body->setAcceleration(cyclone::Vector3::GRAVITY);
+
+           cs.body->setCanSleep(false);
+           cs.body->setAwake(true);
+    */
+
+    /*
+        // Create the ball.
+        agentCollSphere.body = new cyclone::RigidBody();
+        ball.radius = 0.25f;
+        ball.body->setMass(5.0f);
+        ball.body->setDamping(0.9f, 0.9f);
+        cyclone::Matrix3 it;
+        it.setDiagonal(5.0f, 5.0f, 5.0f);
+        ball.body->setInertiaTensor(it);
+        ball.body->setAcceleration(cyclone::Vector3::GRAVITY);
+
+        ball.body->setCanSleep(false);
+        ball.body->setAwake(true);
+    */
+    /*
+    // Test Case 1
+    auto genotype = new Genotype();
+    std::cout << "Generating random genotype..." << std::endl;
+    genotype = genotype->generateRandom(10, 0.4, 20.4);
+    genotype->outputToConsole();
+    genotype->saveToFile("genotype01.data");
+    std::cout << "Genotype saved to disk." << std::endl;
+
+    std::cout << "Loading genotype from disk..." << std::endl;
+    genotype = genotype->loadFromFile("genotype01.data");
+    std::cout << "Loaded genotype from disk." << std::endl;
+    */
+
+}
+
+void MayaSpace::ShowEvolutionManagerStats() {
+    std::vector<Agent*> agents = EvolutionManager::getInstance()->getAgents();
+    std::vector<AgentController*> controllers = EvolutionManager::getInstance()->getAgentControllers();
+
+    char buffer[255];
+    int aliveCount = EvolutionManager::getInstance()->agentsAliveCount;
+    const int maxRows = 20;
+    char *strText[maxRows];
+
+    for (int i = 0; i < maxRows; i++) {
+        strText[i] = new char[80];
+    }
+
+    for (int i = 0; i < maxRows; i++) {
+
+        switch(i) {
+
+            case maxRows-1:
+                sprintf(strText[i], "%d alive out of %d population.", aliveCount, agents.size());
+                break;
+            case maxRows-2:
+                sprintf(strText[i], "%d generation out of %d generations.", EvolutionManager::getGeneticAlgorithm()->generationCount, RestartAfter);
+                break;
+            case maxRows-3:
+                sprintf(strText[i], "==========================================================================");
+                break;
+            case maxRows-4:
+                sprintf(strText[i], "agent[0].timeSinceLastCheckpoint: %f", controllers[0]->getTimeSinceLastCheckpoint());
+                break;
+
+            case maxRows-5:
+                sprintf(strText[i], "agent[0].x: %f, agent[0].y: %f, agent[0].z: %f", agents[0]->getPosition().x, agents[0]->getPosition().y, agents[0]->getPosition().z);
+                break;
+            case maxRows-6:
+                sprintf(strText[i], "agent[0].winX: %f, agent[0].winY: %f, agent[0].winZ: %f", agents[0]->getWinPos().x, agents[0]->getWinPos().y, agents[0]->getWinPos().z);
+                break;
+            case maxRows-7:
+                sprintf(strText[i], "", agents[0]->getPosition().z);
+                break;
+
+            case maxRows-8:
+                sprintf(strText[i], "agent[0].evaluation: %f", agents[0]->genotype->evaluation);
+                break;
+            case maxRows-9:
+                sprintf(strText[i], "agent[0].horizontalInput: %f", controllers[0]->movement->getHorizontalInput());
+                break;
+            case maxRows-10:
+                sprintf(strText[i], "agent[0].verticalInput: %f", controllers[0]->movement->getVerticalInput());
+                break;
+
+
+            default:
+                sprintf(strText[i], "");
+                break;
+
+        }
+
+        if (strText[i])
+            renderText(5, 5 + (10 * i), strText[i], NULL);
+
+    }
+
+    for (int i = 0; i < maxRows; i++) {
+        delete strText[i];
+    }
+
+    char *c = new char[255];
+    for (int i = 0; i < agents.size(); i++) {
+
+        sprintf(c, "Agent:  %s\nagent[%d].x: %f\nagent[%d].y: %f\nagent[%d].z: %f",
+                agents[i]->getName(),
+                i, agents[i]->getPosition().x,
+                i, agents[i]->getPosition().y,
+                i, agents[i]->getPosition().z);
+
+        renderPanel(agents[i]->getWinPos().x, agents[i]->getWinPos().y, 200.0f, 100.0f, c);
+
+        if (agents[i]->genotype) {
+            renderParameters(agents[i]->getWinPos().x + 90.0f, agents[i]->getWinPos().y - 80.0f,
+                             agents[i]->genotype->getParameterCopy());
+        }
+    }
+    delete[] c;
 }
 
 void MayaSpace::Start()
@@ -858,6 +1008,22 @@ void MayaSpace::HandleUpdate(StringHash eventType, VariantMap& eventData)
     float timeStep = eventData[P_TIMESTEP].GetFloat();
     HandleUpdateParticlePool(timeStep);
 
+
+    // Update Genetic Algorithm //
+
+    // Iterate through agent controllers and apply update
+    std::vector<Agent*> agents = EvolutionManager::getInstance()->getAgents();
+    std::vector<AgentController*> controllers = EvolutionManager::getInstance()->getAgentControllers();
+
+    for (int i = 0; i < controllers.size(); i++) {
+        AgentController *controller = controllers[i];
+        controller->update(timeStep);
+        // Set agent evaluation (affects fitness calculation)
+        controller->setCurrentCompletionReward(controller->getCurrentCompletionReward()+Random(0.0f,1.0f));
+    }
+
+    ////
+
     float zoom_ = cameraNode_->GetComponent<Camera>()->GetZoom();
     float deltaSum;
 
@@ -1007,6 +1173,7 @@ void MayaSpace::HandleUpdate(StringHash eventType, VariantMap& eventData)
 
         billboardObject->Commit();
     }
+
 
 
 //    text->SetText("Test");
