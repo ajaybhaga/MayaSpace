@@ -9,6 +9,7 @@
 //
 
 #include "genotype.h"
+#include <Urho3D/Math/MathDefs.h>
 
 Genotype::Genotype(int paramCount) {
     evaluation = 0.0;
@@ -54,7 +55,7 @@ void Genotype::setRandomParameters(float minValue, float maxValue) {
     // Generate random parameter vector
     float range = maxValue - minValue;
     for (int i = 0; i < this->parameters.size(); i++) {
-        parameters[i] = Random(0.0f,1.0f);
+        parameters[i] = Urho3D::Random(0.0f,1.0f);
     }
 }
 

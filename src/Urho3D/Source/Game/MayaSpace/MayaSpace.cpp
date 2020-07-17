@@ -181,6 +181,19 @@ void MayaSpace::InitEvolutionSpriteGenerator() {
 
 }
 
+void MayaSpace::UpdateGeneticAlgorithm(float timeStep) {
+    // Iterate through agent controllers and apply update
+    std::vector<Agent*> agents = EvolutionManager::getInstance()->getAgents();
+    std::vector<AgentController*> controllers = EvolutionManager::getInstance()->getAgentControllers();
+
+    for (int i = 0; i < controllers.size(); i++) {
+        AgentController *controller = controllers[i];
+        controller->update(timeStep);
+        // Set agent evaluation (affects fitness calculation)
+        controller->setCurrentCompletionReward(controller->getCurrentCompletionReward()+Random(0.0f,1.0f));
+    }
+}
+
 void MayaSpace::ShowEvolutionManagerStats() {
     std::vector<Agent*> agents = EvolutionManager::getInstance()->getAgents();
     std::vector<AgentController*> controllers = EvolutionManager::getInstance()->getAgentControllers();
@@ -277,6 +290,9 @@ void MayaSpace::Start()
     // Execute base class startup
     Game::Start();
 
+    // Initialize evolution sprite generator
+    MayaSpace::InitEvolutionSpriteGenerator();
+
     sample2D_ = new Sample2D(context_);
 
     // Set filename for load/save functions
@@ -297,6 +313,7 @@ void MayaSpace::Start()
 
     // Hook up to the frame update events
     SubscribeToEvents();
+
 }
 
 void MayaSpace::CreateScene()
@@ -1008,21 +1025,8 @@ void MayaSpace::HandleUpdate(StringHash eventType, VariantMap& eventData)
     float timeStep = eventData[P_TIMESTEP].GetFloat();
     HandleUpdateParticlePool(timeStep);
 
-
-    // Update Genetic Algorithm //
-
-    // Iterate through agent controllers and apply update
-    std::vector<Agent*> agents = EvolutionManager::getInstance()->getAgents();
-    std::vector<AgentController*> controllers = EvolutionManager::getInstance()->getAgentControllers();
-
-    for (int i = 0; i < controllers.size(); i++) {
-        AgentController *controller = controllers[i];
-        controller->update(timeStep);
-        // Set agent evaluation (affects fitness calculation)
-        controller->setCurrentCompletionReward(controller->getCurrentCompletionReward()+Random(0.0f,1.0f));
-    }
-
-    ////
+    // Update Genetic Algorithm
+    MayaSpace::UpdateGeneticAlgorithm(timeStep);
 
     float zoom_ = cameraNode_->GetComponent<Camera>()->GetZoom();
     float deltaSum;

@@ -12,7 +12,6 @@
 #include <functional>
 #include <stdlib.h>     /* abs */
 #include "../util/math_helper.h"
-#include "Game.h"
 
 class NeuralLayer {
 public:

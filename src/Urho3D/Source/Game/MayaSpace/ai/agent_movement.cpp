@@ -63,7 +63,7 @@ void AgentMovement::applyInput(float deltaTime) {
 
     // Set rotation
     this->rotation = agentController->agent->getRotation();
-    this->rotation *= Quaternion((float)-horizontalInput * TURN_SPEED * deltaTime, Vector3(0, 0, 1));
+    this->rotation *= (float)-horizontalInput * TURN_SPEED * deltaTime;
 }
 
 void AgentMovement::setInputs(double *input) {
@@ -79,10 +79,11 @@ void AgentMovement::applyVelocity(float deltaTime) {
 
     this->agentController->agent->setRotation(rotation);
 
-    Quaternion dirQ = Quaternion();
-    dirQ.addScaledVector(direction, 1.0);
-    dirQ.rotateByVector(velocity * deltaTime);
-
+    Quaternion dirQ = Quaternion(0.0f, 90.0f, 0.0f);
+    ;
+//    dirQ.addScaledVector(direction, 1.0);
+    //dirQ.rotateByVector(velocity * deltaTime);
+    //dirQ *= currRot * velocity * deltaTime;
 
 /*    velocity[0] += rdx();
     velocity.y_ += rdx();

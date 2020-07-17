@@ -18,8 +18,6 @@
 #include <cassert>
 #include <fstream>      // std::ifstream, std::ofstream
 #include <vector>
-#include "Game.h"
-
 #define TRAINING_DATA_DIR "data/"
 
 class Genotype {

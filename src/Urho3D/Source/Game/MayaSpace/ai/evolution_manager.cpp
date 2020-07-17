@@ -325,11 +325,11 @@ std::vector<Genotype*> *EvolutionManager::randomRecombination(std::vector<Genoty
         while (newPopulation->size() < newPopulationSize) {
 
             // Get two random indices that are not the same.
-            int randomIndex1 = (int) Random(0.0, std::round(intermediatePopulation.size()));
+            int randomIndex1 = (int) Random(0.0, (float)  std::round(intermediatePopulation.size()));
             int randomIndex2;
 
             do {
-                randomIndex2 = (int) Random(0.0, std::round(intermediatePopulation.size()));
+                randomIndex2 = (int) Random(0.0, (float) std::round(intermediatePopulation.size()));
             } while (randomIndex2 == randomIndex1);
 
             getInstance()->getGeneticAlgorithm()->completeCrossover(intermediatePopulation[randomIndex1], intermediatePopulation[randomIndex2],

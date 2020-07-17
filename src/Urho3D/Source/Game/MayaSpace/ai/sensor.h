@@ -8,6 +8,7 @@
 #include <string>
 #include <stdlib.h>     /* abs */
 #include "../util/math_helper.h"
+#include "../MayaSpace.h"
 #include "agent.h"
 
 // Class representing a sensor reading the distance to the nearest obstacle in a specified direction.

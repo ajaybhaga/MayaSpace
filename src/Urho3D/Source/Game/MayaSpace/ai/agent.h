@@ -10,6 +10,7 @@
 
 #include "../shared_libs.h"
 #include "../util/event.h"
+#include <Urho3D/Math/MathDefs.h>
 
 class Agent {
 public:

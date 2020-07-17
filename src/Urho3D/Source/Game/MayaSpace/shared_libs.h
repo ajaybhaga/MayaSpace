@@ -2,8 +2,8 @@
 // C++ Implementation by Ajay Bhaga
 //
 
-#ifndef EANN_SIMPLE_SHARED_LIBS_H
-#define EANN_SIMPLE_SHARED_LIBS_H
+
+#pragma once
 
 #include <string>
 #include <list>
@@ -56,6 +56,3 @@ static const std::string currentDateTime() {
 
 // Genetic Algorithm Evolution Manager instance (singleton)
 EvolutionManager *EvolutionManager::instance = 0;
-
-
-#endif //EANN_SIMPLE_SHARED_LIBS_H

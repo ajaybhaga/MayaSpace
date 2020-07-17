@@ -23,6 +23,11 @@
 #pragma once
 
 #include <Urho3D/Core/Object.h>
+#include <Urho3D/Urho2D/TileMapLayer3D.h>
+#include <Urho3D/Urho2D/CollisionBox2D.h>
+#include <Urho3D/Urho2D/CollisionCircle2D.h>
+#include <Urho3D/Urho2D/CollisionPolygon2D.h>
+#include <Urho3D/Urho2D/CollisionChain2D.h>
 
 namespace Urho3D
 {

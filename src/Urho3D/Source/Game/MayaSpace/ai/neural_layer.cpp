@@ -6,6 +6,7 @@
 //
 
 #include "neural_layer.h"
+#include <Urho3D/Math/MathDefs.h>
 
 NeuralLayer::NeuralLayer() {
 }
@@ -124,7 +125,7 @@ void NeuralLayer::setRandomWeights(double minValue, double maxValue) {
 
     for (int i = 0; i < this->neuronCount; i++) {
         for (int j = 0; j < this->outputCount; j++) {
-            weights[i][j] = minValue + (Random(0.0f,1.0f) * range);
+            weights[i][j] = minValue + (Urho3D::Random(0.0f,1.0f) * range);
         }
     }
 }
