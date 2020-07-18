@@ -11,10 +11,10 @@
 				<Option working_dir="/code/dev/MayaSpace/src/Urho3D/Source/Game"/>
 				<Option type="4"/>
 				<MakeCommands>
-					<Build command="/usr/bin/gmake -f &quot;/code/dev/MayaSpace/src/Urho3D/Source/Game/Makefile&quot;  VERBOSE=1 all"/>
-					<CompileFile command="/usr/bin/gmake -f &quot;/code/dev/MayaSpace/src/Urho3D/Source/Game/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
-					<Clean command="/usr/bin/gmake -f &quot;/code/dev/MayaSpace/src/Urho3D/Source/Game/Makefile&quot;  VERBOSE=1 clean"/>
-					<DistClean command="/usr/bin/gmake -f &quot;/code/dev/MayaSpace/src/Urho3D/Source/Game/Makefile&quot;  VERBOSE=1 clean"/>
+					<Build command="/bin/gmake -f &quot;/code/dev/MayaSpace/src/Urho3D/Source/Game/Makefile&quot;  VERBOSE=1 all"/>
+					<CompileFile command="/bin/gmake -f &quot;/code/dev/MayaSpace/src/Urho3D/Source/Game/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/bin/gmake -f &quot;/code/dev/MayaSpace/src/Urho3D/Source/Game/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/bin/gmake -f &quot;/code/dev/MayaSpace/src/Urho3D/Source/Game/Makefile&quot;  VERBOSE=1 clean"/>
 				</MakeCommands>
 			</Target>
 			<Target title="MayaSpace">
@@ -44,10 +44,10 @@
 					<Add directory="/code/dev/MayaSpace/src/Urho3D/Source/Game"/>
 				</Compiler>
 				<MakeCommands>
-					<Build command="/usr/bin/gmake -f &quot;/code/dev/MayaSpace/src/Urho3D/Source/Game/MayaSpace/Makefile&quot;  VERBOSE=1 MayaSpace"/>
-					<CompileFile command="/usr/bin/gmake -f &quot;/code/dev/MayaSpace/src/Urho3D/Source/Game/MayaSpace/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
-					<Clean command="/usr/bin/gmake -f &quot;/code/dev/MayaSpace/src/Urho3D/Source/Game/MayaSpace/Makefile&quot;  VERBOSE=1 clean"/>
-					<DistClean command="/usr/bin/gmake -f &quot;/code/dev/MayaSpace/src/Urho3D/Source/Game/MayaSpace/Makefile&quot;  VERBOSE=1 clean"/>
+					<Build command="/bin/gmake -f &quot;/code/dev/MayaSpace/src/Urho3D/Source/Game/MayaSpace/Makefile&quot;  VERBOSE=1 MayaSpace"/>
+					<CompileFile command="/bin/gmake -f &quot;/code/dev/MayaSpace/src/Urho3D/Source/Game/MayaSpace/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/bin/gmake -f &quot;/code/dev/MayaSpace/src/Urho3D/Source/Game/MayaSpace/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/bin/gmake -f &quot;/code/dev/MayaSpace/src/Urho3D/Source/Game/MayaSpace/Makefile&quot;  VERBOSE=1 clean"/>
 				</MakeCommands>
 			</Target>
 			<Target title="MayaSpace/fast">
@@ -77,10 +77,10 @@
 					<Add directory="/code/dev/MayaSpace/src/Urho3D/Source/Game"/>
 				</Compiler>
 				<MakeCommands>
-					<Build command="/usr/bin/gmake -f &quot;/code/dev/MayaSpace/src/Urho3D/Source/Game/MayaSpace/Makefile&quot;  VERBOSE=1 MayaSpace/fast"/>
-					<CompileFile command="/usr/bin/gmake -f &quot;/code/dev/MayaSpace/src/Urho3D/Source/Game/MayaSpace/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
-					<Clean command="/usr/bin/gmake -f &quot;/code/dev/MayaSpace/src/Urho3D/Source/Game/MayaSpace/Makefile&quot;  VERBOSE=1 clean"/>
-					<DistClean command="/usr/bin/gmake -f &quot;/code/dev/MayaSpace/src/Urho3D/Source/Game/MayaSpace/Makefile&quot;  VERBOSE=1 clean"/>
+					<Build command="/bin/gmake -f &quot;/code/dev/MayaSpace/src/Urho3D/Source/Game/MayaSpace/Makefile&quot;  VERBOSE=1 MayaSpace/fast"/>
+					<CompileFile command="/bin/gmake -f &quot;/code/dev/MayaSpace/src/Urho3D/Source/Game/MayaSpace/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/bin/gmake -f &quot;/code/dev/MayaSpace/src/Urho3D/Source/Game/MayaSpace/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/bin/gmake -f &quot;/code/dev/MayaSpace/src/Urho3D/Source/Game/MayaSpace/Makefile&quot;  VERBOSE=1 clean"/>
 				</MakeCommands>
 			</Target>
 		</Build>
@@ -112,6 +112,108 @@
 			<Option target="MayaSpace"/>
 		</Unit>
 		<Unit filename="/code/dev/MayaSpace/src/Urho3D/Source/Game/MayaSpace/Sample2D.h">
+			<Option target="MayaSpace"/>
+		</Unit>
+		<Unit filename="/code/dev/MayaSpace/src/Urho3D/Source/Game/MayaSpace/ai/agent.cpp">
+			<Option target="MayaSpace"/>
+		</Unit>
+		<Unit filename="/code/dev/MayaSpace/src/Urho3D/Source/Game/MayaSpace/ai/agent.h">
+			<Option target="MayaSpace"/>
+		</Unit>
+		<Unit filename="/code/dev/MayaSpace/src/Urho3D/Source/Game/MayaSpace/ai/agent_controller.cpp">
+			<Option target="MayaSpace"/>
+		</Unit>
+		<Unit filename="/code/dev/MayaSpace/src/Urho3D/Source/Game/MayaSpace/ai/agent_controller.h">
+			<Option target="MayaSpace"/>
+		</Unit>
+		<Unit filename="/code/dev/MayaSpace/src/Urho3D/Source/Game/MayaSpace/ai/agent_fsm.cpp">
+			<Option target="MayaSpace"/>
+		</Unit>
+		<Unit filename="/code/dev/MayaSpace/src/Urho3D/Source/Game/MayaSpace/ai/agent_fsm.h">
+			<Option target="MayaSpace"/>
+		</Unit>
+		<Unit filename="/code/dev/MayaSpace/src/Urho3D/Source/Game/MayaSpace/ai/agent_movement.cpp">
+			<Option target="MayaSpace"/>
+		</Unit>
+		<Unit filename="/code/dev/MayaSpace/src/Urho3D/Source/Game/MayaSpace/ai/agent_movement.h">
+			<Option target="MayaSpace"/>
+		</Unit>
+		<Unit filename="/code/dev/MayaSpace/src/Urho3D/Source/Game/MayaSpace/ai/evolution_manager.cpp">
+			<Option target="MayaSpace"/>
+		</Unit>
+		<Unit filename="/code/dev/MayaSpace/src/Urho3D/Source/Game/MayaSpace/ai/evolution_manager.h">
+			<Option target="MayaSpace"/>
+		</Unit>
+		<Unit filename="/code/dev/MayaSpace/src/Urho3D/Source/Game/MayaSpace/ai/fsm.cpp">
+			<Option target="MayaSpace"/>
+		</Unit>
+		<Unit filename="/code/dev/MayaSpace/src/Urho3D/Source/Game/MayaSpace/ai/fsm.h">
+			<Option target="MayaSpace"/>
+		</Unit>
+		<Unit filename="/code/dev/MayaSpace/src/Urho3D/Source/Game/MayaSpace/ai/fsm_event_data.cpp">
+			<Option target="MayaSpace"/>
+		</Unit>
+		<Unit filename="/code/dev/MayaSpace/src/Urho3D/Source/Game/MayaSpace/ai/fsm_event_data.h">
+			<Option target="MayaSpace"/>
+		</Unit>
+		<Unit filename="/code/dev/MayaSpace/src/Urho3D/Source/Game/MayaSpace/ai/genetic_algorithm.cpp">
+			<Option target="MayaSpace"/>
+		</Unit>
+		<Unit filename="/code/dev/MayaSpace/src/Urho3D/Source/Game/MayaSpace/ai/genetic_algorithm.h">
+			<Option target="MayaSpace"/>
+		</Unit>
+		<Unit filename="/code/dev/MayaSpace/src/Urho3D/Source/Game/MayaSpace/ai/genotype.cpp">
+			<Option target="MayaSpace"/>
+		</Unit>
+		<Unit filename="/code/dev/MayaSpace/src/Urho3D/Source/Game/MayaSpace/ai/genotype.h">
+			<Option target="MayaSpace"/>
+		</Unit>
+		<Unit filename="/code/dev/MayaSpace/src/Urho3D/Source/Game/MayaSpace/ai/neural_layer.cpp">
+			<Option target="MayaSpace"/>
+		</Unit>
+		<Unit filename="/code/dev/MayaSpace/src/Urho3D/Source/Game/MayaSpace/ai/neural_layer.h">
+			<Option target="MayaSpace"/>
+		</Unit>
+		<Unit filename="/code/dev/MayaSpace/src/Urho3D/Source/Game/MayaSpace/ai/neural_network.cpp">
+			<Option target="MayaSpace"/>
+		</Unit>
+		<Unit filename="/code/dev/MayaSpace/src/Urho3D/Source/Game/MayaSpace/ai/neural_network.h">
+			<Option target="MayaSpace"/>
+		</Unit>
+		<Unit filename="/code/dev/MayaSpace/src/Urho3D/Source/Game/MayaSpace/ai/sensor.cpp">
+			<Option target="MayaSpace"/>
+		</Unit>
+		<Unit filename="/code/dev/MayaSpace/src/Urho3D/Source/Game/MayaSpace/ai/sensor.h">
+			<Option target="MayaSpace"/>
+		</Unit>
+		<Unit filename="/code/dev/MayaSpace/src/Urho3D/Source/Game/MayaSpace/app.cpp">
+			<Option target="MayaSpace"/>
+		</Unit>
+		<Unit filename="/code/dev/MayaSpace/src/Urho3D/Source/Game/MayaSpace/app.h">
+			<Option target="MayaSpace"/>
+		</Unit>
+		<Unit filename="/code/dev/MayaSpace/src/Urho3D/Source/Game/MayaSpace/block.h">
+			<Option target="MayaSpace"/>
+		</Unit>
+		<Unit filename="/code/dev/MayaSpace/src/Urho3D/Source/Game/MayaSpace/shared_libs.h">
+			<Option target="MayaSpace"/>
+		</Unit>
+		<Unit filename="/code/dev/MayaSpace/src/Urho3D/Source/Game/MayaSpace/util/event.cpp">
+			<Option target="MayaSpace"/>
+		</Unit>
+		<Unit filename="/code/dev/MayaSpace/src/Urho3D/Source/Game/MayaSpace/util/event.h">
+			<Option target="MayaSpace"/>
+		</Unit>
+		<Unit filename="/code/dev/MayaSpace/src/Urho3D/Source/Game/MayaSpace/util/math_helper.cpp">
+			<Option target="MayaSpace"/>
+		</Unit>
+		<Unit filename="/code/dev/MayaSpace/src/Urho3D/Source/Game/MayaSpace/util/math_helper.h">
+			<Option target="MayaSpace"/>
+		</Unit>
+		<Unit filename="/code/dev/MayaSpace/src/Urho3D/Source/Game/MayaSpace/util/random_d.h">
+			<Option target="MayaSpace"/>
+		</Unit>
+		<Unit filename="/code/dev/MayaSpace/src/Urho3D/Source/Game/MayaSpace/util/semaphore.h">
 			<Option target="MayaSpace"/>
 		</Unit>
 		<Unit filename="/code/dev/MayaSpace/src/Urho3D/Source/Game/Utilities2D/Mover.cpp">

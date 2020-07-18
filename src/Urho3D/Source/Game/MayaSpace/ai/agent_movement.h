@@ -9,6 +9,8 @@
 #define EANN_SIMPLE_AGENT_MOVEMENT_H
 
 #include "agent_controller.h"
+#include <Urho3D/Math/Vector3.h>
+#include <Urho3D/Math/Quaternion.h>
 
 // Forward declaration
 class AgentController;
@@ -38,9 +40,9 @@ private:
     const float TURN_SPEED = 100.0f;
 
     // The current velocity of the agent.
-    Vector3 velocity;
+    Urho3D::Vector3 velocity;
     // The current rotation of the agent.
-    Quaternion rotation;
+    Urho3D::Quaternion rotation;
 
     // Horizontal = engine force
     double horizontalInput;

@@ -11,10 +11,10 @@
 				<Option working_dir="/code/dev/MayaSpace/src/Urho3D/Source/Tools"/>
 				<Option type="4"/>
 				<MakeCommands>
-					<Build command="/usr/bin/gmake -f &quot;/code/dev/MayaSpace/src/Urho3D/Source/Tools/Makefile&quot;  VERBOSE=1 all"/>
-					<CompileFile command="/usr/bin/gmake -f &quot;/code/dev/MayaSpace/src/Urho3D/Source/Tools/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
-					<Clean command="/usr/bin/gmake -f &quot;/code/dev/MayaSpace/src/Urho3D/Source/Tools/Makefile&quot;  VERBOSE=1 clean"/>
-					<DistClean command="/usr/bin/gmake -f &quot;/code/dev/MayaSpace/src/Urho3D/Source/Tools/Makefile&quot;  VERBOSE=1 clean"/>
+					<Build command="/bin/gmake -f &quot;/code/dev/MayaSpace/src/Urho3D/Source/Tools/Makefile&quot;  VERBOSE=1 all"/>
+					<CompileFile command="/bin/gmake -f &quot;/code/dev/MayaSpace/src/Urho3D/Source/Tools/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/bin/gmake -f &quot;/code/dev/MayaSpace/src/Urho3D/Source/Tools/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/bin/gmake -f &quot;/code/dev/MayaSpace/src/Urho3D/Source/Tools/Makefile&quot;  VERBOSE=1 clean"/>
 				</MakeCommands>
 			</Target>
 			<Target title="Urho3DPlayer">
@@ -43,10 +43,10 @@
 					<Add directory="/code/dev/MayaSpace/src/Urho3D/include/Urho3D/ThirdParty/Lua"/>
 				</Compiler>
 				<MakeCommands>
-					<Build command="/usr/bin/gmake -f &quot;/code/dev/MayaSpace/src/Urho3D/Source/Tools/Urho3DPlayer/Makefile&quot;  VERBOSE=1 Urho3DPlayer"/>
-					<CompileFile command="/usr/bin/gmake -f &quot;/code/dev/MayaSpace/src/Urho3D/Source/Tools/Urho3DPlayer/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
-					<Clean command="/usr/bin/gmake -f &quot;/code/dev/MayaSpace/src/Urho3D/Source/Tools/Urho3DPlayer/Makefile&quot;  VERBOSE=1 clean"/>
-					<DistClean command="/usr/bin/gmake -f &quot;/code/dev/MayaSpace/src/Urho3D/Source/Tools/Urho3DPlayer/Makefile&quot;  VERBOSE=1 clean"/>
+					<Build command="/bin/gmake -f &quot;/code/dev/MayaSpace/src/Urho3D/Source/Tools/Urho3DPlayer/Makefile&quot;  VERBOSE=1 Urho3DPlayer"/>
+					<CompileFile command="/bin/gmake -f &quot;/code/dev/MayaSpace/src/Urho3D/Source/Tools/Urho3DPlayer/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/bin/gmake -f &quot;/code/dev/MayaSpace/src/Urho3D/Source/Tools/Urho3DPlayer/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/bin/gmake -f &quot;/code/dev/MayaSpace/src/Urho3D/Source/Tools/Urho3DPlayer/Makefile&quot;  VERBOSE=1 clean"/>
 				</MakeCommands>
 			</Target>
 			<Target title="Urho3DPlayer/fast">
@@ -75,10 +75,10 @@
 					<Add directory="/code/dev/MayaSpace/src/Urho3D/include/Urho3D/ThirdParty/Lua"/>
 				</Compiler>
 				<MakeCommands>
-					<Build command="/usr/bin/gmake -f &quot;/code/dev/MayaSpace/src/Urho3D/Source/Tools/Urho3DPlayer/Makefile&quot;  VERBOSE=1 Urho3DPlayer/fast"/>
-					<CompileFile command="/usr/bin/gmake -f &quot;/code/dev/MayaSpace/src/Urho3D/Source/Tools/Urho3DPlayer/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
-					<Clean command="/usr/bin/gmake -f &quot;/code/dev/MayaSpace/src/Urho3D/Source/Tools/Urho3DPlayer/Makefile&quot;  VERBOSE=1 clean"/>
-					<DistClean command="/usr/bin/gmake -f &quot;/code/dev/MayaSpace/src/Urho3D/Source/Tools/Urho3DPlayer/Makefile&quot;  VERBOSE=1 clean"/>
+					<Build command="/bin/gmake -f &quot;/code/dev/MayaSpace/src/Urho3D/Source/Tools/Urho3DPlayer/Makefile&quot;  VERBOSE=1 Urho3DPlayer/fast"/>
+					<CompileFile command="/bin/gmake -f &quot;/code/dev/MayaSpace/src/Urho3D/Source/Tools/Urho3DPlayer/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/bin/gmake -f &quot;/code/dev/MayaSpace/src/Urho3D/Source/Tools/Urho3DPlayer/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/bin/gmake -f &quot;/code/dev/MayaSpace/src/Urho3D/Source/Tools/Urho3DPlayer/Makefile&quot;  VERBOSE=1 clean"/>
 				</MakeCommands>
 			</Target>
 			<Target title="AssetImporter">
@@ -108,10 +108,10 @@
 					<Add directory="/code/dev/MayaSpace/src/Urho3D/Source/Tools/AssetImporter/../../ThirdParty/Assimp/include"/>
 				</Compiler>
 				<MakeCommands>
-					<Build command="/usr/bin/gmake -f &quot;/code/dev/MayaSpace/src/Urho3D/Source/Tools/AssetImporter/Makefile&quot;  VERBOSE=1 AssetImporter"/>
-					<CompileFile command="/usr/bin/gmake -f &quot;/code/dev/MayaSpace/src/Urho3D/Source/Tools/AssetImporter/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
-					<Clean command="/usr/bin/gmake -f &quot;/code/dev/MayaSpace/src/Urho3D/Source/Tools/AssetImporter/Makefile&quot;  VERBOSE=1 clean"/>
-					<DistClean command="/usr/bin/gmake -f &quot;/code/dev/MayaSpace/src/Urho3D/Source/Tools/AssetImporter/Makefile&quot;  VERBOSE=1 clean"/>
+					<Build command="/bin/gmake -f &quot;/code/dev/MayaSpace/src/Urho3D/Source/Tools/AssetImporter/Makefile&quot;  VERBOSE=1 AssetImporter"/>
+					<CompileFile command="/bin/gmake -f &quot;/code/dev/MayaSpace/src/Urho3D/Source/Tools/AssetImporter/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/bin/gmake -f &quot;/code/dev/MayaSpace/src/Urho3D/Source/Tools/AssetImporter/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/bin/gmake -f &quot;/code/dev/MayaSpace/src/Urho3D/Source/Tools/AssetImporter/Makefile&quot;  VERBOSE=1 clean"/>
 				</MakeCommands>
 			</Target>
 			<Target title="AssetImporter/fast">
@@ -141,10 +141,10 @@
 					<Add directory="/code/dev/MayaSpace/src/Urho3D/Source/Tools/AssetImporter/../../ThirdParty/Assimp/include"/>
 				</Compiler>
 				<MakeCommands>
-					<Build command="/usr/bin/gmake -f &quot;/code/dev/MayaSpace/src/Urho3D/Source/Tools/AssetImporter/Makefile&quot;  VERBOSE=1 AssetImporter/fast"/>
-					<CompileFile command="/usr/bin/gmake -f &quot;/code/dev/MayaSpace/src/Urho3D/Source/Tools/AssetImporter/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
-					<Clean command="/usr/bin/gmake -f &quot;/code/dev/MayaSpace/src/Urho3D/Source/Tools/AssetImporter/Makefile&quot;  VERBOSE=1 clean"/>
-					<DistClean command="/usr/bin/gmake -f &quot;/code/dev/MayaSpace/src/Urho3D/Source/Tools/AssetImporter/Makefile&quot;  VERBOSE=1 clean"/>
+					<Build command="/bin/gmake -f &quot;/code/dev/MayaSpace/src/Urho3D/Source/Tools/AssetImporter/Makefile&quot;  VERBOSE=1 AssetImporter/fast"/>
+					<CompileFile command="/bin/gmake -f &quot;/code/dev/MayaSpace/src/Urho3D/Source/Tools/AssetImporter/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/bin/gmake -f &quot;/code/dev/MayaSpace/src/Urho3D/Source/Tools/AssetImporter/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/bin/gmake -f &quot;/code/dev/MayaSpace/src/Urho3D/Source/Tools/AssetImporter/Makefile&quot;  VERBOSE=1 clean"/>
 				</MakeCommands>
 			</Target>
 			<Target title="Assimp">
@@ -186,10 +186,10 @@
 					<Add directory="/code/dev/MayaSpace/src/Urho3D/Source/ThirdParty/Assimp/code/../contrib/openddlparser/include"/>
 				</Compiler>
 				<MakeCommands>
-					<Build command="/usr/bin/gmake -f &quot;/code/dev/MayaSpace/src/Urho3D/Source/ThirdParty/Assimp/code/Makefile&quot;  VERBOSE=1 Assimp"/>
-					<CompileFile command="/usr/bin/gmake -f &quot;/code/dev/MayaSpace/src/Urho3D/Source/ThirdParty/Assimp/code/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
-					<Clean command="/usr/bin/gmake -f &quot;/code/dev/MayaSpace/src/Urho3D/Source/ThirdParty/Assimp/code/Makefile&quot;  VERBOSE=1 clean"/>
-					<DistClean command="/usr/bin/gmake -f &quot;/code/dev/MayaSpace/src/Urho3D/Source/ThirdParty/Assimp/code/Makefile&quot;  VERBOSE=1 clean"/>
+					<Build command="/bin/gmake -f &quot;/code/dev/MayaSpace/src/Urho3D/Source/ThirdParty/Assimp/code/Makefile&quot;  VERBOSE=1 Assimp"/>
+					<CompileFile command="/bin/gmake -f &quot;/code/dev/MayaSpace/src/Urho3D/Source/ThirdParty/Assimp/code/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/bin/gmake -f &quot;/code/dev/MayaSpace/src/Urho3D/Source/ThirdParty/Assimp/code/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/bin/gmake -f &quot;/code/dev/MayaSpace/src/Urho3D/Source/ThirdParty/Assimp/code/Makefile&quot;  VERBOSE=1 clean"/>
 				</MakeCommands>
 			</Target>
 			<Target title="Assimp/fast">
@@ -231,10 +231,10 @@
 					<Add directory="/code/dev/MayaSpace/src/Urho3D/Source/ThirdParty/Assimp/code/../contrib/openddlparser/include"/>
 				</Compiler>
 				<MakeCommands>
-					<Build command="/usr/bin/gmake -f &quot;/code/dev/MayaSpace/src/Urho3D/Source/ThirdParty/Assimp/code/Makefile&quot;  VERBOSE=1 Assimp/fast"/>
-					<CompileFile command="/usr/bin/gmake -f &quot;/code/dev/MayaSpace/src/Urho3D/Source/ThirdParty/Assimp/code/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
-					<Clean command="/usr/bin/gmake -f &quot;/code/dev/MayaSpace/src/Urho3D/Source/ThirdParty/Assimp/code/Makefile&quot;  VERBOSE=1 clean"/>
-					<DistClean command="/usr/bin/gmake -f &quot;/code/dev/MayaSpace/src/Urho3D/Source/ThirdParty/Assimp/code/Makefile&quot;  VERBOSE=1 clean"/>
+					<Build command="/bin/gmake -f &quot;/code/dev/MayaSpace/src/Urho3D/Source/ThirdParty/Assimp/code/Makefile&quot;  VERBOSE=1 Assimp/fast"/>
+					<CompileFile command="/bin/gmake -f &quot;/code/dev/MayaSpace/src/Urho3D/Source/ThirdParty/Assimp/code/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/bin/gmake -f &quot;/code/dev/MayaSpace/src/Urho3D/Source/ThirdParty/Assimp/code/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/bin/gmake -f &quot;/code/dev/MayaSpace/src/Urho3D/Source/ThirdParty/Assimp/code/Makefile&quot;  VERBOSE=1 clean"/>
 				</MakeCommands>
 			</Target>
 			<Target title="OgreImporter">
@@ -263,10 +263,10 @@
 					<Add directory="/code/dev/MayaSpace/src/Urho3D/include/Urho3D/ThirdParty/Lua"/>
 				</Compiler>
 				<MakeCommands>
-					<Build command="/usr/bin/gmake -f &quot;/code/dev/MayaSpace/src/Urho3D/Source/Tools/OgreImporter/Makefile&quot;  VERBOSE=1 OgreImporter"/>
-					<CompileFile command="/usr/bin/gmake -f &quot;/code/dev/MayaSpace/src/Urho3D/Source/Tools/OgreImporter/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
-					<Clean command="/usr/bin/gmake -f &quot;/code/dev/MayaSpace/src/Urho3D/Source/Tools/OgreImporter/Makefile&quot;  VERBOSE=1 clean"/>
-					<DistClean command="/usr/bin/gmake -f &quot;/code/dev/MayaSpace/src/Urho3D/Source/Tools/OgreImporter/Makefile&quot;  VERBOSE=1 clean"/>
+					<Build command="/bin/gmake -f &quot;/code/dev/MayaSpace/src/Urho3D/Source/Tools/OgreImporter/Makefile&quot;  VERBOSE=1 OgreImporter"/>
+					<CompileFile command="/bin/gmake -f &quot;/code/dev/MayaSpace/src/Urho3D/Source/Tools/OgreImporter/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/bin/gmake -f &quot;/code/dev/MayaSpace/src/Urho3D/Source/Tools/OgreImporter/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/bin/gmake -f &quot;/code/dev/MayaSpace/src/Urho3D/Source/Tools/OgreImporter/Makefile&quot;  VERBOSE=1 clean"/>
 				</MakeCommands>
 			</Target>
 			<Target title="OgreImporter/fast">
@@ -295,10 +295,10 @@
 					<Add directory="/code/dev/MayaSpace/src/Urho3D/include/Urho3D/ThirdParty/Lua"/>
 				</Compiler>
 				<MakeCommands>
-					<Build command="/usr/bin/gmake -f &quot;/code/dev/MayaSpace/src/Urho3D/Source/Tools/OgreImporter/Makefile&quot;  VERBOSE=1 OgreImporter/fast"/>
-					<CompileFile command="/usr/bin/gmake -f &quot;/code/dev/MayaSpace/src/Urho3D/Source/Tools/OgreImporter/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
-					<Clean command="/usr/bin/gmake -f &quot;/code/dev/MayaSpace/src/Urho3D/Source/Tools/OgreImporter/Makefile&quot;  VERBOSE=1 clean"/>
-					<DistClean command="/usr/bin/gmake -f &quot;/code/dev/MayaSpace/src/Urho3D/Source/Tools/OgreImporter/Makefile&quot;  VERBOSE=1 clean"/>
+					<Build command="/bin/gmake -f &quot;/code/dev/MayaSpace/src/Urho3D/Source/Tools/OgreImporter/Makefile&quot;  VERBOSE=1 OgreImporter/fast"/>
+					<CompileFile command="/bin/gmake -f &quot;/code/dev/MayaSpace/src/Urho3D/Source/Tools/OgreImporter/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/bin/gmake -f &quot;/code/dev/MayaSpace/src/Urho3D/Source/Tools/OgreImporter/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/bin/gmake -f &quot;/code/dev/MayaSpace/src/Urho3D/Source/Tools/OgreImporter/Makefile&quot;  VERBOSE=1 clean"/>
 				</MakeCommands>
 			</Target>
 			<Target title="PackageTool">
@@ -327,10 +327,10 @@
 					<Add directory="/code/dev/MayaSpace/src/Urho3D/include/Urho3D/ThirdParty/Lua"/>
 				</Compiler>
 				<MakeCommands>
-					<Build command="/usr/bin/gmake -f &quot;/code/dev/MayaSpace/src/Urho3D/Source/Tools/PackageTool/Makefile&quot;  VERBOSE=1 PackageTool"/>
-					<CompileFile command="/usr/bin/gmake -f &quot;/code/dev/MayaSpace/src/Urho3D/Source/Tools/PackageTool/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
-					<Clean command="/usr/bin/gmake -f &quot;/code/dev/MayaSpace/src/Urho3D/Source/Tools/PackageTool/Makefile&quot;  VERBOSE=1 clean"/>
-					<DistClean command="/usr/bin/gmake -f &quot;/code/dev/MayaSpace/src/Urho3D/Source/Tools/PackageTool/Makefile&quot;  VERBOSE=1 clean"/>
+					<Build command="/bin/gmake -f &quot;/code/dev/MayaSpace/src/Urho3D/Source/Tools/PackageTool/Makefile&quot;  VERBOSE=1 PackageTool"/>
+					<CompileFile command="/bin/gmake -f &quot;/code/dev/MayaSpace/src/Urho3D/Source/Tools/PackageTool/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/bin/gmake -f &quot;/code/dev/MayaSpace/src/Urho3D/Source/Tools/PackageTool/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/bin/gmake -f &quot;/code/dev/MayaSpace/src/Urho3D/Source/Tools/PackageTool/Makefile&quot;  VERBOSE=1 clean"/>
 				</MakeCommands>
 			</Target>
 			<Target title="PackageTool/fast">
@@ -359,10 +359,10 @@
 					<Add directory="/code/dev/MayaSpace/src/Urho3D/include/Urho3D/ThirdParty/Lua"/>
 				</Compiler>
 				<MakeCommands>
-					<Build command="/usr/bin/gmake -f &quot;/code/dev/MayaSpace/src/Urho3D/Source/Tools/PackageTool/Makefile&quot;  VERBOSE=1 PackageTool/fast"/>
-					<CompileFile command="/usr/bin/gmake -f &quot;/code/dev/MayaSpace/src/Urho3D/Source/Tools/PackageTool/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
-					<Clean command="/usr/bin/gmake -f &quot;/code/dev/MayaSpace/src/Urho3D/Source/Tools/PackageTool/Makefile&quot;  VERBOSE=1 clean"/>
-					<DistClean command="/usr/bin/gmake -f &quot;/code/dev/MayaSpace/src/Urho3D/Source/Tools/PackageTool/Makefile&quot;  VERBOSE=1 clean"/>
+					<Build command="/bin/gmake -f &quot;/code/dev/MayaSpace/src/Urho3D/Source/Tools/PackageTool/Makefile&quot;  VERBOSE=1 PackageTool/fast"/>
+					<CompileFile command="/bin/gmake -f &quot;/code/dev/MayaSpace/src/Urho3D/Source/Tools/PackageTool/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/bin/gmake -f &quot;/code/dev/MayaSpace/src/Urho3D/Source/Tools/PackageTool/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/bin/gmake -f &quot;/code/dev/MayaSpace/src/Urho3D/Source/Tools/PackageTool/Makefile&quot;  VERBOSE=1 clean"/>
 				</MakeCommands>
 			</Target>
 			<Target title="RampGenerator">
@@ -392,10 +392,10 @@
 					<Add directory="/code/dev/MayaSpace/src/Urho3D/include/Urho3D/ThirdParty/Lua"/>
 				</Compiler>
 				<MakeCommands>
-					<Build command="/usr/bin/gmake -f &quot;/code/dev/MayaSpace/src/Urho3D/Source/Tools/RampGenerator/Makefile&quot;  VERBOSE=1 RampGenerator"/>
-					<CompileFile command="/usr/bin/gmake -f &quot;/code/dev/MayaSpace/src/Urho3D/Source/Tools/RampGenerator/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
-					<Clean command="/usr/bin/gmake -f &quot;/code/dev/MayaSpace/src/Urho3D/Source/Tools/RampGenerator/Makefile&quot;  VERBOSE=1 clean"/>
-					<DistClean command="/usr/bin/gmake -f &quot;/code/dev/MayaSpace/src/Urho3D/Source/Tools/RampGenerator/Makefile&quot;  VERBOSE=1 clean"/>
+					<Build command="/bin/gmake -f &quot;/code/dev/MayaSpace/src/Urho3D/Source/Tools/RampGenerator/Makefile&quot;  VERBOSE=1 RampGenerator"/>
+					<CompileFile command="/bin/gmake -f &quot;/code/dev/MayaSpace/src/Urho3D/Source/Tools/RampGenerator/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/bin/gmake -f &quot;/code/dev/MayaSpace/src/Urho3D/Source/Tools/RampGenerator/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/bin/gmake -f &quot;/code/dev/MayaSpace/src/Urho3D/Source/Tools/RampGenerator/Makefile&quot;  VERBOSE=1 clean"/>
 				</MakeCommands>
 			</Target>
 			<Target title="RampGenerator/fast">
@@ -425,10 +425,10 @@
 					<Add directory="/code/dev/MayaSpace/src/Urho3D/include/Urho3D/ThirdParty/Lua"/>
 				</Compiler>
 				<MakeCommands>
-					<Build command="/usr/bin/gmake -f &quot;/code/dev/MayaSpace/src/Urho3D/Source/Tools/RampGenerator/Makefile&quot;  VERBOSE=1 RampGenerator/fast"/>
-					<CompileFile command="/usr/bin/gmake -f &quot;/code/dev/MayaSpace/src/Urho3D/Source/Tools/RampGenerator/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
-					<Clean command="/usr/bin/gmake -f &quot;/code/dev/MayaSpace/src/Urho3D/Source/Tools/RampGenerator/Makefile&quot;  VERBOSE=1 clean"/>
-					<DistClean command="/usr/bin/gmake -f &quot;/code/dev/MayaSpace/src/Urho3D/Source/Tools/RampGenerator/Makefile&quot;  VERBOSE=1 clean"/>
+					<Build command="/bin/gmake -f &quot;/code/dev/MayaSpace/src/Urho3D/Source/Tools/RampGenerator/Makefile&quot;  VERBOSE=1 RampGenerator/fast"/>
+					<CompileFile command="/bin/gmake -f &quot;/code/dev/MayaSpace/src/Urho3D/Source/Tools/RampGenerator/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/bin/gmake -f &quot;/code/dev/MayaSpace/src/Urho3D/Source/Tools/RampGenerator/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/bin/gmake -f &quot;/code/dev/MayaSpace/src/Urho3D/Source/Tools/RampGenerator/Makefile&quot;  VERBOSE=1 clean"/>
 				</MakeCommands>
 			</Target>
 			<Target title="SpritePacker">
@@ -457,10 +457,10 @@
 					<Add directory="/code/dev/MayaSpace/src/Urho3D/include/Urho3D/ThirdParty/Lua"/>
 				</Compiler>
 				<MakeCommands>
-					<Build command="/usr/bin/gmake -f &quot;/code/dev/MayaSpace/src/Urho3D/Source/Tools/SpritePacker/Makefile&quot;  VERBOSE=1 SpritePacker"/>
-					<CompileFile command="/usr/bin/gmake -f &quot;/code/dev/MayaSpace/src/Urho3D/Source/Tools/SpritePacker/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
-					<Clean command="/usr/bin/gmake -f &quot;/code/dev/MayaSpace/src/Urho3D/Source/Tools/SpritePacker/Makefile&quot;  VERBOSE=1 clean"/>
-					<DistClean command="/usr/bin/gmake -f &quot;/code/dev/MayaSpace/src/Urho3D/Source/Tools/SpritePacker/Makefile&quot;  VERBOSE=1 clean"/>
+					<Build command="/bin/gmake -f &quot;/code/dev/MayaSpace/src/Urho3D/Source/Tools/SpritePacker/Makefile&quot;  VERBOSE=1 SpritePacker"/>
+					<CompileFile command="/bin/gmake -f &quot;/code/dev/MayaSpace/src/Urho3D/Source/Tools/SpritePacker/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/bin/gmake -f &quot;/code/dev/MayaSpace/src/Urho3D/Source/Tools/SpritePacker/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/bin/gmake -f &quot;/code/dev/MayaSpace/src/Urho3D/Source/Tools/SpritePacker/Makefile&quot;  VERBOSE=1 clean"/>
 				</MakeCommands>
 			</Target>
 			<Target title="SpritePacker/fast">
@@ -489,10 +489,10 @@
 					<Add directory="/code/dev/MayaSpace/src/Urho3D/include/Urho3D/ThirdParty/Lua"/>
 				</Compiler>
 				<MakeCommands>
-					<Build command="/usr/bin/gmake -f &quot;/code/dev/MayaSpace/src/Urho3D/Source/Tools/SpritePacker/Makefile&quot;  VERBOSE=1 SpritePacker/fast"/>
-					<CompileFile command="/usr/bin/gmake -f &quot;/code/dev/MayaSpace/src/Urho3D/Source/Tools/SpritePacker/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
-					<Clean command="/usr/bin/gmake -f &quot;/code/dev/MayaSpace/src/Urho3D/Source/Tools/SpritePacker/Makefile&quot;  VERBOSE=1 clean"/>
-					<DistClean command="/usr/bin/gmake -f &quot;/code/dev/MayaSpace/src/Urho3D/Source/Tools/SpritePacker/Makefile&quot;  VERBOSE=1 clean"/>
+					<Build command="/bin/gmake -f &quot;/code/dev/MayaSpace/src/Urho3D/Source/Tools/SpritePacker/Makefile&quot;  VERBOSE=1 SpritePacker/fast"/>
+					<CompileFile command="/bin/gmake -f &quot;/code/dev/MayaSpace/src/Urho3D/Source/Tools/SpritePacker/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/bin/gmake -f &quot;/code/dev/MayaSpace/src/Urho3D/Source/Tools/SpritePacker/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/bin/gmake -f &quot;/code/dev/MayaSpace/src/Urho3D/Source/Tools/SpritePacker/Makefile&quot;  VERBOSE=1 clean"/>
 				</MakeCommands>
 			</Target>
 			<Target title="ScriptCompiler">
@@ -521,10 +521,10 @@
 					<Add directory="/code/dev/MayaSpace/src/Urho3D/include/Urho3D/ThirdParty/Lua"/>
 				</Compiler>
 				<MakeCommands>
-					<Build command="/usr/bin/gmake -f &quot;/code/dev/MayaSpace/src/Urho3D/Source/Tools/ScriptCompiler/Makefile&quot;  VERBOSE=1 ScriptCompiler"/>
-					<CompileFile command="/usr/bin/gmake -f &quot;/code/dev/MayaSpace/src/Urho3D/Source/Tools/ScriptCompiler/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
-					<Clean command="/usr/bin/gmake -f &quot;/code/dev/MayaSpace/src/Urho3D/Source/Tools/ScriptCompiler/Makefile&quot;  VERBOSE=1 clean"/>
-					<DistClean command="/usr/bin/gmake -f &quot;/code/dev/MayaSpace/src/Urho3D/Source/Tools/ScriptCompiler/Makefile&quot;  VERBOSE=1 clean"/>
+					<Build command="/bin/gmake -f &quot;/code/dev/MayaSpace/src/Urho3D/Source/Tools/ScriptCompiler/Makefile&quot;  VERBOSE=1 ScriptCompiler"/>
+					<CompileFile command="/bin/gmake -f &quot;/code/dev/MayaSpace/src/Urho3D/Source/Tools/ScriptCompiler/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/bin/gmake -f &quot;/code/dev/MayaSpace/src/Urho3D/Source/Tools/ScriptCompiler/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/bin/gmake -f &quot;/code/dev/MayaSpace/src/Urho3D/Source/Tools/ScriptCompiler/Makefile&quot;  VERBOSE=1 clean"/>
 				</MakeCommands>
 			</Target>
 			<Target title="ScriptCompiler/fast">
@@ -553,10 +553,10 @@
 					<Add directory="/code/dev/MayaSpace/src/Urho3D/include/Urho3D/ThirdParty/Lua"/>
 				</Compiler>
 				<MakeCommands>
-					<Build command="/usr/bin/gmake -f &quot;/code/dev/MayaSpace/src/Urho3D/Source/Tools/ScriptCompiler/Makefile&quot;  VERBOSE=1 ScriptCompiler/fast"/>
-					<CompileFile command="/usr/bin/gmake -f &quot;/code/dev/MayaSpace/src/Urho3D/Source/Tools/ScriptCompiler/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
-					<Clean command="/usr/bin/gmake -f &quot;/code/dev/MayaSpace/src/Urho3D/Source/Tools/ScriptCompiler/Makefile&quot;  VERBOSE=1 clean"/>
-					<DistClean command="/usr/bin/gmake -f &quot;/code/dev/MayaSpace/src/Urho3D/Source/Tools/ScriptCompiler/Makefile&quot;  VERBOSE=1 clean"/>
+					<Build command="/bin/gmake -f &quot;/code/dev/MayaSpace/src/Urho3D/Source/Tools/ScriptCompiler/Makefile&quot;  VERBOSE=1 ScriptCompiler/fast"/>
+					<CompileFile command="/bin/gmake -f &quot;/code/dev/MayaSpace/src/Urho3D/Source/Tools/ScriptCompiler/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/bin/gmake -f &quot;/code/dev/MayaSpace/src/Urho3D/Source/Tools/ScriptCompiler/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/bin/gmake -f &quot;/code/dev/MayaSpace/src/Urho3D/Source/Tools/ScriptCompiler/Makefile&quot;  VERBOSE=1 clean"/>
 				</MakeCommands>
 			</Target>
 		</Build>

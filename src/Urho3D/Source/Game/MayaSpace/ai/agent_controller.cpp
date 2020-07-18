@@ -24,14 +24,14 @@ AgentController::AgentController(Agent *agent) {
         sensors.emplace_back(*s);
     }
 
-    sensors[0].setOffset(Vector3(0.0f, 0.0f, 0.0f));
-    sensors[0].setDirection(Vector3(Vector3(1.0f, 0.0f, 0.0f)));
+    sensors[0].setOffset(Urho3D::Vector3(0.0f, 0.0f, 0.0f));
+    sensors[0].setDirection(Urho3D::Vector3(Urho3D::Vector3(1.0f, 0.0f, 0.0f)));
 
-    sensors[1].setOffset(Vector3(0.0f, 0.0f, 0.0f));
-    sensors[1].setDirection(Vector3(Vector3(0.0f, 1.0f, 0.0f)));
+    sensors[1].setOffset(Urho3D::Vector3(0.0f, 0.0f, 0.0f));
+    sensors[1].setDirection(Urho3D::Vector3(Urho3D::Vector3(0.0f, 1.0f, 0.0f)));
 
-    sensors[2].setOffset(Vector3(0.0f, 0.0f, 0.0f));
-    sensors[2].setDirection(Vector3(Vector3(0.0f, 0.0f, 1.0f)));
+    sensors[2].setOffset(Urho3D::Vector3(0.0f, 0.0f, 0.0f));
+    sensors[2].setDirection(Urho3D::Vector3(Urho3D::Vector3(0.0f, 0.0f, 1.0f)));
 
     // Update sensors with initial values
     for (int i = 0; i < numSensors; i++) {

@@ -22,6 +22,7 @@
 
 #pragma once
 
+#include <MayaSpace/ai/evolution_manager.h>
 #include "Game.h"
 #include "Sample2D.h"
 

@@ -11,20 +11,20 @@
 				<Option working_dir="/code/dev/MayaSpace/src/Urho3D/Docs"/>
 				<Option type="4"/>
 				<MakeCommands>
-					<Build command="/usr/bin/gmake -f &quot;/code/dev/MayaSpace/src/Urho3D/Docs/Makefile&quot;  VERBOSE=1 all"/>
-					<CompileFile command="/usr/bin/gmake -f &quot;/code/dev/MayaSpace/src/Urho3D/Docs/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
-					<Clean command="/usr/bin/gmake -f &quot;/code/dev/MayaSpace/src/Urho3D/Docs/Makefile&quot;  VERBOSE=1 clean"/>
-					<DistClean command="/usr/bin/gmake -f &quot;/code/dev/MayaSpace/src/Urho3D/Docs/Makefile&quot;  VERBOSE=1 clean"/>
+					<Build command="/bin/gmake -f &quot;/code/dev/MayaSpace/src/Urho3D/Docs/Makefile&quot;  VERBOSE=1 all"/>
+					<CompileFile command="/bin/gmake -f &quot;/code/dev/MayaSpace/src/Urho3D/Docs/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/bin/gmake -f &quot;/code/dev/MayaSpace/src/Urho3D/Docs/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/bin/gmake -f &quot;/code/dev/MayaSpace/src/Urho3D/Docs/Makefile&quot;  VERBOSE=1 clean"/>
 				</MakeCommands>
 			</Target>
 			<Target title="doc">
 				<Option working_dir="/code/dev/MayaSpace/src/Urho3D/Docs"/>
 				<Option type="4"/>
 				<MakeCommands>
-					<Build command="/usr/bin/gmake -f &quot;/code/dev/MayaSpace/src/Urho3D/Docs/Makefile&quot;  VERBOSE=1 doc"/>
-					<CompileFile command="/usr/bin/gmake -f &quot;/code/dev/MayaSpace/src/Urho3D/Docs/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
-					<Clean command="/usr/bin/gmake -f &quot;/code/dev/MayaSpace/src/Urho3D/Docs/Makefile&quot;  VERBOSE=1 clean"/>
-					<DistClean command="/usr/bin/gmake -f &quot;/code/dev/MayaSpace/src/Urho3D/Docs/Makefile&quot;  VERBOSE=1 clean"/>
+					<Build command="/bin/gmake -f &quot;/code/dev/MayaSpace/src/Urho3D/Docs/Makefile&quot;  VERBOSE=1 doc"/>
+					<CompileFile command="/bin/gmake -f &quot;/code/dev/MayaSpace/src/Urho3D/Docs/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/bin/gmake -f &quot;/code/dev/MayaSpace/src/Urho3D/Docs/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/bin/gmake -f &quot;/code/dev/MayaSpace/src/Urho3D/Docs/Makefile&quot;  VERBOSE=1 clean"/>
 				</MakeCommands>
 			</Target>
 		</Build>

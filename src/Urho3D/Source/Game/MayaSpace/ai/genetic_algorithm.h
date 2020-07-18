@@ -10,6 +10,7 @@
 
 #include "genotype.h"
 #include "../util/event.h"
+#include "evolution_manager.h"
 
 // Default min value of initial population parameters.
 static const float DefInitParamMin = -1.0f;
@@ -31,10 +32,14 @@ static const float DefMutationPerc = 1.0f;
 
 static const int RestartAfter = 100;
 
+// Forward declarations
+class EvolutionManager;
+
 class GeneticAlgorithm {
 public:
 
-    GeneticAlgorithm(int genotypeParamCount, int populationSize);
+    GeneticAlgorithm(EvolutionManager* evolutionManager, int genotypeParamCount, int populationSize);
+    //GeneticAlgorithm(int genotypeParamCount, int populationSize);
     ~GeneticAlgorithm();
 
     SimpleEvent::Event terminationCriterion;
@@ -101,6 +106,7 @@ public:
 
 private:
     std::vector<Genotype*> currentPopulation;
+    static EvolutionManager *evolutionManager;
 public:
     const std::vector<Genotype*> &getCurrentPopulation() const;
 };

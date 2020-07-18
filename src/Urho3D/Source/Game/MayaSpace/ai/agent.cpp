@@ -14,9 +14,9 @@ Agent::Agent(Genotype *genotype, NeuralLayer::ActivationFunction defaultActivati
     id = this->generateId();
     // Random position spread magnitude
     float mag = 3.0f;
-    this->position = Vector3(Random(0.0f,1.0f)*mag, Random(0.0f,1.0f)*mag, Random(0.0f,1.0f)*mag);
-    this->rotation = Quaternion();
-    this->colour = Vector3(Random(0.0f,1.0f), Random(0.0f,1.0f), Random(0.0f,1.0f));
+    this->position = Urho3D::Vector3(Urho3D::Random(0.0f,1.0f)*mag, Urho3D::Random(0.0f,1.0f)*mag, Urho3D::Random(0.0f,1.0f)*mag);
+    this->rotation = Urho3D::Quaternion();
+    this->colour = Urho3D::Vector3(Urho3D::Random(0.0f,1.0f), Urho3D::Random(0.0f,1.0f), Urho3D::Random(0.0f,1.0f));
 
     alive = false;
     this->genotype = genotype;
@@ -103,35 +103,35 @@ bool Agent::isAlive() {
     return alive;
 }
 
-const Vector3 &Agent::getPosition() const {
+const Urho3D::Vector3 &Agent::getPosition() const {
     return position;
 }
 
-void Agent::setPosition(const Vector3 &position) {
+void Agent::setPosition(const Urho3D::Vector3 &position) {
     Agent::position = position;
 }
 
-const Quaternion &Agent::getRotation() const {
+const Urho3D::Quaternion &Agent::getRotation() const {
     return rotation;
 }
 
-void Agent::setRotation(const Quaternion &rotation) {
+void Agent::setRotation(const Urho3D::Quaternion &rotation) {
     Agent::rotation = rotation;
 }
 
-const Vector3 &Agent::getColour() const {
+const Urho3D::Vector3 &Agent::getColour() const {
     return colour;
 }
 
-void Agent::setColour(const Vector3 &colour) {
+void Agent::setColour(const Urho3D::Vector3 &colour) {
     Agent::colour = colour;
 }
 
-const Vector3 &Agent::getWinPos() const {
+const Urho3D::Vector3 &Agent::getWinPos() const {
     return winPos;
 }
 
-void Agent::setWinPos(const Vector3 &winPos) {
+void Agent::setWinPos(const Urho3D::Vector3 &winPos) {
     Agent::winPos = winPos;
 }
 

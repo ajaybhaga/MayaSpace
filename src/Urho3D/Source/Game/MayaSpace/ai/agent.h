@@ -11,6 +11,8 @@
 #include "../shared_libs.h"
 #include "../util/event.h"
 #include <Urho3D/Math/MathDefs.h>
+#include <Urho3D/Math/Vector3.h>
+#include <Urho3D/Math/Quaternion.h>
 
 class Agent {
 public:
@@ -37,14 +39,14 @@ public:
     // Whether this agent is currently alive (actively participating in the simulation).
     bool isAlive();
 
-    const Vector3 &getPosition() const;
-    void setPosition(const Vector3 &position);
-    const Quaternion &getRotation() const;
-    void setRotation(const Quaternion &rotation);
-    const Vector3 &getWinPos() const;
-    void setWinPos(const Vector3 &winPos);
-    const Vector3 &getColour() const;
-    void setColour(const Vector3 &colour);
+    const Urho3D::Vector3 &getPosition() const;
+    void setPosition(const Urho3D::Vector3 &position);
+    const Urho3D::Quaternion &getRotation() const;
+    void setRotation(const Urho3D::Quaternion &rotation);
+    const Urho3D::Vector3 &getWinPos() const;
+    void setWinPos(const Urho3D::Vector3 &winPos);
+    const Urho3D::Vector3 &getColour() const;
+    void setColour(const Urho3D::Vector3 &colour);
     const char* getName();
     unsigned generateId();
     bool isHit() const;
@@ -57,10 +59,10 @@ private:
     bool hit = false;
     long lastHit = 0;
 
-    Vector3 position;
-    Vector3 winPos;
-    Quaternion rotation;
-    Vector3 colour;
+    Urho3D::Vector3 position;
+    Urho3D::Vector3 winPos;
+    Urho3D::Quaternion rotation;
+    Urho3D::Vector3 colour;
 
 };
 

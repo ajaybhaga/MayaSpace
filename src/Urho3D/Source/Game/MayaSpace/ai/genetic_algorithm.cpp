@@ -7,8 +7,10 @@
 
 #include <algorithm>
 #include "../shared_libs.h"
+#include <Urho3D/Math/Vector3.h>
+#include <Urho3D/Math/Quaternion.h>
 
-GeneticAlgorithm::GeneticAlgorithm(int genotypeParamCount, int populationSize) {
+GeneticAlgorithm::GeneticAlgorithm(EvolutionManager *evolutionManager, int genotypeParamCount, int populationSize) {
 
     this->populationSize = populationSize;
     for (int i = 0; i < populationSize; i++) {
@@ -16,6 +18,7 @@ GeneticAlgorithm::GeneticAlgorithm(int genotypeParamCount, int populationSize) {
         currentPopulation.push_back(genotype);
     }
 
+    this->evolutionManager = evolutionManager;
     generationCount = 1;
     sortPopulation = true;
     running = false;
@@ -38,7 +41,7 @@ bool sortByGenotype(const Genotype* lhs, const Genotype* rhs) { return lhs->fitn
 
 void GeneticAlgorithm::evaluationFinished() {
     // Iterate through agent controllers and apply update
-    std::vector<AgentController*> controllers = EvolutionManager::getInstance()->getAgentControllers();
+    std::vector<AgentController*> controllers = evolutionManager->getAgentControllers();
 
     // Calculate fitness from evaluation
     fitnessCalculationMethod(currentPopulation);
@@ -176,7 +179,7 @@ void GeneticAlgorithm::defaultMutationOperator(std::vector<Genotype*> newPopulat
 
 
         for (int i = 0; i < newPopulation.size(); i++) {
-            if (Random(0.0f,1.0f) < DefMutationPerc) {
+            if (Urho3D::Random(0.0f,1.0f) < DefMutationPerc) {
                 mutateGenotype(newPopulation[i], DefMutationProb, DefMutationAmount);
             }
         }
@@ -195,7 +198,7 @@ void GeneticAlgorithm::completeCrossover(Genotype *parent1, Genotype *parent2, f
     // Iterate over all parameters randomly swapping
     for (int i = 0; i < parameterCount; i++) {
 
-        if (Random(0.0f,1.0f) < swapChance) {
+        if (Urho3D::Random(0.0f,1.0f) < swapChance) {
             // Swap parameters
             off1Parameters[i] = parent2->getParameter(i);
             off2Parameters[i] = parent1->getParameter(i);
@@ -215,9 +218,9 @@ void GeneticAlgorithm::mutateGenotype(Genotype *genotype, float mutationProb, fl
 
     for (int i = 0; i < genotype->getParameterCount(); i++) {
 
-        if (Random(0.0f,1.0f) < mutationProb) {
+        if (Urho3D::Random(0.0f,1.0f) < mutationProb) {
             // Mutate by random amount in range [-mutationAmount, mutationAmount]
-            genotype->setParameter(i, genotype->getParameter(i) + (float)Random(0.0f,1.0f) * (mutationAmount * 2) - mutationAmount);
+            genotype->setParameter(i, genotype->getParameter(i) + (float)Urho3D::Random(0.0f,1.0f) * (mutationAmount * 2) - mutationAmount);
         }
     }
 }
@@ -226,7 +229,7 @@ bool GeneticAlgorithm::defaultTermination(std::vector<Genotype*> currentPopulati
 
     //std::cout << "Generation count: " << EvolutionManager::getInstance()->getGenerationCount() << std::endl;
 
-    return (EvolutionManager::getInstance()->getGenerationCount() >= RestartAfter);
+    return (evolutionManager->getGenerationCount() >= RestartAfter);
 }
 
 const std::vector<Genotype*> &GeneticAlgorithm::getCurrentPopulation() const {

@@ -8,7 +8,8 @@
 #include <string>
 #include <stdlib.h>     /* abs */
 #include "../util/math_helper.h"
-#include "../MayaSpace.h"
+#include <Urho3D/Math/Vector3.h>
+#include <Urho3D/Math/Quaternion.h>
 #include "agent.h"
 
 // Class representing a sensor reading the distance to the nearest obstacle in a specified direction.
@@ -22,14 +23,14 @@ public:
     void hide();
     void show();
 
-    const Vector3 &getDirection() const;
+    const Urho3D::Vector3 &getDirection() const;
     Agent *getAgent() const;
-    const Vector3 &getOffset() const;
-    void setOffset(const Vector3 &offset);
-    void setDirection(const Vector3 &direction);
-    const Vector3 &getTarget() const;
-    const Vector3 &getCenter() const;
-    void setCenter(const Vector3 &center);
+    const Urho3D::Vector3 &getOffset() const;
+    void setOffset(const Urho3D::Vector3 &offset);
+    void setDirection(const Urho3D::Vector3 &direction);
+    const Urho3D::Vector3 &getTarget() const;
+    const Urho3D::Vector3 &getCenter() const;
+    void setCenter(const Urho3D::Vector3 &center);
 /*    CollisionSphere getCollisionSphere(const Vector3 &position,
                                                         const Vector3 &extents);
 */
@@ -49,17 +50,17 @@ private:
     const float MIN_DIST = 0.01f;
 
     // Offset from center of agent
-    Vector3 offset;
+    Urho3D::Vector3 offset;
     // Sensor center
-    Vector3 center;
+    Urho3D::Vector3 center;
     // Sensor target
-    Vector3 target;
+    Urho3D::Vector3 target;
 
     Agent *agent;
     // Sensor direction
-    Vector3 direction;
+    Urho3D::Vector3 direction;
 
-    Vector3 halfSize;
+    Urho3D::Vector3 halfSize;
 
     bool hit = false;
     long lastHit = 0;

@@ -12,57 +12,65 @@
 #include "agent_controller.h"
 #include "../util/event.h"
 
-// Singleton class for managing the evolutionary processes.
+// Forward declarations
+class GeneticAlgorithm;
+
+
+//-- Singleton class for managing the evolutionary processes.
+
+// Normal class for managing the evolutionary processes.
+
 class EvolutionManager {
 public:
 
-    static EvolutionManager *getInstance();
+ //   static EvolutionManager *getInstance();
     ~EvolutionManager();
 
-    static int getGenerationCount();
-    static void startEvolution();
-    static void restartAlgorithm(float wait);
+    int getGenerationCount();
+    void startEvolution();
+    void restartAlgorithm(float wait);
     static GeneticAlgorithm *getGeneticAlgorithm();
 
     static void writeStatisticsFileStart();
     static void writeStatisticsToFile();
     static void checkForTrackFinished();
     static bool checkGenerationTermination();
-    static void onGATermination();
+    void onGATermination();
     static void startEvaluation(std::vector<Genotype*> currentPopulation);
     static void onAgentDied();
     static std::vector<Genotype*> *remainderStochasticSampling(std::vector<Genotype*> currentPopulation);
     static std::vector<Genotype*> *randomRecombination(std::vector<Genotype*> intermediatePopulation, int newPopulationSize);
     static void mutateAllButBestTwo(std::vector<Genotype*> newPopulation);
     static void mutateAll(std::vector<Genotype*> newPopulation);
-    static void evalFinished();
+    void evalFinished();
 
     // The amount of agents that are currently alive.
     int agentsAliveCount = 0;
 
     // Event for when all agents have died.
-    SimpleEvent::Event allAgentsDied;
+    static SimpleEvent::Event allAgentsDied;
 
     const std::vector<Agent*> &getAgents() const;
     const std::vector<AgentController*> &getAgentControllers() const;
 
-private:
 
-    static EvolutionManager *instance;
+private:
     // private constructor to prevent instancing.
     EvolutionManager();
 
+//    static EvolutionManager *instance;
+
     // Whether or not the results of each generation shall be written to file.
     bool saveStatistics = false;
-    std::string statisticsFileName;
-    std::ofstream statisticsFile;
+    static std::string statisticsFileName;
+    static std::ofstream statisticsFile;
 
     // How many of the first to finish the course should be saved to file
-    int saveFirstNGenotype = 0;
-    int genotypesSaved = 0;
+    static int saveFirstNGenotype = 0;
+    static int genotypesSaved = 0;
 
     // Population size
-    int populationSize = 10;
+    static int populationSize = 10;
 
     // After how many generations should the genetic algorithm be restarted (0 for never)
     int restartAfter = 100;
@@ -80,6 +88,7 @@ private:
     std::vector<AgentController*> agentControllers;
 
     GeneticAlgorithm *geneticAlgorithm;
+
 };
 
 #endif //EANN_SIMPLE_EVOLUTION_MANAGER_H

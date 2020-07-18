@@ -66,8 +66,8 @@ void Sensor::update() {
     // Update stored position derived from agent position
     this->center = agent->getPosition() + this->offset;
 
-    std::vector<Agent*> agents = EvolutionManager::getInstance()->getAgents();
-    std::vector<AgentController*> controllers = EvolutionManager::getInstance()->getAgentControllers();
+//    std::vector<Agent*> agents = EvolutionManager::getInstance()->getAgents();
+//    std::vector<AgentController*> controllers = EvolutionManager::getInstance()->getAgentControllers();
 
     // Calculate hit distance
     float hitDistance = 0.0;
@@ -150,32 +150,32 @@ Agent *Sensor::getAgent() const {
     return agent;
 }
 
-const Vector3 &Sensor::getTarget() const {
+const Urho3D::Vector3 &Sensor::getTarget() const {
     return target;
 }
 
-const Vector3 &Sensor::getDirection() const {
+const Urho3D::Vector3 &Sensor::getDirection() const {
     return direction;
 }
 
-const Vector3 &Sensor::getOffset() const {
+const Urho3D::Vector3 &Sensor::getOffset() const {
     return offset;
 }
 
-void Sensor::setOffset(const Vector3 &offset) {
+void Sensor::setOffset(const Urho3D::Vector3 &offset) {
     Sensor::offset = offset;
 }
 
-void Sensor::setDirection(const Vector3 &direction) {
+void Sensor::setDirection(const Urho3D::Vector3 &direction) {
     Sensor::direction = direction;
     this->direction.Normalize();
 }
 
-const Vector3 &Sensor::getCenter() const {
+const Urho3D::Vector3 &Sensor::getCenter() const {
     return center;
 }
 
-void Sensor::setCenter(const Vector3 &center) {
+void Sensor::setCenter(const Urho3D::Vector3 &center) {
     Sensor::center = center;
 }
 

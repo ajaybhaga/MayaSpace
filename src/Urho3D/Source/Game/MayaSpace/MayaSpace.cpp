@@ -89,6 +89,7 @@
 #include "Sample2D.h"
 #include "Utilities2D/Mover.h"
 #include "MayaSpace.h"
+#include <MayaSpace/ai/evolution_manager.h>
 
 
 // AgentSim shared libs
@@ -110,13 +111,6 @@ MayaSpace::MayaSpace(Context* context) :
 void MayaSpace::Setup()
 {
     Game::Setup();
-
-    // Enable sound
-    //engineParameters_[EP_SOUND] = true;
-
-    // Disable sound
-    engineParameters_[EP_SOUND] = false;
-
 }
 
 void MayaSpace::InitEvolutionSpriteGenerator() {

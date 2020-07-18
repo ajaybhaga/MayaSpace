@@ -53,6 +53,3 @@ static const std::string currentDateTime() {
 
     return buf;
 }
-
-// Genetic Algorithm Evolution Manager instance (singleton)
-EvolutionManager *EvolutionManager::instance = 0;

@@ -11,10 +11,10 @@
 				<Option working_dir="/code/dev/MayaSpace/src/Urho3D/Source/ThirdParty/Assimp"/>
 				<Option type="4"/>
 				<MakeCommands>
-					<Build command="/usr/bin/gmake -f &quot;/code/dev/MayaSpace/src/Urho3D/Source/ThirdParty/Assimp/Makefile&quot;  VERBOSE=1 all"/>
-					<CompileFile command="/usr/bin/gmake -f &quot;/code/dev/MayaSpace/src/Urho3D/Source/ThirdParty/Assimp/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
-					<Clean command="/usr/bin/gmake -f &quot;/code/dev/MayaSpace/src/Urho3D/Source/ThirdParty/Assimp/Makefile&quot;  VERBOSE=1 clean"/>
-					<DistClean command="/usr/bin/gmake -f &quot;/code/dev/MayaSpace/src/Urho3D/Source/ThirdParty/Assimp/Makefile&quot;  VERBOSE=1 clean"/>
+					<Build command="/bin/gmake -f &quot;/code/dev/MayaSpace/src/Urho3D/Source/ThirdParty/Assimp/Makefile&quot;  VERBOSE=1 all"/>
+					<CompileFile command="/bin/gmake -f &quot;/code/dev/MayaSpace/src/Urho3D/Source/ThirdParty/Assimp/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/bin/gmake -f &quot;/code/dev/MayaSpace/src/Urho3D/Source/ThirdParty/Assimp/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/bin/gmake -f &quot;/code/dev/MayaSpace/src/Urho3D/Source/ThirdParty/Assimp/Makefile&quot;  VERBOSE=1 clean"/>
 				</MakeCommands>
 			</Target>
 			<Target title="Assimp">
@@ -56,10 +56,10 @@
 					<Add directory="/code/dev/MayaSpace/src/Urho3D/Source/ThirdParty/Assimp/code/../contrib/openddlparser/include"/>
 				</Compiler>
 				<MakeCommands>
-					<Build command="/usr/bin/gmake -f &quot;/code/dev/MayaSpace/src/Urho3D/Source/ThirdParty/Assimp/code/Makefile&quot;  VERBOSE=1 Assimp"/>
-					<CompileFile command="/usr/bin/gmake -f &quot;/code/dev/MayaSpace/src/Urho3D/Source/ThirdParty/Assimp/code/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
-					<Clean command="/usr/bin/gmake -f &quot;/code/dev/MayaSpace/src/Urho3D/Source/ThirdParty/Assimp/code/Makefile&quot;  VERBOSE=1 clean"/>
-					<DistClean command="/usr/bin/gmake -f &quot;/code/dev/MayaSpace/src/Urho3D/Source/ThirdParty/Assimp/code/Makefile&quot;  VERBOSE=1 clean"/>
+					<Build command="/bin/gmake -f &quot;/code/dev/MayaSpace/src/Urho3D/Source/ThirdParty/Assimp/code/Makefile&quot;  VERBOSE=1 Assimp"/>
+					<CompileFile command="/bin/gmake -f &quot;/code/dev/MayaSpace/src/Urho3D/Source/ThirdParty/Assimp/code/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/bin/gmake -f &quot;/code/dev/MayaSpace/src/Urho3D/Source/ThirdParty/Assimp/code/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/bin/gmake -f &quot;/code/dev/MayaSpace/src/Urho3D/Source/ThirdParty/Assimp/code/Makefile&quot;  VERBOSE=1 clean"/>
 				</MakeCommands>
 			</Target>
 			<Target title="Assimp/fast">
@@ -101,10 +101,10 @@
 					<Add directory="/code/dev/MayaSpace/src/Urho3D/Source/ThirdParty/Assimp/code/../contrib/openddlparser/include"/>
 				</Compiler>
 				<MakeCommands>
-					<Build command="/usr/bin/gmake -f &quot;/code/dev/MayaSpace/src/Urho3D/Source/ThirdParty/Assimp/code/Makefile&quot;  VERBOSE=1 Assimp/fast"/>
-					<CompileFile command="/usr/bin/gmake -f &quot;/code/dev/MayaSpace/src/Urho3D/Source/ThirdParty/Assimp/code/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
-					<Clean command="/usr/bin/gmake -f &quot;/code/dev/MayaSpace/src/Urho3D/Source/ThirdParty/Assimp/code/Makefile&quot;  VERBOSE=1 clean"/>
-					<DistClean command="/usr/bin/gmake -f &quot;/code/dev/MayaSpace/src/Urho3D/Source/ThirdParty/Assimp/code/Makefile&quot;  VERBOSE=1 clean"/>
+					<Build command="/bin/gmake -f &quot;/code/dev/MayaSpace/src/Urho3D/Source/ThirdParty/Assimp/code/Makefile&quot;  VERBOSE=1 Assimp/fast"/>
+					<CompileFile command="/bin/gmake -f &quot;/code/dev/MayaSpace/src/Urho3D/Source/ThirdParty/Assimp/code/Makefile&quot;  VERBOSE=1 &quot;$file&quot;"/>
+					<Clean command="/bin/gmake -f &quot;/code/dev/MayaSpace/src/Urho3D/Source/ThirdParty/Assimp/code/Makefile&quot;  VERBOSE=1 clean"/>
+					<DistClean command="/bin/gmake -f &quot;/code/dev/MayaSpace/src/Urho3D/Source/ThirdParty/Assimp/code/Makefile&quot;  VERBOSE=1 clean"/>
 				</MakeCommands>
 			</Target>
 		</Build>

@@ -6,6 +6,8 @@
 //
 
 #include "../shared_libs.h"
+#include <Urho3D/Math/Vector3.h>
+#include <Urho3D/Math/Quaternion.h>
 
 AgentMovement::AgentMovement(AgentController *agentController) {
     //this->agentController.make_shared(agentController);
@@ -74,12 +76,12 @@ void AgentMovement::setInputs(double *input) {
 
 // Apply the current velocity to the position of the agent.
 void AgentMovement::applyVelocity(float deltaTime) {
-    Vector3 direction = Vector3(0, 1, 0);
-    Quaternion currRot = this->agentController->agent->getRotation();
+    Urho3D::Vector3 direction = Urho3D::Vector3(0, 1, 0);
+    Urho3D::Quaternion currRot = this->agentController->agent->getRotation();
 
     this->agentController->agent->setRotation(rotation);
 
-    Quaternion dirQ = Quaternion(0.0f, 90.0f, 0.0f);
+    Urho3D::Quaternion dirQ = Urho3D::Quaternion(0.0f, 90.0f, 0.0f);
     ;
 //    dirQ.addScaledVector(direction, 1.0);
     //dirQ.rotateByVector(velocity * deltaTime);
@@ -91,7 +93,7 @@ void AgentMovement::applyVelocity(float deltaTime) {
 */
 
     // Update position
-    this->agentController->agent->setPosition(Vector3(this->agentController->agent->getPosition() + (velocity * deltaTime)));
+    this->agentController->agent->setPosition(Urho3D::Vector3(this->agentController->agent->getPosition() + (velocity * deltaTime)));
 }
 
 // Apply some friction to the velocity.
@@ -116,8 +118,8 @@ void AgentMovement::applyFriction(float deltaTime) {
 }
 
 void AgentMovement::stop() {
-    velocity = Vector3(0, 0, 0);
-    rotation = Quaternion(0, Vector3(0, 0, 1));
+    velocity = Urho3D::Vector3(0, 0, 0);
+    rotation = Urho3D::Quaternion(0, Urho3D::Vector3(0, 0, 1));
 }
 
 double AgentMovement::getHorizontalInput() const {

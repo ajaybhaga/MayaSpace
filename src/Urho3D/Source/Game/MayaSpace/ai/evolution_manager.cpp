@@ -4,8 +4,10 @@
 // Modified Genetic Algorithm
 // Based on design of Samuel Arzt (March 2017)
 //
-
+#include "evolution_manager.h"
 #include "../shared_libs.h"
+
+#include <Urho3D/Math/MathDefs.h>
 
 bool directoryExists(const char *dname){
     DIR *di = opendir(dname); // open the directory
@@ -30,15 +32,18 @@ EvolutionManager::~EvolutionManager() {
 }
 
 EvolutionManager *EvolutionManager::getInstance() {
-
-    if (instance == 0) {
-        instance = new EvolutionManager();
-        // Initialize
-        getInstance()->statisticsFileName = "stats.txt";
-
-    }
-    return instance;
+    return this;
 }
+/*
+
+    if (!EvolutionManager::instance) {
+        EvolutionManager::instance = new EvolutionManager();
+        // Initialize
+ //       getInstance()->statisticsFileName = "stats.txt";
+    }
+
+    return 0;//EvolutionManager::instance;
+}*/
 
 // The age of the current generation.
 int EvolutionManager::getGenerationCount() {
@@ -46,7 +51,7 @@ int EvolutionManager::getGenerationCount() {
 }
 
 void EvolutionManager::evalFinished() {
-    EvolutionManager::getInstance()->getGeneticAlgorithm()->evaluationFinished();
+    getGeneticAlgorithm()->evaluationFinished();
 }
 
 void EvolutionManager::startEvolution() {
@@ -74,7 +79,7 @@ void EvolutionManager::startEvolution() {
     NeuralNetwork *nn = new NeuralNetwork(getInstance()->ffnTopology, NUM_NEURAL_LAYERS);
 
     // Setup genetic algorithm
-    getInstance()->geneticAlgorithm = new GeneticAlgorithm(nn->weightCount, getInstance()->populationSize);
+    getInstance()->geneticAlgorithm = new GeneticAlgorithm(this, nn->weightCount, getInstance()->populationSize);
     getInstance()->genotypesSaved = 0;
 
     getInstance()->geneticAlgorithm->evaluation = startEvaluation;
@@ -127,19 +132,19 @@ void EvolutionManager::startEvolution() {
 
 void EvolutionManager::writeStatisticsFileStart() {
     std::string dirPath = TRAINING_DATA_DIR;
-    std::string fullPath = dirPath + getInstance()->statisticsFileName;
+    std::string fullPath = dirPath + statisticsFileName;
 
     std::string outText;
     std::string trackName = "default";
 
-    getInstance()->statisticsFile.open(fullPath);
-    if (getInstance()->statisticsFile.is_open())
+    statisticsFile.open(fullPath);
+    if (statisticsFile.is_open())
     {
         outText += "Evaluation of a population with size: ";
-        outText += std::to_string(getInstance()->populationSize);
+        outText += std::to_string(populationSize);
         outText += " on Track " + trackName + ".\n";
-        getInstance()->statisticsFile << outText;
-        getInstance()->statisticsFile.close();
+        statisticsFile << outText;
+        statisticsFile.close();
     }
 }
 
@@ -147,11 +152,11 @@ void EvolutionManager::writeStatisticsToFile() {
 
     std::string outText;
 
-    std::vector<Genotype*> currentPopulation = getInstance()->getGeneticAlgorithm()->getCurrentPopulation();
+    std::vector<Genotype*> currentPopulation = getGeneticAlgorithm()->getCurrentPopulation();
 
     for (int i = 0; i < currentPopulation.size(); i++) {
         outText += "Generation Count -> ";
-        outText += getInstance()->getGeneticAlgorithm()->generationCount;
+        outText += getGeneticAlgorithm()->generationCount;
         outText += "\n";
         outText += "Genotype Evaluation: ";
         outText += currentPopulation[i]->evaluation;
@@ -162,10 +167,10 @@ void EvolutionManager::writeStatisticsToFile() {
 // Checks the current population and saves genotypes to a file if their evaluation is greater than or equal to 1.
 void EvolutionManager::checkForTrackFinished() {
 
-    if (getInstance()->genotypesSaved >= getInstance()->saveFirstNGenotype) return;
+    if (genotypesSaved >= saveFirstNGenotype) return;
 
-    std::string saveFolder = getInstance()->statisticsFileName + "/";
-    std::vector<Genotype*> currentPopulation = getInstance()->getGeneticAlgorithm()->getCurrentPopulation();
+    std::string saveFolder = statisticsFileName + "/";
+    std::vector<Genotype*> currentPopulation = getGeneticAlgorithm()->getCurrentPopulation();
 
     for (int i = 0; i < currentPopulation.size(); i++) {
 
@@ -184,13 +189,13 @@ void EvolutionManager::checkForTrackFinished() {
 
                 std::string a = saveFolder;
                 a += "Genotype - Finished as ";
-                a += (++(getInstance()->genotypesSaved));
+                a += (++(genotypesSaved));
                 a += ".txt";
                 currentPopulation[i]->saveToFile(a.data());
 
 //                std::ofstream("sandbox/file"); // create regular file
 
-                if (getInstance()->genotypesSaved >= getInstance()->saveFirstNGenotype) return;
+                if (genotypesSaved >= saveFirstNGenotype) return;
             }
         } else
             return; // List should be sorted, so we can exit here.
@@ -198,13 +203,13 @@ void EvolutionManager::checkForTrackFinished() {
 }
 
 bool EvolutionManager::checkGenerationTermination() {
-    return getInstance()->getGeneticAlgorithm()->checkTermination(getInstance()->getGeneticAlgorithm()->getCurrentPopulation());
+    return getGeneticAlgorithm()->checkTermination(getGeneticAlgorithm()->getCurrentPopulation());
 }
 
 void EvolutionManager::onGATermination() {
 
-    getInstance()->allAgentsDied -= evalFinished;
-    getInstance()->restartAlgorithm(5.0f);
+    allAgentsDied -= evalFinished;
+    restartAlgorithm(5.0f);
 }
 
 // Restart the algorithm after a specific wait time
@@ -266,7 +271,7 @@ void EvolutionManager::mutateAllButBestTwo(std::vector<Genotype*> newPopulation)
     int i = 0;
     for (int i = 2; i < newPopulation.size(); i++) {
 
-        if (Random(0.0f,1.0f) < DefMutationProb) {
+        if (Urho3D::Random(0.0f,1.0f) < DefMutationProb) {
             getInstance()->getGeneticAlgorithm()->mutateGenotype(newPopulation[i], DefMutationProb, DefMutationAmount);
         }
     }
@@ -275,7 +280,7 @@ void EvolutionManager::mutateAllButBestTwo(std::vector<Genotype*> newPopulation)
 void EvolutionManager::mutateAll(std::vector<Genotype*> newPopulation) {
 
      for (int i = 0; i < newPopulation.size(); i++) {
-         if (Random(0.0f,1.0f) < DefMutationProb) {
+         if (Urho3D::Random(0.0f,1.0f) < DefMutationProb) {
              getInstance()->getGeneticAlgorithm()->mutateGenotype(newPopulation[i], DefMutationProb, DefMutationAmount);
          }
      }
@@ -325,11 +330,11 @@ std::vector<Genotype*> *EvolutionManager::randomRecombination(std::vector<Genoty
         while (newPopulation->size() < newPopulationSize) {
 
             // Get two random indices that are not the same.
-            int randomIndex1 = (int) Random(0.0, (float)  std::round(intermediatePopulation.size()));
+            int randomIndex1 = (int) Urho3D::Random(0.0, (float)  std::round(intermediatePopulation.size()));
             int randomIndex2;
 
             do {
-                randomIndex2 = (int) Random(0.0, (float) std::round(intermediatePopulation.size()));
+                randomIndex2 = (int) Urho3D::Random(0.0, (float) std::round(intermediatePopulation.size()));
             } while (randomIndex2 == randomIndex1);
 
             getInstance()->getGeneticAlgorithm()->completeCrossover(intermediatePopulation[randomIndex1], intermediatePopulation[randomIndex2],
@@ -369,7 +374,7 @@ std::vector<Genotype*> *EvolutionManager::remainderStochasticSampling(std::vecto
     for (int i = 0; i < currentPopulation.size(); i++) {
 
             float remainder = currentPopulation[i]->fitness - (int) currentPopulation[i]->fitness;
-        if (Random(0.0f,1.0f) < remainder) {
+        if (Urho3D::Random(0.0f,1.0f) < remainder) {
             Genotype *g = new Genotype(currentPopulation[i]->getParameterCopy());
             intermediatePopulation->emplace_back(g);
         }
