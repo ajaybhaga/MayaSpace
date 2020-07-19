@@ -37,7 +37,7 @@ class EvolutionManager;
 class GeneticAlgorithm {
 public:
 
-    GeneticAlgorithm(EvolutionManager* evolutionManager, int genotypeParamCount, int populationSize);
+    GeneticAlgorithm(int genotypeParamCount, int populationSize);
     //GeneticAlgorithm(int genotypeParamCount, int populationSize);
     ~GeneticAlgorithm();
 
@@ -106,7 +106,6 @@ public:
 
 private:
     std::vector<Genotype*> currentPopulation;
-    static EvolutionManager *evolutionManager;
 public:
     const std::vector<Genotype*> &getCurrentPopulation() const;
 };

@@ -10,7 +10,7 @@
 #include <Urho3D/Math/Vector3.h>
 #include <Urho3D/Math/Quaternion.h>
 
-GeneticAlgorithm::GeneticAlgorithm(EvolutionManager *evolutionManager, int genotypeParamCount, int populationSize) {
+GeneticAlgorithm::GeneticAlgorithm(int genotypeParamCount, int populationSize) {
 
     this->populationSize = populationSize;
     for (int i = 0; i < populationSize; i++) {
@@ -18,7 +18,6 @@ GeneticAlgorithm::GeneticAlgorithm(EvolutionManager *evolutionManager, int genot
         currentPopulation.push_back(genotype);
     }
 
-    this->evolutionManager = evolutionManager;
     generationCount = 1;
     sortPopulation = true;
     running = false;
@@ -41,7 +40,7 @@ bool sortByGenotype(const Genotype* lhs, const Genotype* rhs) { return lhs->fitn
 
 void GeneticAlgorithm::evaluationFinished() {
     // Iterate through agent controllers and apply update
-    std::vector<AgentController*> controllers = evolutionManager->getAgentControllers();
+    std::vector<AgentController*> controllers = EvolutionManager().getInstance()->getAgentControllers();
 
     // Calculate fitness from evaluation
     fitnessCalculationMethod(currentPopulation);
@@ -229,7 +228,7 @@ bool GeneticAlgorithm::defaultTermination(std::vector<Genotype*> currentPopulati
 
     //std::cout << "Generation count: " << EvolutionManager::getInstance()->getGenerationCount() << std::endl;
 
-    return (evolutionManager->getGenerationCount() >= RestartAfter);
+    return (EvolutionManager().getInstance()->getGenerationCount() >= RestartAfter);
 }
 
 const std::vector<Genotype*> &GeneticAlgorithm::getCurrentPopulation() const {

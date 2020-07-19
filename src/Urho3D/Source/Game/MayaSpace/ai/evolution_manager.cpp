@@ -9,6 +9,31 @@
 
 #include <Urho3D/Math/MathDefs.h>
 
+// Forward declarations
+int EvolutionManager::agentsAliveCount;
+bool EvolutionManager::saveStatistics;
+std::string EvolutionManager::statisticsFileName;
+std::ofstream EvolutionManager::statisticsFile;
+
+int EvolutionManager::saveFirstNGenotype;
+int EvolutionManager::genotypesSaved;
+int EvolutionManager::populationSize;
+int EvolutionManager::restartAfter;
+bool EvolutionManager::elitistSelection;
+EvolutionManager* EvolutionManager::instance;
+
+// Topology of the agent's FNN
+int* EvolutionManager::ffnTopology;
+// The current population agents.
+std::vector<Agent*> EvolutionManager::agents;
+// The current population agents.
+std::vector<AgentController*> EvolutionManager::agentControllers;
+GeneticAlgorithm *EvolutionManager::geneticAlgorithm;
+
+// Event for when all agents have died.
+SimpleEvent::Event EvolutionManager::allAgentsDied;
+
+
 bool directoryExists(const char *dname){
     DIR *di = opendir(dname); // open the directory
     if(di) return true; // can open=>return true
@@ -103,7 +128,7 @@ void EvolutionManager::startEvolution() {
     NeuralNetwork *nn = new NeuralNetwork(ffnTopology, NUM_NEURAL_LAYERS);
 
     // Setup genetic algorithm
-    geneticAlgorithm = new GeneticAlgorithm(instance, nn->weightCount, populationSize);
+    geneticAlgorithm = new GeneticAlgorithm(nn->weightCount, populationSize);
     genotypesSaved = 0;
 
     geneticAlgorithm->evaluation = startEvaluation;

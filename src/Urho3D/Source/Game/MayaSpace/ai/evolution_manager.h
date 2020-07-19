@@ -56,9 +56,6 @@ public:
     const std::vector<Agent*> &getAgents() const;
     const std::vector<AgentController*> &getAgentControllers() const;
 
-private:
-
-    static EvolutionManager *instance;
 
     // Whether or not the results of each generation shall be written to file.
     static bool saveStatistics;
@@ -89,4 +86,6 @@ private:
 
     static GeneticAlgorithm *geneticAlgorithm;
 
+private:
+    static EvolutionManager *instance;
 };
