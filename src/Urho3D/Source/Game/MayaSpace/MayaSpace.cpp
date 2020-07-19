@@ -117,9 +117,6 @@ void MayaSpace::InitEvolutionSpriteGenerator() {
 
     std::cout << "Evolution Manager -> starting..." << std::endl;
 
-    // Instantiate evolution manager
-    EvolutionManager::instantiate();
-
     EvolutionManager::getInstance()->startEvolution();
     EvolutionManager* evolutionManager = EvolutionManager::getInstance();
 

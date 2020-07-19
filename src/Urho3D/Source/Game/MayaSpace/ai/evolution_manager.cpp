@@ -20,7 +20,7 @@ int EvolutionManager::genotypesSaved;
 int EvolutionManager::populationSize;
 int EvolutionManager::restartAfter;
 bool EvolutionManager::elitistSelection;
-EvolutionManager* EvolutionManager::instance;
+EvolutionManager* EvolutionManager::instance = NULL;
 
 // Topology of the agent's FNN
 int* EvolutionManager::ffnTopology;
@@ -58,8 +58,6 @@ EvolutionManager::EvolutionManager() {
 
     // Whether to use elitist selection or remainder stochastic sampling
     elitistSelection = false;
-
-    instantiate();
 
 }
 
@@ -446,5 +444,8 @@ const std::vector<AgentController*> &EvolutionManager::getAgentControllers() con
 }
 
 EvolutionManager *EvolutionManager::getInstance() {
+    if (!instance) {
+        instantiate();
+    }
     return instance;
 }
