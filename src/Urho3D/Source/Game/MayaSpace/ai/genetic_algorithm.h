@@ -5,8 +5,7 @@
 // Based on design of Samuel Arzt (March 2017)
 //
 
-#ifndef EANN_SIMPLE_GENETIC_ALGORITHM_H
-#define EANN_SIMPLE_GENETIC_ALGORITHM_H
+#pragma once
 
 #include "genotype.h"
 #include "../util/event.h"
@@ -51,16 +50,16 @@ public:
     void terminate();
 
     // Static methods
-    static void defaultPopulationInitialization(std::vector<Genotype*> population);
-    static void asyncEvaluation(std::vector<Genotype*> currentPopulation);
-    static void defaultFitnessCalculation(std::vector<Genotype*> currentPopulation);
-    static std::vector<Genotype*> *defaultSelectionOperator(std::vector<Genotype*> currentPopulation);
-    static std::vector<Genotype*> *defaultRecombinationOperator(std::vector<Genotype*> intermediatePopulation, int newPopulationSize);
+     static void defaultPopulationInitialization(std::vector<Genotype*> population);
+     static void asyncEvaluation(std::vector<Genotype*> currentPopulation);
+     static void defaultFitnessCalculation(std::vector<Genotype*> currentPopulation);
+     static std::vector<Genotype*> *defaultSelectionOperator(std::vector<Genotype*> currentPopulation);
+     static std::vector<Genotype*> *defaultRecombinationOperator(std::vector<Genotype*> intermediatePopulation, int newPopulationSize);
 
-    static void defaultMutationOperator(std::vector<Genotype*> newPopulation);
-    static void completeCrossover(Genotype *parent1, Genotype *parent2, float swapChance, Genotype* &offspring1, Genotype* &offspring2);
-    static void mutateGenotype(Genotype *genotype, float mutationProb, float mutationAmount);
-    static bool defaultTermination(std::vector<Genotype*> currentPopulation);
+     static void defaultMutationOperator(std::vector<Genotype*> newPopulation);
+     static void completeCrossover(Genotype *parent1, Genotype *parent2, float swapChance, Genotype* &offspring1, Genotype* &offspring2);
+     static void mutateGenotype(Genotype *genotype, float mutationProb, float mutationAmount);
+     static bool defaultTermination(std::vector<Genotype*> currentPopulation);
 
     // Use to initialize the initial population.
     typedef std::function<void (std::vector<Genotype*> initialPopulation)> InitializationOperator;
@@ -83,6 +82,7 @@ public:
     // Used to check whether any termination criterion has been met.
     typedef std::function<bool (std::vector<Genotype*> currentPopulation)> CheckTerminationCriterion;
 
+    // std::function<void(int)> f1 = [](int x){ return C::f(x); };
     // Operators
     InitializationOperator initializePopulation = defaultPopulationInitialization;
     EvaluationOperator evaluation = asyncEvaluation;
@@ -110,5 +110,3 @@ private:
 public:
     const std::vector<Genotype*> &getCurrentPopulation() const;
 };
-
-#endif //EANN_SIMPLE_GENETIC_ALGORITHM_H

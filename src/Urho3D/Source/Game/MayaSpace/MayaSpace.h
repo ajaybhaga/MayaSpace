@@ -63,6 +63,8 @@ public:
     /// Setup before engine initialization. Modifies the engine parameters.
     void Setup() override;
 
+    void Stop() override;
+
 private:
     /// Construct the scene content.
     void CreateScene();
@@ -116,6 +118,9 @@ private:
 
     /// Particle pool
     ParticlePool particlePool_[20];
+
+    // Evolution Manager
+    EvolutionManager* evolutionManager;
 
     // Debug text
     Text* debugText1_;

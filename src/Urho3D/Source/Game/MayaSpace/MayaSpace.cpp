@@ -116,10 +116,13 @@ void MayaSpace::Setup()
 void MayaSpace::InitEvolutionSpriteGenerator() {
 
     std::cout << "Evolution Manager -> starting..." << std::endl;
-    EvolutionManager::getInstance()->startEvolution();
+
+    // Instantiate evolution manager
+    evolutionManager = new EvolutionManager();
+    evolutionManager->startEvolution();
 
     // Create shape for each agent
-    std::vector<Agent*> agents = EvolutionManager::getInstance()->getAgents();
+    std::vector<Agent*> agents = evolutionManager->getAgents();
     for (int i = 0; i < agents.size(); i++) {
         // Randomly place agents
         //       agents[i]->setPosition(cyclone::Vector3(rd(), rd(), rd()));
@@ -177,8 +180,8 @@ void MayaSpace::InitEvolutionSpriteGenerator() {
 
 void MayaSpace::UpdateGeneticAlgorithm(float timeStep) {
     // Iterate through agent controllers and apply update
-    std::vector<Agent*> agents = EvolutionManager::getInstance()->getAgents();
-    std::vector<AgentController*> controllers = EvolutionManager::getInstance()->getAgentControllers();
+    std::vector<Agent*> agents = evolutionManager->getAgents();
+    std::vector<AgentController*> controllers = evolutionManager->getAgentControllers();
 
     for (int i = 0; i < controllers.size(); i++) {
         AgentController *controller = controllers[i];
@@ -189,11 +192,11 @@ void MayaSpace::UpdateGeneticAlgorithm(float timeStep) {
 }
 
 void MayaSpace::ShowEvolutionManagerStats() {
-    std::vector<Agent*> agents = EvolutionManager::getInstance()->getAgents();
-    std::vector<AgentController*> controllers = EvolutionManager::getInstance()->getAgentControllers();
+    std::vector<Agent*> agents = evolutionManager->getAgents();
+    std::vector<AgentController*> controllers = evolutionManager->getAgentControllers();
 
     char buffer[255];
-    int aliveCount = EvolutionManager::getInstance()->agentsAliveCount;
+    int aliveCount = evolutionManager->agentsAliveCount;
     const int maxRows = 20;
     char *strText[maxRows];
 
@@ -309,6 +312,16 @@ void MayaSpace::Start()
     SubscribeToEvents();
 
 }
+
+void MayaSpace::Stop() {
+
+    // Free evolution manager
+    delete evolutionManager;
+
+    // Dump engine resources
+    Game::Stop();
+}
+
 
 void MayaSpace::CreateScene()
 {

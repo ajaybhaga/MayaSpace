@@ -5,8 +5,7 @@
 // Based on design of Samuel Arzt (March 2017)
 //
 
-#ifndef EANN_SIMPLE_EVOLUTION_MANAGER_H
-#define EANN_SIMPLE_EVOLUTION_MANAGER_H
+#pragma once
 
 #include "genetic_algorithm.h"
 #include "agent_controller.h"
@@ -23,7 +22,8 @@ class GeneticAlgorithm;
 class EvolutionManager {
 public:
 
- //   static EvolutionManager *getInstance();
+    EvolutionManager();
+    //   static EvolutionManager *getInstance();
     ~EvolutionManager();
 
     int getGenerationCount();
@@ -42,10 +42,10 @@ public:
     static std::vector<Genotype*> *randomRecombination(std::vector<Genotype*> intermediatePopulation, int newPopulationSize);
     static void mutateAllButBestTwo(std::vector<Genotype*> newPopulation);
     static void mutateAll(std::vector<Genotype*> newPopulation);
-    void evalFinished();
+    static void evalFinished();
 
     // The amount of agents that are currently alive.
-    int agentsAliveCount = 0;
+    static int agentsAliveCount;
 
     // Event for when all agents have died.
     static SimpleEvent::Event allAgentsDied;
@@ -53,42 +53,37 @@ public:
     const std::vector<Agent*> &getAgents() const;
     const std::vector<AgentController*> &getAgentControllers() const;
 
-
 private:
-    // private constructor to prevent instancing.
-    EvolutionManager();
 
 //    static EvolutionManager *instance;
 
     // Whether or not the results of each generation shall be written to file.
-    bool saveStatistics = false;
+    bool saveStatistics;
     static std::string statisticsFileName;
     static std::ofstream statisticsFile;
 
     // How many of the first to finish the course should be saved to file
-    static int saveFirstNGenotype = 0;
-    static int genotypesSaved = 0;
+    static int saveFirstNGenotype;
+    static int genotypesSaved;
 
     // Population size
-    static int populationSize = 10;
+    static int populationSize;
 
     // After how many generations should the genetic algorithm be restarted (0 for never)
-    int restartAfter = 100;
+    int restartAfter;
 
     // Whether to use elitist selection or remainder stochastic sampling
-    bool elitistSelection = false;
+    bool elitistSelection;
 
     // Topology of the agent's FNN
     int* ffnTopology;
 
     // The current population agents.
-    std::vector<Agent*> agents;
+    static std::vector<Agent*> agents;
 
     // The current population agents.
-    std::vector<AgentController*> agentControllers;
+    static std::vector<AgentController*> agentControllers;
 
-    GeneticAlgorithm *geneticAlgorithm;
+    static GeneticAlgorithm *geneticAlgorithm;
 
 };
-
-#endif //EANN_SIMPLE_EVOLUTION_MANAGER_H

@@ -18,6 +18,21 @@ bool directoryExists(const char *dname){
 
 EvolutionManager::EvolutionManager() {
     saveStatistics = true;
+
+    agentsAliveCount = 0;
+
+    // How many of the first to finish the course should be saved to file
+    saveFirstNGenotype = 0;
+    genotypesSaved = 0;
+
+    // Population size
+    populationSize = 10;
+
+    // After how many generations should the genetic algorithm be restarted (0 for never)
+    restartAfter = 100;
+
+    // Whether to use elitist selection or remainder stochastic sampling
+    elitistSelection = false;
 }
 
 EvolutionManager::~EvolutionManager() {
@@ -31,15 +46,12 @@ EvolutionManager::~EvolutionManager() {
     }
 }
 
-EvolutionManager *EvolutionManager::getInstance() {
-    return this;
-}
 /*
 
     if (!EvolutionManager::instance) {
         EvolutionManager::instance = new EvolutionManager();
         // Initialize
- //       getInstance()->statisticsFileName = "stats.txt";
+ //       statisticsFileName = "stats.txt";
     }
 
     return 0;//EvolutionManager::instance;
@@ -47,7 +59,7 @@ EvolutionManager *EvolutionManager::getInstance() {
 
 // The age of the current generation.
 int EvolutionManager::getGenerationCount() {
-    return getInstance()->getGeneticAlgorithm()->generationCount;
+    return getGeneticAlgorithm()->generationCount;
 }
 
 void EvolutionManager::evalFinished() {
@@ -59,47 +71,47 @@ void EvolutionManager::startEvolution() {
     // Build Neural Network.
 
     // Create neural layer array (NUM_NEURAL_LAYERS = 4)
-    getInstance()->ffnTopology = new int[NUM_NEURAL_LAYERS+1];
+    ffnTopology = new int[NUM_NEURAL_LAYERS+1];
 
     // It comprises 4 layers: an input layer with 5 neurons, two hidden layers with 4 and 3 neurons respectively
     // and an output layer with 2 neurons.
 
     // Input layer
-    getInstance()->ffnTopology[0] = 5;
+    ffnTopology[0] = 5;
 
     // Hidden layers
-    getInstance()->ffnTopology[1] = 4;
-    getInstance()->ffnTopology[2] = 3;
+    ffnTopology[1] = 4;
+    ffnTopology[2] = 3;
 
     // Output layer
-    getInstance()->ffnTopology[3] = 2;
-    getInstance()->ffnTopology[4] = 2;
+    ffnTopology[3] = 2;
+    ffnTopology[4] = 2;
 
     // Create neural network to determine parameter count
-    NeuralNetwork *nn = new NeuralNetwork(getInstance()->ffnTopology, NUM_NEURAL_LAYERS);
+    NeuralNetwork *nn = new NeuralNetwork(ffnTopology, NUM_NEURAL_LAYERS);
 
     // Setup genetic algorithm
-    getInstance()->geneticAlgorithm = new GeneticAlgorithm(this, nn->weightCount, getInstance()->populationSize);
-    getInstance()->genotypesSaved = 0;
+    geneticAlgorithm = new GeneticAlgorithm(this, nn->weightCount, populationSize);
+    genotypesSaved = 0;
 
-    getInstance()->geneticAlgorithm->evaluation = startEvaluation;
+    geneticAlgorithm->evaluation = startEvaluation;
 
-    if (getInstance()->elitistSelection) {
+    if (elitistSelection) {
 
         // Second configuration
-        getInstance()->geneticAlgorithm->selection = getInstance()->geneticAlgorithm->defaultSelectionOperator;
-        getInstance()->geneticAlgorithm->recombination = randomRecombination;
-        getInstance()->geneticAlgorithm->mutation = mutateAllButBestTwo;
+        geneticAlgorithm->selection = geneticAlgorithm->defaultSelectionOperator;
+        geneticAlgorithm->recombination = randomRecombination;
+        geneticAlgorithm->mutation = mutateAllButBestTwo;
 
     } else {
 
         // First configuration
-        getInstance()->geneticAlgorithm->selection = remainderStochasticSampling;
-        getInstance()->geneticAlgorithm->recombination = randomRecombination;
-        getInstance()->geneticAlgorithm->mutation = mutateAllButBestTwo;
+        geneticAlgorithm->selection = remainderStochasticSampling;
+        geneticAlgorithm->recombination = randomRecombination;
+        geneticAlgorithm->mutation = mutateAllButBestTwo;
     }
 
-    getInstance()->allAgentsDied += evalFinished;
+    allAgentsDied += evalFinished;
 
     char buffer[80];
     time_t rawtime;
@@ -108,25 +120,25 @@ void EvolutionManager::startEvolution() {
     timeinfo = localtime(&rawtime);
 
     // Statistics
-    if (getInstance()->saveStatistics) {
+    if (saveStatistics) {
         strftime(buffer,sizeof(buffer),"%d-%m-%Y_%H:%M:%S",timeinfo);
         std::string str(buffer);
-        getInstance()->statisticsFileName = std::string("evaluation-") + buffer;
+        statisticsFileName = std::string("evaluation-") + buffer;
         writeStatisticsFileStart();
-        getInstance()->geneticAlgorithm->fitnessCalculationFinished += writeStatisticsToFile;
+        geneticAlgorithm->fitnessCalculationFinished += writeStatisticsToFile;
     }
 
-    getInstance()->geneticAlgorithm->fitnessCalculationFinished += checkForTrackFinished;
+    geneticAlgorithm->fitnessCalculationFinished += checkForTrackFinished;
 
     //Restart logic
-    if (getInstance()->restartAfter > 0) {
+    if (restartAfter > 0) {
 
-        getInstance()->geneticAlgorithm->terminationCriterion += checkGenerationTermination;
-        getInstance()->geneticAlgorithm->algorithmTerminated += onGATermination;
+        geneticAlgorithm->terminationCriterion += checkGenerationTermination;
+        geneticAlgorithm->algorithmTerminated += onGATermination;
 
     }
 
-    getInstance()->geneticAlgorithm->start();
+    geneticAlgorithm->start();
 }
 
 
@@ -219,6 +231,7 @@ void EvolutionManager::restartAlgorithm(float wait) {
 
     std::cout << "[" << currentDateTime() << "] Evolution Manager - restarting algorithm..." << std::endl << std::flush;
 
+    // Instantiates Genetic Algorithm and passes Evolution Manager
     startEvolution();
 }
 
@@ -226,27 +239,27 @@ void EvolutionManager::restartAlgorithm(float wait) {
  void EvolutionManager::startEvaluation(std::vector<Genotype*> currentPopulation) {
 
     // Create new agents from currentPopulation
-    getInstance()->agents.clear();
-    getInstance()->agentControllers.clear();
-    getInstance()->agentsAliveCount = 0;
+    agents.clear();
+    agentControllers.clear();
+    agentsAliveCount = 0;
 
     // Iterate through genotypes
     //for (auto it = currentPopulation.begin(); it != currentPopulation.end(); ++it) {
 
     for (int i = 0; i < currentPopulation.size(); i++) {
 
-        Agent* agent = new Agent(currentPopulation[i], MathHelper::softSignFunction, getInstance()->ffnTopology);
+        Agent* agent = new Agent(currentPopulation[i], MathHelper::softSignFunction, ffnTopology);
         AgentController *agentController = new AgentController(agent);
-        getInstance()->agents.emplace_back(agent);
-        getInstance()->agentControllers.emplace_back(agentController);
+        agents.emplace_back(agent);
+        agentControllers.emplace_back(agentController);
         agentController->agent->agentDied += onAgentDied;
-        getInstance()->agentsAliveCount++;
+        agentsAliveCount++;
     }
 
     // TrackManager.Instance.setCarAmount(agents.Count);
 
     // Iterate through agent controllers
-//    for (auto it = getInstance()->agentControllers.begin(); it != getInstance()->agentControllers.end(); ++it) {
+//    for (auto it = agentControllers.begin(); it != agentControllers.end(); ++it) {
 //    }
 
     // track manager -> Instance restart
@@ -255,11 +268,11 @@ void EvolutionManager::restartAlgorithm(float wait) {
 
 void EvolutionManager::onAgentDied() {
 
-    getInstance()->agentsAliveCount--;
+    agentsAliveCount--;
 
     // Check if all agents have died and signal if so
-    if (getInstance()->agentsAliveCount == 0) {
-        getInstance()->allAgentsDied();
+    if (agentsAliveCount == 0) {
+        allAgentsDied();
     }
 
 }
@@ -272,7 +285,7 @@ void EvolutionManager::mutateAllButBestTwo(std::vector<Genotype*> newPopulation)
     for (int i = 2; i < newPopulation.size(); i++) {
 
         if (Urho3D::Random(0.0f,1.0f) < DefMutationProb) {
-            getInstance()->getGeneticAlgorithm()->mutateGenotype(newPopulation[i], DefMutationProb, DefMutationAmount);
+            getGeneticAlgorithm()->mutateGenotype(newPopulation[i], DefMutationProb, DefMutationAmount);
         }
     }
 }
@@ -281,7 +294,7 @@ void EvolutionManager::mutateAll(std::vector<Genotype*> newPopulation) {
 
      for (int i = 0; i < newPopulation.size(); i++) {
          if (Urho3D::Random(0.0f,1.0f) < DefMutationProb) {
-             getInstance()->getGeneticAlgorithm()->mutateGenotype(newPopulation[i], DefMutationProb, DefMutationAmount);
+             getGeneticAlgorithm()->mutateGenotype(newPopulation[i], DefMutationProb, DefMutationAmount);
          }
      }
 }
@@ -337,7 +350,7 @@ std::vector<Genotype*> *EvolutionManager::randomRecombination(std::vector<Genoty
                 randomIndex2 = (int) Urho3D::Random(0.0, (float) std::round(intermediatePopulation.size()));
             } while (randomIndex2 == randomIndex1);
 
-            getInstance()->getGeneticAlgorithm()->completeCrossover(intermediatePopulation[randomIndex1], intermediatePopulation[randomIndex2],
+            getGeneticAlgorithm()->completeCrossover(intermediatePopulation[randomIndex1], intermediatePopulation[randomIndex2],
                     DefCrossSwapProb, offspring1, offspring2);
 
             newPopulation->emplace_back(offspring1);
@@ -384,7 +397,7 @@ std::vector<Genotype*> *EvolutionManager::remainderStochasticSampling(std::vecto
 }
 
 GeneticAlgorithm *EvolutionManager::getGeneticAlgorithm() {
-    return getInstance()->geneticAlgorithm;
+    return geneticAlgorithm;
 }
 
 const std::vector<Agent*> &EvolutionManager::getAgents() const {
