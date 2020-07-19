@@ -33,6 +33,18 @@ EvolutionManager::EvolutionManager() {
 
     // Whether to use elitist selection or remainder stochastic sampling
     elitistSelection = false;
+
+    instantiate();
+
+}
+
+void EvolutionManager::instantiate() {
+    instance = new EvolutionManager();
+}
+
+void EvolutionManager::clean() {
+    if (instance)
+        delete instance;
 }
 
 EvolutionManager::~EvolutionManager() {
@@ -91,7 +103,7 @@ void EvolutionManager::startEvolution() {
     NeuralNetwork *nn = new NeuralNetwork(ffnTopology, NUM_NEURAL_LAYERS);
 
     // Setup genetic algorithm
-    geneticAlgorithm = new GeneticAlgorithm(this, nn->weightCount, populationSize);
+    geneticAlgorithm = new GeneticAlgorithm(instance, nn->weightCount, populationSize);
     genotypesSaved = 0;
 
     geneticAlgorithm->evaluation = startEvaluation;
@@ -406,4 +418,8 @@ const std::vector<Agent*> &EvolutionManager::getAgents() const {
 
 const std::vector<AgentController*> &EvolutionManager::getAgentControllers() const {
     return agentControllers;
+}
+
+EvolutionManager *EvolutionManager::getInstance() {
+    return instance;
 }

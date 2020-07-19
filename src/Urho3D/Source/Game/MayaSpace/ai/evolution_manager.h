@@ -26,16 +26,19 @@ public:
     //   static EvolutionManager *getInstance();
     ~EvolutionManager();
 
-    int getGenerationCount();
-    void startEvolution();
-    void restartAlgorithm(float wait);
+    static void instantiate();
+    static void clean(); // exit
+    static EvolutionManager* getInstance();
+    static int getGenerationCount();
+    static void startEvolution(); // Use existing instance of evolution manager
+    static void restartAlgorithm(float wait);
     static GeneticAlgorithm *getGeneticAlgorithm();
 
     static void writeStatisticsFileStart();
     static void writeStatisticsToFile();
     static void checkForTrackFinished();
     static bool checkGenerationTermination();
-    void onGATermination();
+    static void onGATermination();
     static void startEvaluation(std::vector<Genotype*> currentPopulation);
     static void onAgentDied();
     static std::vector<Genotype*> *remainderStochasticSampling(std::vector<Genotype*> currentPopulation);
@@ -55,10 +58,10 @@ public:
 
 private:
 
-//    static EvolutionManager *instance;
+    static EvolutionManager *instance;
 
     // Whether or not the results of each generation shall be written to file.
-    bool saveStatistics;
+    static bool saveStatistics;
     static std::string statisticsFileName;
     static std::ofstream statisticsFile;
 
@@ -70,13 +73,13 @@ private:
     static int populationSize;
 
     // After how many generations should the genetic algorithm be restarted (0 for never)
-    int restartAfter;
+    static int restartAfter;
 
     // Whether to use elitist selection or remainder stochastic sampling
-    bool elitistSelection;
+    static bool elitistSelection;
 
     // Topology of the agent's FNN
-    int* ffnTopology;
+    static int* ffnTopology;
 
     // The current population agents.
     static std::vector<Agent*> agents;

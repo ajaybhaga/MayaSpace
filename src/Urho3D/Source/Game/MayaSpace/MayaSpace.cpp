@@ -118,8 +118,10 @@ void MayaSpace::InitEvolutionSpriteGenerator() {
     std::cout << "Evolution Manager -> starting..." << std::endl;
 
     // Instantiate evolution manager
-    evolutionManager = new EvolutionManager();
-    evolutionManager->startEvolution();
+    EvolutionManager::instantiate();
+
+    EvolutionManager::getInstance()->startEvolution();
+    EvolutionManager* evolutionManager = EvolutionManager::getInstance();
 
     // Create shape for each agent
     std::vector<Agent*> agents = evolutionManager->getAgents();
@@ -180,8 +182,8 @@ void MayaSpace::InitEvolutionSpriteGenerator() {
 
 void MayaSpace::UpdateGeneticAlgorithm(float timeStep) {
     // Iterate through agent controllers and apply update
-    std::vector<Agent*> agents = evolutionManager->getAgents();
-    std::vector<AgentController*> controllers = evolutionManager->getAgentControllers();
+    std::vector<Agent*> agents = EvolutionManager::getInstance()->getAgents();
+    std::vector<AgentController*> controllers = EvolutionManager::getInstance()->getAgentControllers();
 
     for (int i = 0; i < controllers.size(); i++) {
         AgentController *controller = controllers[i];
@@ -192,11 +194,11 @@ void MayaSpace::UpdateGeneticAlgorithm(float timeStep) {
 }
 
 void MayaSpace::ShowEvolutionManagerStats() {
-    std::vector<Agent*> agents = evolutionManager->getAgents();
-    std::vector<AgentController*> controllers = evolutionManager->getAgentControllers();
+    std::vector<Agent*> agents = EvolutionManager::getInstance()->getAgents();
+    std::vector<AgentController*> controllers = EvolutionManager::getInstance()->getAgentControllers();
 
     char buffer[255];
-    int aliveCount = evolutionManager->agentsAliveCount;
+    int aliveCount = EvolutionManager::getInstance()->agentsAliveCount;
     const int maxRows = 20;
     char *strText[maxRows];
 
@@ -316,7 +318,7 @@ void MayaSpace::Start()
 void MayaSpace::Stop() {
 
     // Free evolution manager
-    delete evolutionManager;
+    EvolutionManager::clean();
 
     // Dump engine resources
     Game::Stop();

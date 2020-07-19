@@ -28,6 +28,7 @@
 
 class Character2D;
 class Sample2D;
+class EvolutionManager;
 
 #define NUM_AI 0
 
@@ -118,9 +119,6 @@ private:
 
     /// Particle pool
     ParticlePool particlePool_[20];
-
-    // Evolution Manager
-    EvolutionManager* evolutionManager;
 
     // Debug text
     Text* debugText1_;
