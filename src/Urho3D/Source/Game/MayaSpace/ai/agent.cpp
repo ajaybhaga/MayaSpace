@@ -57,6 +57,13 @@ Agent::Agent(Genotype *genotype, NeuralLayer::ActivationFunction defaultActivati
 
 Agent::~Agent() {
 
+    std::cout << "Agent " << id << " clean up..." << std::endl;
+
+    if (ffn) {
+        std::cout << "Agent " << id << " Deleting ffn." << std::endl;
+        delete ffn;
+    }
+
 }
 
 // Reset this agent to be alive again.

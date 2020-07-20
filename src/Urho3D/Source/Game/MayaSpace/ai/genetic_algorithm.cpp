@@ -25,6 +25,11 @@ GeneticAlgorithm::GeneticAlgorithm(int genotypeParamCount, int populationSize) {
 
 GeneticAlgorithm::~GeneticAlgorithm() {
 
+    for (int i = 0; i < currentPopulation.size(); i++) {
+        Genotype* genotype = currentPopulation.at(i);
+        if (genotype)
+            delete genotype;
+    }
 }
 
 void GeneticAlgorithm::start() {

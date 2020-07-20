@@ -71,14 +71,15 @@ void EvolutionManager::clean() {
 }
 
 EvolutionManager::~EvolutionManager() {
+    agents.clear();
+    agentControllers.clear();
 
-    for (auto it = agents.begin(); it != agents.end(); ++it) {
-        delete &it;
-    }
+    if (ffnTopology)
+        delete ffnTopology;
 
-    for (auto it = agentControllers.begin(); it != agentControllers.end(); ++it) {
-        delete &it;
-    }
+
+    if (geneticAlgorithm)
+        delete geneticAlgorithm;
 }
 
 /*
@@ -122,12 +123,15 @@ void EvolutionManager::startEvolution() {
     ffnTopology[3] = 2;
     ffnTopology[4] = 2;
 
-    // Create neural network to determine parameter count
-    NeuralNetwork *nn = new NeuralNetwork(ffnTopology, NUM_NEURAL_LAYERS);
+    // Create neural network to determine parameter count (only used for config setting sized same as agent ffn)
+    NeuralNetwork* nn = new NeuralNetwork(ffnTopology, NUM_NEURAL_LAYERS);
 
     // Setup genetic algorithm
     geneticAlgorithm = new GeneticAlgorithm(nn->weightCount, populationSize);
     genotypesSaved = 0;
+
+    if (nn)
+        delete nn;
 
     geneticAlgorithm->evaluation = startEvaluation;
 
