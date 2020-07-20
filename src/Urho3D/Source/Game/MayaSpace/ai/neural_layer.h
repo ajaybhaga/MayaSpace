@@ -5,8 +5,7 @@
 // Based on design of Samuel Arzt (March 2017)
 //
 
-#ifndef EANN_SIMPLE_NEURAL_LAYER_H
-#define EANN_SIMPLE_NEURAL_LAYER_H
+#pragma once
 
 #include <string>
 #include <functional>
@@ -46,5 +45,3 @@ public:
 
 private:
 };
-
-#endif //EANN_SIMPLE_NEURAL_LAYER_H

@@ -110,6 +110,8 @@ void AgentController::update(float duration) {
     // Process sensor inputs through ffn
     double *controlInputs = this->agent->ffn->processInputs(sensorOutput);
 
+    // Resultant data from sensor processing is used for controlling the agent movement
+
     //std::cout << "controlInputs[0]:" << controlInputs[0] << "," << "controlInputs[1]:" << controlInputs[1] << std::endl;
     // Apply inputs to agent movement (two dimension array)
     this->movement->setInputs(controlInputs);

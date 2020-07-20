@@ -2,8 +2,7 @@
 // C++ Implementation by Ajay Bhaga
 //
 
-#ifndef EANN_SIMPLE_SENSOR_H
-#define EANN_SIMPLE_SENSOR_H
+#pragma once
 
 #include <string>
 #include <stdlib.h>     /* abs */
@@ -66,5 +65,3 @@ private:
     long lastHit = 0;
 
 };
-
-#endif //EANN_SIMPLE_SENSOR_H

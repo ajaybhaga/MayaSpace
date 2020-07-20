@@ -122,6 +122,8 @@ void MayaSpace::InitEvolutionSpriteGenerator() {
 
     // Create shape for each agent
     std::vector<Agent*> agents = evolutionManager->getAgents();
+    std::cout << "Evolution Manager -> number of agents = " << agents.size() << std::endl;
+
     for (int i = 0; i < agents.size(); i++) {
         // Randomly place agents
         //       agents[i]->setPosition(cyclone::Vector3(rd(), rd(), rd()));
@@ -519,24 +521,24 @@ void MayaSpace::CreateScene()
     player_->id_ = 0;
     player_->type_ = 1;
 
-    for (int i = 0; i < NUM_AI; i++) {
+    for (int i = 0; i < EvolutionManager::getInstance()->getAgents().size(); i++) {
 
         // Create AI player character
         modelNode = sample2D_->CreateCharacter(info, 0.0f, Vector3(3.5f+Random(-2.0f,2.0f), 16.0f, 0.0f), 0.1f, 2);
-        ai_[i] = modelNode->CreateComponent<Character2D>(); // Create a logic component to handle character behavior
+        agents_[i] = modelNode->CreateComponent<Character2D>(); // Create a logic component to handle character behavior
         String name = String("AI-Bear-P") + String(i);
-        ai_[i]->GetNode()->SetName(name.CString());
-        ai_[i]->isAI_ = true;
-        ai_[i]->playerPos_ = player_->GetNode()->GetPosition();
-        ai_[i]->id_ = 1+i;
-        ai_[i]->type_ = 2;
+        agents_[i]->GetNode()->SetName(name.CString());
+        agents_[i]->isAI_ = true;
+        agents_[i]->playerPos_ = player_->GetNode()->GetPosition();
+        agents_[i]->id_ = 1+i;
+        agents_[i]->type_ = 2;
 
-        ai_[i]->doMove_ = false;
-        ai_[i]->chooseMove_ = false;
-        ai_[i]->lastMove_ = ai_[i]->currMove_ = 0;
+        agents_[i]->doMove_ = false;
+        agents_[i]->chooseMove_ = false;
+        agents_[i]->lastMove_ = agents_[i]->currMove_ = 0;
 
         // Get AI position
-        Vector3 aiPos = ai_[i]->GetNode()->GetPosition();
+        Vector3 aiPos = agents_[i]->GetNode()->GetPosition();
 
         // Create billboard sets (powerbars)
         //const unsigned NUM_BILLBOARDNODES = 10;//NUM_AI;
@@ -1038,20 +1040,20 @@ void MayaSpace::HandleUpdate(StringHash eventType, VariantMap& eventData)
     float deltaSum;
 
     // Determine zoom by getting average distance from all players
-    for (int i = 0; i < NUM_AI; i++) {
+    for (int i = 0; i < EvolutionManager::getInstance()->getAgents().size(); i++) {
 
         // Update player location for AI
-        ai_[i]->playerPos_ = player_->GetNode()->GetPosition();
+        agents_[i]->playerPos_ = player_->GetNode()->GetPosition();
 
         Vector3 p1 = player_->GetNode()->GetPosition();
         p1.z_ = 0;
-        Vector3 p2 = ai_[i]->GetNode()->GetPosition();
+        Vector3 p2 = agents_[i]->GetNode()->GetPosition();
         p2.z_= 0;
         float delta = p1.DistanceToPoint(p2);
         deltaSum += delta;
     }
 
-    float avgDelta = ((float) deltaSum)/((float) NUM_AI);
+    float avgDelta = ((float) deltaSum)/((float) EvolutionManager::getInstance()->getAgents().size());
     float factor;
 
     if (avgDelta > 5.0f) {
@@ -1130,14 +1132,14 @@ void MayaSpace::HandleUpdate(StringHash eventType, VariantMap& eventData)
     }
 
     // AI
-    if (ai_)
+    if (agents_)
     {
-        for (int i = 0; i < NUM_AI; i++) {
+        for (int i = 0; i < EvolutionManager::getInstance()->getAgents().size(); i++) {
             // Set rotation already here so that it's updated every rendering frame instead of every physics frame
-            ai_[i]->GetNode()->SetRotation(Quaternion(ai_[i]->controls_.yaw_, Vector3::UP));
+            agents_[i]->GetNode()->SetRotation(Quaternion(agents_[i]->controls_.yaw_, Vector3::UP));
             //ai_[i]->GetNode()->SetRotation(Quaternion(0.0f, -180.0f-ai_[i]->heading_, 0.0f));
             //ai_[i]->GetNode()->SetRotation(Quaternion(-90.0f, ai_[i]->heading_+180.0f, 0.0f));
-            ai_[i]->GetNode()->SetRotation(Quaternion(0.0f, ai_[i]->heading_, 0.0));
+            agents_[i]->GetNode()->SetRotation(Quaternion(0.0f, agents_[i]->heading_, 0.0));
 
         }
 
@@ -1174,7 +1176,7 @@ void MayaSpace::HandleUpdate(StringHash eventType, VariantMap& eventData)
         {
             Billboard* bb = billboardObject->GetBillboard(j);
 //            bb->rotation_ += BILLBOARD_ROTATION_SPEED * timeStep;
-            Vector3 aiPos = ai_[i]->GetNode()->GetPosition();
+            Vector3 aiPos = agents_[i]->GetNode()->GetPosition();
             bb->position_ = Vector3(aiPos.x_, aiPos.y_, 0.0f);
        //       bb->position_ = Vector3(player_->GetNode()->GetPosition().x_, player_->GetNode()->GetPosition().y_, -5.0f);
 

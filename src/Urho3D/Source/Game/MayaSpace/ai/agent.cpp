@@ -17,6 +17,7 @@ Agent::Agent(Genotype *genotype, NeuralLayer::ActivationFunction defaultActivati
     this->position = Urho3D::Vector3(Urho3D::Random(0.0f,1.0f)*mag, Urho3D::Random(0.0f,1.0f)*mag, Urho3D::Random(0.0f,1.0f)*mag);
     this->rotation = Urho3D::Quaternion();
     this->colour = Urho3D::Vector3(Urho3D::Random(0.0f,1.0f), Urho3D::Random(0.0f,1.0f), Urho3D::Random(0.0f,1.0f));
+    //std::cout << "Instantiated agent = " << id << std::endl;
 
     alive = false;
     this->genotype = genotype;
@@ -49,6 +50,9 @@ Agent::Agent(Genotype *genotype, NeuralLayer::ActivationFunction defaultActivati
             }
         }
     }
+
+    std::cout << "Agent AI: Constructed FFN from genotype for agent = " << id << std::endl;
+
 }
 
 Agent::~Agent() {

@@ -30,7 +30,7 @@ class Character2D;
 class Sample2D;
 class EvolutionManager;
 
-#define NUM_AI 0
+#define MAX_AGENTS 1024 // Set max limit for agents (used for storage)
 
 struct ParticlePool {
     bool used; // Is particle emitter used?
@@ -103,7 +103,7 @@ private:
 
         /// The controllable character component.
     WeakPtr<Character2D> player_;
-    WeakPtr<Character2D> ai_[NUM_AI];
+    WeakPtr<Character2D> agents_[MAX_AGENTS];
 
     /// Flag for drawing debug geometry.
     bool drawDebug_{};
