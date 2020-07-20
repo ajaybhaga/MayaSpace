@@ -2,7 +2,8 @@
 // C++ Implementation by Ajay Bhaga
 //
 // Modified Genetic Algorithm
-// Based on design of Samuel Arzt (March 2017)
+// Based on Deep Learning Cars design of Samuel Arzt (March 2017)
+// https://arztsamuel.github.io/en/projects/unity/deepCars/deepCars.html
 //
 
 #include "neural_layer.h"

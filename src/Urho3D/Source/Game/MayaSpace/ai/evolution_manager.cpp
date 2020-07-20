@@ -133,6 +133,7 @@ void EvolutionManager::startEvolution() {
     if (nn)
         delete nn;
 
+    // Assign evaluation function to GA
     geneticAlgorithm->evaluation = startEvaluation;
 
     if (elitistSelection) {
@@ -165,6 +166,7 @@ void EvolutionManager::startEvolution() {
         statisticsFileName = std::string("evaluation-") + buffer;
         writeStatisticsFileStart();
         geneticAlgorithm->fitnessCalculationFinished += writeStatisticsToFile;
+        std::cout << "[" << currentDateTime() << "] Evolution Manager - saveStatistics enabled -> adding handler to fitnessCalculationFinished." << std::endl << std::flush;
     }
 
     geneticAlgorithm->fitnessCalculationFinished += checkForTrackFinished;
@@ -182,6 +184,9 @@ void EvolutionManager::startEvolution() {
 
 
 void EvolutionManager::writeStatisticsFileStart() {
+
+    std::cout << "[" << currentDateTime() << "] Evolution Manager - writeStatisticsFileStart()..." << std::endl << std::flush;
+
     std::string dirPath = TRAINING_DATA_DIR;
     std::string fullPath = dirPath + statisticsFileName;
 
@@ -201,22 +206,29 @@ void EvolutionManager::writeStatisticsFileStart() {
 
 void EvolutionManager::writeStatisticsToFile() {
 
+    std::cout << "[" << currentDateTime() << "] Evolution Manager - writeStatisticsToFile()..." << std::endl << std::flush;
+
     std::string outText;
 
     std::vector<Genotype*> currentPopulation = getGeneticAlgorithm()->getCurrentPopulation();
 
     for (int i = 0; i < currentPopulation.size(); i++) {
+        /*
         outText += "Generation Count -> ";
         outText += getGeneticAlgorithm()->generationCount;
         outText += "\n";
         outText += "Genotype Evaluation: ";
         outText += currentPopulation[i]->evaluation;
         outText += "\n";
+        */
+        std::cout << "[" << currentDateTime() << "] Evolution Manager - Generation Count -> " + getGeneticAlgorithm()->generationCount << "\n" << "Genotype Evaluation: " << currentPopulation[i]->evaluation << std::endl << std::flush;
     }
 }
 
 // Checks the current population and saves genotypes to a file if their evaluation is greater than or equal to 1.
 void EvolutionManager::checkForTrackFinished() {
+
+    std::cout << "[" << currentDateTime() << "] Evolution Manager - checkForTrackFinished()..." << std::endl << std::flush;
 
     if (genotypesSaved >= saveFirstNGenotype) return;
 

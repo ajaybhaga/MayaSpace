@@ -2,13 +2,18 @@
 // C++ Implementation by Ajay Bhaga
 //
 // Modified Genetic Algorithm
-// Based on design of Samuel Arzt (March 2017)
+// Based on Deep Learning Cars design of Samuel Arzt (March 2017)
+// https://arztsamuel.github.io/en/projects/unity/deepCars/deepCars.html
 //
 
 #include <algorithm>
 #include "../shared_libs.h"
 #include <Urho3D/Math/Vector3.h>
 #include <Urho3D/Math/Quaternion.h>
+
+SimpleEvent::Event GeneticAlgorithm::terminationCriterion;
+SimpleEvent::Event GeneticAlgorithm::algorithmTerminated;
+SimpleEvent::Event GeneticAlgorithm::fitnessCalculationFinished;
 
 GeneticAlgorithm::GeneticAlgorithm(int genotypeParamCount, int populationSize) {
 
@@ -25,11 +30,12 @@ GeneticAlgorithm::GeneticAlgorithm(int genotypeParamCount, int populationSize) {
 
 GeneticAlgorithm::~GeneticAlgorithm() {
 
+    /* TODO: Figure out how to do clean up without getting seg fault.
     for (int i = 0; i < currentPopulation.size(); i++) {
         Genotype* genotype = currentPopulation.at(i);
         if (genotype)
             delete genotype;
-    }
+    }*/
 }
 
 void GeneticAlgorithm::start() {
@@ -41,7 +47,7 @@ void GeneticAlgorithm::start() {
 }
 
 // Sort by genotype
-bool sortByGenotype(const Genotype* lhs, const Genotype* rhs) { return lhs->fitness > rhs->fitness; }
+bool sortByGenotype(const Genotype* lhs, const Genotype* rhs) { if ((!lhs) && (rhs)) { return rhs; } if ((!rhs) && (lhs)) { return lhs; } return lhs->fitness > rhs->fitness; }
 
 void GeneticAlgorithm::evaluationFinished() {
     // Iterate through agent controllers and apply update
@@ -57,7 +63,8 @@ void GeneticAlgorithm::evaluationFinished() {
     }
 
     // Fire fitness calculation finished event
-    fitnessCalculationFinished();
+    if (&fitnessCalculationFinished)
+        fitnessCalculationFinished();
 
     // Check termination criterion
     if (checkTermination(currentPopulation)) {

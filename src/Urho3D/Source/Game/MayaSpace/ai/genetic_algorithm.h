@@ -1,8 +1,8 @@
 //
 // C++ Implementation by Ajay Bhaga
 //
-// Modified Genetic Algorithm
-// Based on design of Samuel Arzt (March 2017)
+// Based on Deep Learning Cars design of Samuel Arzt (March 2017)
+// https://arztsamuel.github.io/en/projects/unity/deepCars/deepCars.html
 //
 
 #pragma once
@@ -41,9 +41,9 @@ public:
     //GeneticAlgorithm(int genotypeParamCount, int populationSize);
     ~GeneticAlgorithm();
 
-    SimpleEvent::Event terminationCriterion;
-    SimpleEvent::Event algorithmTerminated;
-    SimpleEvent::Event fitnessCalculationFinished;
+    static SimpleEvent::Event terminationCriterion;
+    static SimpleEvent::Event algorithmTerminated;
+    static SimpleEvent::Event fitnessCalculationFinished;
 
     void start();
     void evaluationFinished();

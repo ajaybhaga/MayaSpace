@@ -275,7 +275,7 @@ Node* Sample2D::CreateCharacter(TileMapInfo2D info, float friction, Vector3 posi
             shape->SetRadius(2.0f); // Set shape size
             shape->SetFriction(friction); // Set friction
             shape->SetRestitution(0.1f); // Bounce
-            URHO3D_LOGINFOF("CREATE HIT id=%d, name=%s", shape->GetNode()->GetID(), shape->GetNode()->GetName());
+            //URHO3D_LOGINFOF("CREATE HIT id=%d, name=%s", shape->GetNode()->GetID(), shape->GetNode()->GetName());
 
             break;
 
@@ -290,7 +290,7 @@ Node* Sample2D::CreateCharacter(TileMapInfo2D info, float friction, Vector3 posi
             shape->SetRadius(8.0); // Set shape size
             shape->SetFriction(friction); // Set friction
             shape->SetRestitution(0.1f); // Bounce
-            URHO3D_LOGINFOF("CREATE HIT id=%d, name=%s", shape->GetNode()->GetID(), shape->GetNode()->GetName());
+            //URHO3D_LOGINFOF("CREATE HIT id=%d, name=%s", shape->GetNode()->GetID(), shape->GetNode()->GetName());
 
             break;
         }
@@ -303,7 +303,7 @@ Node* Sample2D::CreateCharacter(TileMapInfo2D info, float friction, Vector3 posi
 		for (auto& bone : bones) {
 			auto& name = bone.name_;
             
-                URHO3D_LOGINFOF("bone=%d", bone.name_);
+                //URHO3D_LOGINFOF("bone=%d", bone.name_);
 //            center = Vector2(bone.boundingBox_.max_.x_-bone.boundingBox_.min_.x_, bone.boundingBox_.max_.y_-bone.boundingBox_.min_.y_);
 /*
              center = Vector2(bone.boundingBox_.max_.x_-bone.boundingBox_.min_.x_, bone.boundingBox_.max_.y_-bone.boundingBox_.min_.y_);
@@ -315,7 +315,7 @@ Node* Sample2D::CreateCharacter(TileMapInfo2D info, float friction, Vector3 posi
             max = Vector2(std::max(max.x_, bone.boundingBox_.max_.x_), std::max(max.y_, bone.boundingBox_.max_.z_));
             min = Vector2(std::min(min.x_, bone.boundingBox_.min_.x_), std::min(min.y_, bone.boundingBox_.min_.z_));
 
-                URHO3D_LOGINFOF("center=(%f, %f)", center.x_, center.y_);
+                //URHO3D_LOGINFOF("center=(%f, %f)", center.x_, center.y_);
 
         //        bone.boundingBox_.max_.x_ - , bone.boundingBox_.max_.y_ - bone.boundingBox_.min_.y_)
         }
