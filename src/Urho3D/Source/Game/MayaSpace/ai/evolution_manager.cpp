@@ -74,12 +74,12 @@ EvolutionManager::~EvolutionManager() {
     agents.clear();
     agentControllers.clear();
 
-    if (ffnTopology)
-        delete ffnTopology;
+//    if (ffnTopology)
+//        delete ffnTopology;
 
 
-    if (geneticAlgorithm)
-        delete geneticAlgorithm;
+ //   if (geneticAlgorithm)
+ //       delete geneticAlgorithm;
 }
 
 /*

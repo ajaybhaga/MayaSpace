@@ -419,37 +419,20 @@ void MayaSpace::CreateScene()
 
     // Debug text
 
-    debugText1_ = lifeUI->CreateChild<Text>("DebugText1");
-    debugText1_->SetAlignment(HA_CENTER, VA_CENTER);
-    debugText1_->SetPosition(500.0f, 60.0);
-    debugText1_->SetFont(font, 10);
-    debugText1_->SetTextEffect(TE_SHADOW);
-    debugText1_->SetVisible(true);
-    std::string debugData1;
-    debugData1.append("Test debug data 1");
-    debugText1_->SetText(debugData1.c_str());
+    for (int i = 0; i < NUM_DEBUG_FIELDS; i++) {
+        debugText_[i] = lifeUI->CreateChild<Text>("DebugText1");
+        debugText_[i]->SetAlignment(HA_LEFT, VA_CENTER);
+        debugText_[i]->SetPosition(10.0f, 60.0+(i*20));
+        debugText_[i]->SetFont(font, 8);
+        debugText_[i]->SetTextEffect(TE_SHADOW);
+        debugText_[i]->SetVisible(true);
+        std::string debugData1;
+        debugData1.append("-");
+        debugText_[i]->SetText(debugData1.c_str());
+    }
 
-    debugText2_ = lifeUI->CreateChild<Text>("DebugText2");
-    debugText2_->SetAlignment(HA_CENTER, VA_CENTER);
-    debugText2_->SetPosition(500.0f, 80.0);
-    debugText2_->SetFont(font, 10);
-    debugText2_->SetTextEffect(TE_SHADOW);
-    debugText2_->SetVisible(true);
-    std::string debugData2;
-    debugData2.append("Test debug data 2");
-    debugText2_->SetText(debugData2.c_str());
 
-    debugText3_ = lifeUI->CreateChild<Text>("DebugText3");
-    debugText3_->SetAlignment(HA_CENTER, VA_CENTER);
-    debugText3_->SetPosition(500.0f, 100.0);
-    debugText3_->SetFont(font, 10);
-    debugText3_->SetTextEffect(TE_SHADOW);
-    debugText3_->SetVisible(true);
-    std::string debugData3;
-    debugData3.append("Test debug data 3");
-    debugText3_->SetText(debugData3.c_str());
-
-/*
+    /*
     auto* lifeText = ui->GetRoot()->CreateChild<Text>("LifeText2");
     lifeText->SetAlignment(HA_CENTER, VA_CENTER);
     lifeText->SetFont(font, 24);
@@ -1195,27 +1178,64 @@ void MayaSpace::HandleUpdate(StringHash eventType, VariantMap& eventData)
 
     Vector3 pos = player_->GetNode()->GetPosition();
     sprintf (str, "%f,%f,%f", pos.x_, pos.y_, pos.z_);
-
+    int i = 0;
     std::string playerInfo;
     playerInfo.clear();
     playerInfo.append("Player position (x,y,z) -> ").append(str);
-    debugText1_->SetText(playerInfo.c_str());
+    debugText_[i]->SetText(playerInfo.c_str());
 
+    i++;
     Vector3 vel = player_->currState_.moveDir;
     sprintf (str, "%f,%f,%f", vel.x_, vel.y_, vel.z_);
 
     playerInfo.clear();
     playerInfo.append("Player velocity (x,y,z) -> ").append(str);
-    debugText2_->SetText(playerInfo.c_str());
+    debugText_[i]->SetText(playerInfo.c_str());
 
-
-
+    i++;
 //    Vector3 vel = player_
     sprintf (str, "%d,%d,%d", player_->currState_.onGround, player_->currState_.jump, player_->currState_.kick);
 
     playerInfo.clear();
     playerInfo.append("Player state (onGround,jump,kick) -> ").append(str);
-    debugText3_->SetText(playerInfo.c_str());
+    debugText_[i]->SetText(playerInfo.c_str());
+
+
+    i++;
+    playerInfo.clear();
+    sprintf (str, "%d", EvolutionManager::getInstance()->getGenerationCount());
+    playerInfo.append("Evolution Manager: Generation -> ").append(str);
+    debugText_[i]->SetText(playerInfo.c_str());
+
+
+    i++;
+    playerInfo.clear();
+    sprintf (str, "%d", EvolutionManager::getInstance()->populationSize);
+    playerInfo.append("Evolution Manager: populationSize -> ").append(str);
+    debugText_[i]->SetText(playerInfo.c_str());
+
+    i++;
+    playerInfo.clear();
+    sprintf (str, "%f", EvolutionManager::getInstance()->getAgents()[0]->genotype->evaluation);
+    playerInfo.append("Evolution Manager: agent[0]->genotype->evaluation -> ").append(str);
+    debugText_[i]->SetText(playerInfo.c_str());
+
+    i++;
+    playerInfo.clear();
+    sprintf (str, "%.2f, %.2f, %.2f", EvolutionManager::getInstance()->getAgents()[0]->getPosition().x_,
+             EvolutionManager::getInstance()->getAgents()[0]->getPosition().y_,
+             EvolutionManager::getInstance()->getAgents()[0]->getPosition().z_);
+    playerInfo.append("Evolution Manager: agent[0]->position -> ").append(str);
+    debugText_[i]->SetText(playerInfo.c_str());
+
+
+
+    i++;
+    playerInfo.clear();
+    sprintf (str, "%d", EvolutionManager::getInstance()->agentsAliveCount);
+    playerInfo.append("Evolution Manager: agentsAliveCount -> ").append(str);
+    debugText_[i]->SetText(playerInfo.c_str());
+
 
     //URHO3D_LOGINFOF("player_ position x=%f, y=%f, z=%f", player_->GetNode()->GetPosition().x_, player_->GetNode()->GetPosition().y_, player_->GetNode()->GetPosition().z_);
 

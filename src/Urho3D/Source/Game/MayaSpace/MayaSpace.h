@@ -101,7 +101,7 @@ private:
     // Display Genetic Algorithm Evolution Manager statistics
     void ShowEvolutionManagerStats();
 
-        /// The controllable character component.
+    /// The controllable character component.
     WeakPtr<Character2D> player_;
     WeakPtr<Character2D> agents_[MAX_AGENTS];
 
@@ -120,10 +120,7 @@ private:
     /// Particle pool
     ParticlePool particlePool_[20];
 
+    #define NUM_DEBUG_FIELDS 8
     // Debug text
-    Text* debugText1_;
-    Text* debugText2_;
-    Text* debugText3_;
-    Text* debugText4_;
-
+    Text* debugText_[NUM_DEBUG_FIELDS];
 };
