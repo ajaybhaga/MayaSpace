@@ -366,6 +366,16 @@ void MayaSpace::CreateScene()
     if (!powerbarBkgTexture)
         return;
 
+    // Get genotype texture
+    Texture2D* genotypeTexture = cache->GetResource<Texture2D>("Textures/genotype.png");
+    if (!powerbarTexture)
+        return;
+
+    // Get genotype background texture
+    Texture2D* genotypeBkgTexture = cache->GetResource<Texture2D>("Textures/genotype-bk.png");
+    if (!powerbarBkgTexture)
+        return;
+
     // Create sprite and add to the UI layout
     powerbarP1Sprite_ = ui->GetRoot()->CreateChild<Sprite>();
     powerbarBkgP1Sprite_ = ui->GetRoot()->CreateChild<Sprite>();
@@ -523,30 +533,27 @@ void MayaSpace::CreateScene()
         // Get AI position
         Vector3 aiPos = agents_[i]->GetNode()->GetPosition();
 
+        // Powerbar
         // Create billboard sets (powerbars)
         //const unsigned NUM_BILLBOARDNODES = 10;//NUM_AI;
-        const unsigned NUM_BILLBOARDS = 1;
 
-        Node* pbNode = scene_->CreateChild("PowerBar");
+
+        // A single billboard for each parameter of genotype
+        const unsigned NUM_BILLBOARDS = 3;//EvolutionManager::getInstance()->getAgents()[0]->genotype->getParameterCount();
+
+       // BillboardSet* billboardObject;
+
+        /*
+
+                Node* pbNode = scene_->CreateChild("PowerBar");
 //        smokeNode->SetPosition(Vector3(Random(200.0f) - 100.0f, Random(20.0f) + 10.0f, Random(200.0f) - 100.0f));
         //pbNode->SetPosition(Vector3(3.5f+Random(-2.0f,2.0f), 20.0f, 0.0f));
         pbNode->SetPosition(Vector3(-0.02f, 0.25f, 0.0f));
 //        pbNode->SetScale(Vector3(0.5f,0.5f,0.5f));
         auto* billboardObject = pbNode->CreateComponent<BillboardSet>();
         billboardObject->SetNumBillboards(NUM_BILLBOARDS);
-        billboardObject->SetMaterial(cache->GetResource<Material>("Materials/PowerBar.xml"));        
+        billboardObject->SetMaterial(cache->GetResource<Material>("Materials/PowerBar.xml"));
         billboardObject->SetSorted(true);
-
-/*
-        Vector2 start(0.5f,0.5f);
-Vector2 end(1.0f,1.0f);
-
-    Vector2 offset = start;
-    Vector2 repeat = end - start;
-
-    // this doesn't do the same thing as the next two statements together...
-    mat->SetUVTransform(offset, 0, repeat);
-*/
 
         for (unsigned j = 0; j < NUM_BILLBOARDS; ++j)
         {
@@ -563,6 +570,38 @@ Vector2 end(1.0f,1.0f);
             // After modifying the billboards, they need to be "committed" so that the BillboardSet updates its internals
             billboardObject->Commit();
         }
+        */
+
+        // Genotype
+
+        Node* gtNode = scene_->CreateChild("Genotype");
+//        smokeNode->SetPosition(Vector3(Random(200.0f) - 100.0f, Random(20.0f) + 10.0f, Random(200.0f) - 100.0f));
+        //pbNode->SetPosition(Vector3(3.5f+Random(-2.0f,2.0f), 20.0f, 0.0f));
+        gtNode->SetPosition(Vector3(0.0f, 0.25f, 0.0f));
+//        pbNode->SetScale(Vector3(0.5f,0.5f,0.5f));
+        auto* billboardObject = gtNode->CreateComponent<BillboardSet>();
+        billboardObject->SetNumBillboards(NUM_BILLBOARDS);
+        billboardObject->SetMaterial(cache->GetResource<Material>("Materials/Genotype-Bk.xml"));
+        billboardObject->SetSorted(true);
+
+        // Draw billboard for each genotype parameter -> text based on value
+
+        for (unsigned j = 0; j < NUM_BILLBOARDS; ++j)
+        {
+            Billboard* bb = billboardObject->GetBillboard(j);
+//            bb->position_ = Vector3(Random(12.0f) - 6.0f, Random(8.0f) - 4.0f, -5.0f);
+           // bb->position_ = Vector3(aiPos.x_, aiPos.y_, 0.0f);
+            bb->size_ = Vector2((256.0f/512.0f)*0.06f, (256.0f/144.0f)*0.06f);
+            bb->rotation_ = 90.0f; //Random() * 360.0f;
+            bb->enabled_ = true;
+
+//            bb->uv_ = Rect(left,top,right,bottom);
+            bb->uv_ = Rect(0.0,0.5,1.0,1.0);
+
+            // After modifying the billboards, they need to be "committed" so that the BillboardSet updates its internals
+            billboardObject->Commit();
+        }
+
     }
 
     // Generate physics collision shapes from the tmx file's objects located in "Physics" (top) layer
@@ -1157,7 +1196,7 @@ void MayaSpace::HandleUpdate(StringHash eventType, VariantMap& eventData)
             Billboard* bb = billboardObject->GetBillboard(j);
 //            bb->rotation_ += BILLBOARD_ROTATION_SPEED * timeStep;
             Vector3 aiPos = agents_[i]->GetNode()->GetPosition();
-            bb->position_ = Vector3(aiPos.x_, aiPos.y_, 0.0f);
+            bb->position_ = Vector3(aiPos.x_ + (i * 0.3f), aiPos.y_, 0.0f);
        //       bb->position_ = Vector3(player_->GetNode()->GetPosition().x_, player_->GetNode()->GetPosition().y_, -5.0f);
 
             
