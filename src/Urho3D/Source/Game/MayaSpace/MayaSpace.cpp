@@ -496,7 +496,7 @@ void MayaSpace::CreateScene()
 
     // Create player character
 //    Node* modelNode = sample2D_->CreateCharacter(info, 0.0f, Vector3(2.5f, 16.0f, 0.0f), 1.0f, 1);
-    Node* modelNode = sample2D_->CreateCharacter(info, 0.0f, Vector3(2.5f, 2.0f, 0.0f), 1.0f, 1);
+    Node* modelNode = sample2D_->CreateCharacter(info, 0.0f, Vector3(2.5f, 2.0f, 0.0f), 0.1f, 1);
     player_ = modelNode->CreateComponent<Character2D>(); // Create a logic component to handle character behavior
     player_->GetNode()->SetName("Bear-P1");
     player_->isAI_ = false;
@@ -1094,9 +1094,6 @@ void MayaSpace::HandleUpdate(StringHash eventType, VariantMap& eventData)
       //  player_->GetNode()->SetRotation(Quaternion(0.0f, -180.0f-player_->heading_, 0.0f));
 
         player_->GetNode()->SetRotation(Quaternion(0.0f, player_->heading_, 0.0));
-
-
-        player_->GetNode()->SetScale(0.5f);
         auto* model_ = player_->GetNode()->GetComponent<AnimatedModel>(true);
 
         Skeleton& skeleton = model_->GetSkeleton();
