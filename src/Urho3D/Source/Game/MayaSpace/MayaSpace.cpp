@@ -97,9 +97,8 @@
 
 URHO3D_DEFINE_APPLICATION_MAIN(MayaSpace)
 
-MayaSpace::MayaSpace(Context* context) :
-    Game(context)
-{
+MayaSpace::MayaSpace(Context *context) :
+        Game(context) {
     // Register factory for the Character2D component so it can be created via CreateComponent
     Character2D::RegisterObject(context);
     // Register factory for the Object2D component so it can be created via CreateComponent
@@ -108,8 +107,7 @@ MayaSpace::MayaSpace(Context* context) :
     Mover::RegisterObject(context);
 }
 
-void MayaSpace::Setup()
-{
+void MayaSpace::Setup() {
     Game::Setup();
 }
 
@@ -118,10 +116,10 @@ void MayaSpace::InitEvolutionSpriteGenerator() {
     std::cout << "Evolution Manager -> starting..." << std::endl;
 
     EvolutionManager::getInstance()->startEvolution();
-    EvolutionManager* evolutionManager = EvolutionManager::getInstance();
+    EvolutionManager *evolutionManager = EvolutionManager::getInstance();
 
     // Create shape for each agent
-    std::vector<Agent*> agents = evolutionManager->getAgents();
+    std::vector<Agent *> agents = evolutionManager->getAgents();
     std::cout << "Evolution Manager -> number of agents = " << agents.size() << std::endl;
 
     for (int i = 0; i < agents.size(); i++) {
@@ -181,20 +179,20 @@ void MayaSpace::InitEvolutionSpriteGenerator() {
 
 void MayaSpace::UpdateGeneticAlgorithm(float timeStep) {
     // Iterate through agent controllers and apply update
-    std::vector<Agent*> agents = EvolutionManager::getInstance()->getAgents();
-    std::vector<AgentController*> controllers = EvolutionManager::getInstance()->getAgentControllers();
+    std::vector<Agent *> agents = EvolutionManager::getInstance()->getAgents();
+    std::vector<AgentController *> controllers = EvolutionManager::getInstance()->getAgentControllers();
 
     for (int i = 0; i < controllers.size(); i++) {
         AgentController *controller = controllers[i];
         controller->update(timeStep);
         // Set agent evaluation (affects fitness calculation)
-        controller->setCurrentCompletionReward(controller->getCurrentCompletionReward()+Random(0.0f,1.0f));
+        controller->setCurrentCompletionReward(controller->getCurrentCompletionReward() + Random(0.0f, 1.0f));
     }
 }
 
 void MayaSpace::ShowEvolutionManagerStats() {
-    std::vector<Agent*> agents = EvolutionManager::getInstance()->getAgents();
-    std::vector<AgentController*> controllers = EvolutionManager::getInstance()->getAgentControllers();
+    std::vector<Agent *> agents = EvolutionManager::getInstance()->getAgents();
+    std::vector<AgentController *> controllers = EvolutionManager::getInstance()->getAgentControllers();
 
     char buffer[255];
     int aliveCount = EvolutionManager::getInstance()->agentsAliveCount;
@@ -207,38 +205,42 @@ void MayaSpace::ShowEvolutionManagerStats() {
 
     for (int i = 0; i < maxRows; i++) {
 
-        switch(i) {
+        switch (i) {
 
-            case maxRows-1:
+            case maxRows - 1:
                 sprintf(strText[i], "%d alive out of %d population.", aliveCount, agents.size());
                 break;
-            case maxRows-2:
-                sprintf(strText[i], "%d generation out of %d generations.", EvolutionManager::getGeneticAlgorithm()->generationCount, RestartAfter);
+            case maxRows - 2:
+                sprintf(strText[i], "%d generation out of %d generations.",
+                        EvolutionManager::getGeneticAlgorithm()->generationCount, RestartAfter);
                 break;
-            case maxRows-3:
+            case maxRows - 3:
                 sprintf(strText[i], "==========================================================================");
                 break;
-            case maxRows-4:
-                sprintf(strText[i], "agent[0].timeSinceLastCheckpoint: %f", controllers[0]->getTimeSinceLastCheckpoint());
+            case maxRows - 4:
+                sprintf(strText[i], "agent[0].timeSinceLastCheckpoint: %f",
+                        controllers[0]->getTimeSinceLastCheckpoint());
                 break;
 
-            case maxRows-5:
-                sprintf(strText[i], "agent[0].x: %f, agent[0].y: %f, agent[0].z: %f", agents[0]->getPosition().x_, agents[0]->getPosition().y_, agents[0]->getPosition().z_);
+            case maxRows - 5:
+                sprintf(strText[i], "agent[0].x: %f, agent[0].y: %f, agent[0].z: %f", agents[0]->getPosition().x_,
+                        agents[0]->getPosition().y_, agents[0]->getPosition().z_);
                 break;
-            case maxRows-6:
-                sprintf(strText[i], "agent[0].winX: %f, agent[0].winY: %f, agent[0].winZ: %f", agents[0]->getWinPos().x_, agents[0]->getWinPos().y_, agents[0]->getWinPos().z_);
+            case maxRows - 6:
+                sprintf(strText[i], "agent[0].winX: %f, agent[0].winY: %f, agent[0].winZ: %f",
+                        agents[0]->getWinPos().x_, agents[0]->getWinPos().y_, agents[0]->getWinPos().z_);
                 break;
-            case maxRows-7:
+            case maxRows - 7:
                 sprintf(strText[i], "", agents[0]->getPosition().z_);
                 break;
 
-            case maxRows-8:
+            case maxRows - 8:
                 sprintf(strText[i], "agent[0].evaluation: %f", agents[0]->genotype->evaluation);
                 break;
-            case maxRows-9:
+            case maxRows - 9:
                 sprintf(strText[i], "agent[0].horizontalInput: %f", controllers[0]->movement->getHorizontalInput());
                 break;
-            case maxRows-10:
+            case maxRows - 10:
                 sprintf(strText[i], "agent[0].verticalInput: %f", controllers[0]->movement->getVerticalInput());
                 break;
 
@@ -249,7 +251,7 @@ void MayaSpace::ShowEvolutionManagerStats() {
 
         }
 
- //       if (strText[i])
+        //       if (strText[i])
 //            renderText(5, 5 + (10 * i), strText[i], NULL);
 
     }
@@ -267,20 +269,19 @@ void MayaSpace::ShowEvolutionManagerStats() {
                 i, agents[i]->getPosition().y_,
                 i, agents[i]->getPosition().z_);
 
-       // renderPanel(agents[i]->getWinPos().x_, agents[i]->getWinPos().y_, 200.0f, 100.0f, c);
+        // renderPanel(agents[i]->getWinPos().x_, agents[i]->getWinPos().y_, 200.0f, 100.0f, c);
 
         if (agents[i]->genotype) {
-       //     renderParameters(agents[i]->getWinPos().x_ + 90.0f, agents[i]->getWinPos().y_ - 80.0f,
-       //                      agents[i]->genotype->getParameterCopy());
+            //     renderParameters(agents[i]->getWinPos().x_ + 90.0f, agents[i]->getWinPos().y_ - 80.0f,
+            //                      agents[i]->genotype->getParameterCopy());
         }
     }
     delete[] c;
 }
 
-void MayaSpace::Start()
-{
+void MayaSpace::Start() {
 
-    for (int i = 0; i < sizeof(particlePool_)/sizeof(*particlePool_); i++) {
+    for (int i = 0; i < sizeof(particlePool_) / sizeof(*particlePool_); i++) {
         particlePool_[i].used = false;
         particlePool_[i].usedBy = -1;
     }
@@ -301,12 +302,12 @@ void MayaSpace::Start()
     // Create the scene content
     CreateScene();
 
-    UI* ui = GetSubsystem<UI>();
+    UI *ui = GetSubsystem<UI>();
 
     // Create the UI content
     sample2D_->CreateUIContent("MayaSpace Game Engine v0.1", player_->remainingLifes_, player_->remainingCoins_);
 //    auto* ui = GetSubsystem<UI>();
-    Button* playButton = static_cast<Button*>(ui->GetRoot()->GetChild("PlayButton", true));
+    Button *playButton = static_cast<Button *>(ui->GetRoot()->GetChild("PlayButton", true));
     SubscribeToEvent(playButton, E_RELEASED, URHO3D_HANDLER(MayaSpace, HandlePlayButton));
 
     // Hook up to the frame update events
@@ -324,8 +325,7 @@ void MayaSpace::Stop() {
 }
 
 
-void MayaSpace::CreateScene()
-{
+void MayaSpace::CreateScene() {
     scene_ = new Scene(context_);
     sample2D_->scene_ = scene_;
 
@@ -336,43 +336,44 @@ void MayaSpace::CreateScene()
 
     // Create camera
     cameraNode_ = scene_->CreateChild("Camera");
-    auto* camera = cameraNode_->CreateComponent<Camera>();
+    auto *camera = cameraNode_->CreateComponent<Camera>();
 //    camera->SetOrthographic(true);
 
-    auto* graphics = GetSubsystem<Graphics>();
- //   camera->SetOrthoSize((float)graphics->GetHeight() * PIXEL_SIZE);
-    camera->SetZoom(4.0f * Min((float)graphics->GetWidth() / 1280.0f, (float)graphics->GetHeight() / 800.0f)); // Set zoom according to user's resolution to ensure full visibility (initial zoom (2.0) is set for full visibility at 1280x800 resolution)
+    auto *graphics = GetSubsystem<Graphics>();
+    //   camera->SetOrthoSize((float)graphics->GetHeight() * PIXEL_SIZE);
+    camera->SetZoom(4.0f * Min((float) graphics->GetWidth() / 1280.0f, (float) graphics->GetHeight() /
+                                                                       800.0f)); // Set zoom according to user's resolution to ensure full visibility (initial zoom (2.0) is set for full visibility at 1280x800 resolution)
     camera->SetFarClip(300.0f);
 
     // Setup the viewport for displaying the scene
     SharedPtr<Viewport> viewport(new Viewport(context_, scene_, camera));
-    auto* renderer = GetSubsystem<Renderer>();
+    auto *renderer = GetSubsystem<Renderer>();
     renderer->SetViewport(0, viewport);
 
-    ResourceCache* cache = GetSubsystem<ResourceCache>();
-    UI* ui = GetSubsystem<UI>();
+    ResourceCache *cache = GetSubsystem<ResourceCache>();
+    UI *ui = GetSubsystem<UI>();
 
     // Set the default UI style and font
     //ui->GetRoot()->SetDefaultStyle(cache->GetResource<XMLFile>("UI/DefaultStyle.xml"));
-    auto* font = cache->GetResource<Font>("Fonts/Anonymous Pro.ttf");
+    auto *font = cache->GetResource<Font>("Fonts/Anonymous Pro.ttf");
 
     // Get powerbar texture
-    Texture2D* powerbarTexture = cache->GetResource<Texture2D>("Textures/powerbar.png");
+    Texture2D *powerbarTexture = cache->GetResource<Texture2D>("Textures/powerbar.png");
     if (!powerbarTexture)
         return;
 
     // Get powerbar background texture
-    Texture2D* powerbarBkgTexture = cache->GetResource<Texture2D>("Textures/powerbar-bk.png");
+    Texture2D *powerbarBkgTexture = cache->GetResource<Texture2D>("Textures/powerbar-bk.png");
     if (!powerbarBkgTexture)
         return;
 
     // Get genotype texture
-    Texture2D* genotypeTexture = cache->GetResource<Texture2D>("Textures/genotype.png");
+    Texture2D *genotypeTexture = cache->GetResource<Texture2D>("Textures/genotype.png");
     if (!powerbarTexture)
         return;
 
     // Get genotype background texture
-    Texture2D* genotypeBkgTexture = cache->GetResource<Texture2D>("Textures/genotype-bk.png");
+    Texture2D *genotypeBkgTexture = cache->GetResource<Texture2D>("Textures/genotype-bk.png");
     if (!powerbarBkgTexture)
         return;
 
@@ -394,7 +395,7 @@ void MayaSpace::CreateScene()
     powerbarP1Sprite_->SetSize(textureWidth, textureHeight);
     powerbarP1Sprite_->SetHotSpot(textureWidth, textureHeight);
     powerbarP1Sprite_->SetAlignment(HA_LEFT, VA_TOP);
-    powerbarP1Sprite_->SetPosition(Vector2(300.0f,50.0f));
+    powerbarP1Sprite_->SetPosition(Vector2(300.0f, 50.0f));
     powerbarP1Sprite_->SetOpacity(1.0f);
     // Set a low priority so that other UI elements can be drawn on top
     powerbarP1Sprite_->SetPriority(-100);
@@ -403,7 +404,7 @@ void MayaSpace::CreateScene()
     powerbarBkgP1Sprite_->SetSize(textureWidth, textureHeight);
     powerbarBkgP1Sprite_->SetHotSpot(textureWidth, textureHeight);
     powerbarBkgP1Sprite_->SetAlignment(HA_LEFT, VA_TOP);
-    powerbarBkgP1Sprite_->SetPosition(Vector2(300.0f,50.0f));
+    powerbarBkgP1Sprite_->SetPosition(Vector2(300.0f, 50.0f));
     powerbarBkgP1Sprite_->SetOpacity(0.2f);
     // Set a low priority so that other UI elements can be drawn on top
     powerbarBkgP1Sprite_->SetPriority(-100);
@@ -412,14 +413,14 @@ void MayaSpace::CreateScene()
     powerbarBkgP1Sprite_->SetVisible(true);
 
     // Create the UI for displaying the remaining lifes
-    auto* lifeUI = ui->GetRoot()->CreateChild<BorderImage>("Life2");
+    auto *lifeUI = ui->GetRoot()->CreateChild<BorderImage>("Life2");
     lifeUI->SetTexture(cache->GetResource<Texture2D>("Textures/jiva2d.png"));
     lifeUI->SetSize(60, 60);
     lifeUI->SetAlignment(HA_LEFT, VA_TOP);
     lifeUI->SetPosition(-5, 15);
     lifeUI->SetVisible(true);
 
-    auto* lifeText = lifeUI->CreateChild<Text>("LifeText2");
+    auto *lifeText = lifeUI->CreateChild<Text>("LifeText2");
     lifeText->SetAlignment(HA_CENTER, VA_CENTER);
     lifeText->SetPosition(2.0f, -30.0);
     lifeText->SetFont(font, 12);
@@ -432,7 +433,7 @@ void MayaSpace::CreateScene()
     for (int i = 0; i < NUM_DEBUG_FIELDS; i++) {
         debugText_[i] = lifeUI->CreateChild<Text>("DebugText1");
         debugText_[i]->SetAlignment(HA_LEFT, VA_CENTER);
-        debugText_[i]->SetPosition(10.0f, 60.0+(i*20));
+        debugText_[i]->SetPosition(10.0f, 60.0 + (i * 20));
         debugText_[i]->SetFont(font, 8);
         debugText_[i]->SetTextEffect(TE_SHADOW);
         debugText_[i]->SetVisible(true);
@@ -456,7 +457,7 @@ void MayaSpace::CreateScene()
 
 
     // Set background color for the scene
-    Zone* zone = renderer->GetDefaultZone();
+    Zone *zone = renderer->GetDefaultZone();
     zone->SetFogColor(Color(0.2f, 0.2f, 0.2f));
 
     // Create tile map from tmx file
@@ -465,11 +466,11 @@ void MayaSpace::CreateScene()
 //    auto* tileMap3d = tileMapNode->CreateComponent<TileMap3D>();
 //    tileMap3d->SetTmxFile(cache->GetResource<TmxFile2D>("Urho2D/Tilesets/Ortho.tmx"
 
-    TileMap3D* tileMap = tileMapNode->CreateComponent<TileMap3D>();
+    TileMap3D *tileMap = tileMapNode->CreateComponent<TileMap3D>();
     URHO3D_LOGINFOF("tileMap=%x", tileMap);
 
     tileMap->SetTmxFile(cache->GetResource<TmxFile2D>("Urho2D/Tilesets/MayaSpace_Level0.tmx"));
-    const TileMapInfo2D& info = tileMap->GetInfo();
+    const TileMapInfo2D &info = tileMap->GetInfo();
 
 /*
     // Create balloon object
@@ -495,8 +496,8 @@ void MayaSpace::CreateScene()
 
     // Create pumpkin object
     for (int i = 0; i < 10; i++) {
-        Node* pumpkinNode = sample2D_->CreateObject(info, 0.0f, Vector3(Random(0.0f,14.0f), 10.0f, 0.0f), 0.5f, 3);
-        auto* obj_ = pumpkinNode->CreateComponent<Object2D>(); // Create a logic component to handle character behavior
+        Node *pumpkinNode = sample2D_->CreateObject(info, 0.0f, Vector3(Random(0.0f, 14.0f), 10.0f, 0.0f), 0.5f, 3);
+        auto *obj_ = pumpkinNode->CreateComponent<Object2D>(); // Create a logic component to handle character behavior
         String name = String("Pumpkin-P") + String(i);
         obj_->GetNode()->SetName(name.CString());
         obj_->id_ = i;
@@ -506,29 +507,32 @@ void MayaSpace::CreateScene()
 
     // Create player character
 //    Node* modelNode = sample2D_->CreateCharacter(info, 0.0f, Vector3(2.5f, 16.0f, 0.0f), 1.0f, 1);
-    Node* modelNode = sample2D_->CreateCharacter(info, 0.0f, Vector3(2.5f, 2.0f, 0.0f), 0.1f, 1);
+    Node *modelNode = sample2D_->CreateCharacter(info, 0.0f, Vector3(2.5f, 2.0f, 0.0f), 0.1f, 1);
     player_ = modelNode->CreateComponent<Character2D>(); // Create a logic component to handle character behavior
     player_->GetNode()->SetName("Bear-P1");
     player_->isAI_ = false;
-    player_->life_ = 100; 
+    player_->life_ = 100;
     player_->id_ = 0;
     player_->type_ = 1;
 
     for (int i = 0; i < EvolutionManager::getInstance()->getAgents().size(); i++) {
 
         // Create AI player character
-        modelNode = sample2D_->CreateCharacter(info, 0.0f, Vector3(3.5f+Random(-2.0f,2.0f), 16.0f, 0.0f), 0.1f, 2);
+        modelNode = sample2D_->CreateCharacter(info, 0.0f, Vector3(3.5f + Random(-2.0f, 2.0f), 16.0f, 0.0f), 0.1f, 2);
         agents_[i] = modelNode->CreateComponent<Character2D>(); // Create a logic component to handle character behavior
         String name = String("AI-Bear-P") + String(i);
         agents_[i]->GetNode()->SetName(name.CString());
         agents_[i]->isAI_ = true;
         agents_[i]->playerPos_ = player_->GetNode()->GetPosition();
-        agents_[i]->id_ = 1+i;
+        agents_[i]->id_ = 1 + i;
         agents_[i]->type_ = 2;
 
         agents_[i]->doMove_ = false;
         agents_[i]->chooseMove_ = false;
         agents_[i]->lastMove_ = agents_[i]->currMove_ = 0;
+
+        agents_[i]->genotypeNode_ = scene_->CreateChild("Genotype " + i);
+        agents_[i]->powerbarNode_ = scene_->CreateChild("Powerbar " + i);
 
         // Get AI position
         Vector3 aiPos = agents_[i]->GetNode()->GetPosition();
@@ -539,9 +543,9 @@ void MayaSpace::CreateScene()
 
 
         // A single billboard for each parameter of genotype
-        const unsigned NUM_BILLBOARDS = 3;//EvolutionManager::getInstance()->getAgents()[0]->genotype->getParameterCount();
+        const unsigned NUM_BILLBOARDS = EvolutionManager::getInstance()->getAgents()[0]->genotype->getParameterCount();
 
-       // BillboardSet* billboardObject;
+        // BillboardSet* billboardObject;
 
         /*
 
@@ -574,51 +578,50 @@ void MayaSpace::CreateScene()
 
         // Genotype
 
-        Node* gtNode = scene_->CreateChild("Genotype");
-//        smokeNode->SetPosition(Vector3(Random(200.0f) - 100.0f, Random(20.0f) + 10.0f, Random(200.0f) - 100.0f));
+        //Node* gtNode = scene_->CreateChild("Genotype");
         //pbNode->SetPosition(Vector3(3.5f+Random(-2.0f,2.0f), 20.0f, 0.0f));
-        gtNode->SetPosition(Vector3(0.0f, 0.25f, 0.0f));
+
+        agents_[i]->genotypeNode_->SetPosition(Vector3(0.0f, 0.25f, 0.0f));
 //        pbNode->SetScale(Vector3(0.5f,0.5f,0.5f));
-        auto* billboardObject = gtNode->CreateComponent<BillboardSet>();
+        auto *billboardObject = agents_[i]->genotypeNode_->CreateComponent<BillboardSet>();
         billboardObject->SetNumBillboards(NUM_BILLBOARDS);
-        billboardObject->SetMaterial(cache->GetResource<Material>("Materials/Genotype-Bk.xml"));
+        billboardObject->SetMaterial(cache->GetResource<Material>("Materials/Genotype.xml"));
         billboardObject->SetSorted(true);
 
-        // Draw billboard for each genotype parameter -> text based on value
+        // Draw billboard for each genotype parameter -> alpha based on value
 
-        for (unsigned j = 0; j < NUM_BILLBOARDS; ++j)
-        {
-            Billboard* bb = billboardObject->GetBillboard(j);
-//            bb->position_ = Vector3(Random(12.0f) - 6.0f, Random(8.0f) - 4.0f, -5.0f);
-           // bb->position_ = Vector3(aiPos.x_, aiPos.y_, 0.0f);
-            bb->size_ = Vector2((256.0f/512.0f)*0.06f, (256.0f/144.0f)*0.06f);
+        for (unsigned j = 0; j < NUM_BILLBOARDS; ++j) {
+            Billboard *bb = billboardObject->GetBillboard(j);
+
+//            bb->size_ = Vector2((256.0f/8.0f)*0.06f, (256.0f/144.0f)*0.06f);
+            bb->size_ = Vector2((8.0f) * 0.005f, (72.0f) * 0.005f);
+
             bb->rotation_ = 90.0f; //Random() * 360.0f;
             bb->enabled_ = true;
 
 //            bb->uv_ = Rect(left,top,right,bottom);
-            bb->uv_ = Rect(0.0,0.5,1.0,1.0);
+            bb->uv_ = Rect(0.0, 0.0, 1.0, 1.0);
 
             // After modifying the billboards, they need to be "committed" so that the BillboardSet updates its internals
             billboardObject->Commit();
         }
-
     }
 
     // Generate physics collision shapes from the tmx file's objects located in "Physics" (top) layer
-    TileMapLayer3D* tileMapLayer = tileMap->GetLayer(tileMap->GetNumLayers() - 1);
+    TileMapLayer3D *tileMapLayer = tileMap->GetLayer(tileMap->GetNumLayers() - 1);
     sample2D_->CreateCollisionShapesFromTMXObjects(tileMapNode, tileMapLayer, info);
 
     // Create a directional light to the world so that we can see something. The light scene node's orientation controls the
     // light direction; we will use the SetDirection() function which calculates the orientation from a forward direction vector.
     // The light will use default settings (white light, no shadows)
-    Node* lightNode = scene_->CreateChild("DirectionalLight");
+    Node *lightNode = scene_->CreateChild("DirectionalLight");
     lightNode->SetPosition(Vector3(1.0f, 8.0f, 0.0f));
     lightNode->SetDirection(Vector3(0.6f, -1.0f, 0.8f)); // The direction vector does not need to be normalized
-    auto* light = lightNode->CreateComponent<Light>();
-    light->SetLightType(LIGHT_DIRECTIONAL);     
+    auto *light = lightNode->CreateComponent<Light>();
+    light->SetLightType(LIGHT_DIRECTIONAL);
     // Set an initial position for the camera scene node above the plane
-         //   mushroomNode->SetRotation(Quaternion(0.0f, Random(360.0f), 0.0f));
-   // mushroomNode->SetScale(0.5f + Random(2.0f));
+    //   mushroomNode->SetRotation(Quaternion(0.0f, Random(360.0f), 0.0f));
+    // mushroomNode->SetScale(0.5f + Random(2.0f));
     // Instantiate enemies and moving platforms at each placeholder of "MovingEntities" layer (placeholders are Poly Line objects defining a path from points)
     //sample2D_->PopulateMovingEntities(tileMap->GetLayer(tileMap->GetNumLayers() - 2));
 
@@ -642,8 +645,7 @@ void MayaSpace::CreateScene()
     SubscribeToEvent(E_ENDRENDERING, URHO3D_HANDLER(MayaSpace, HandleSceneRendered));
 }
 
-void MayaSpace::HandleSceneRendered(StringHash eventType, VariantMap& eventData)
-{
+void MayaSpace::HandleSceneRendered(StringHash eventType, VariantMap &eventData) {
     UnsubscribeFromEvent(E_ENDRENDERING);
     // Save the scene so we can reload it later
     sample2D_->SaveScene(true);
@@ -651,8 +653,7 @@ void MayaSpace::HandleSceneRendered(StringHash eventType, VariantMap& eventData)
     scene_->SetUpdateEnabled(false);
 }
 
-void MayaSpace::SubscribeToEvents()
-{
+void MayaSpace::SubscribeToEvents() {
     // Subscribe HandleUpdate() function for processing update events
     SubscribeToEvent(E_UPDATE, URHO3D_HANDLER(MayaSpace, HandleUpdate));
 
@@ -706,22 +707,21 @@ void MayaSpace::HandleNodeCollision(StringHash eventType, VariantMap& eventData)
 
 }*/
 
-void MayaSpace::HandleCollisionBegin(StringHash eventType, VariantMap& eventData)
-{
+void MayaSpace::HandleCollisionBegin(StringHash eventType, VariantMap &eventData) {
     // Get colliding node
-    auto* hitNode = static_cast<Node*>(eventData[PhysicsBeginContact2D::P_NODEA].GetPtr());
+    auto *hitNode = static_cast<Node *>(eventData[PhysicsBeginContact2D::P_NODEA].GetPtr());
     if (hitNode->GetName() == "Bear-P1")
-        hitNode = static_cast<Node*>(eventData[PhysicsBeginContact2D::P_NODEB].GetPtr());
+        hitNode = static_cast<Node *>(eventData[PhysicsBeginContact2D::P_NODEB].GetPtr());
     String nodeName = hitNode->GetName();
-    Node* character2DNode = scene_->GetChild("Bear-P1", true);
+    Node *character2DNode = scene_->GetChild("Bear-P1", true);
 
 //Pumpkin-P
-    Node* p1Node = scene_->GetChild("Bear-P1", true);
-    Node* p2Node = scene_->GetChild("Bear-P2", true);
+    Node *p1Node = scene_->GetChild("Bear-P1", true);
+    Node *p2Node = scene_->GetChild("Bear-P2", true);
 
     // Get colliding node
-    auto* hitNodeA = static_cast<Node*>(eventData[PhysicsBeginContact2D::P_NODEA].GetPtr());
-    auto* hitNodeB = static_cast<Node*>(eventData[PhysicsBeginContact2D::P_NODEB].GetPtr());
+    auto *hitNodeA = static_cast<Node *>(eventData[PhysicsBeginContact2D::P_NODEA].GetPtr());
+    auto *hitNodeB = static_cast<Node *>(eventData[PhysicsBeginContact2D::P_NODEB].GetPtr());
 
     // Skip tile map collisions
     if (!hitNodeA->GetName().Contains("TileMap")) {
@@ -740,16 +740,16 @@ void MayaSpace::HandleCollisionBegin(StringHash eventType, VariantMap& eventData
             auto contactNormal = contacts.ReadVector2();
             auto contactDistance = contacts.ReadFloat();
             auto contactImpulse = contacts.ReadFloat();
-       //     std::cout << "contact position " << contactPosition.ToString().CString() << std::endl;
-       //     std::cout << "contact normal " << contactNormal.ToString().CString() << std::endl;
-       //     std::cout << "contact distance " << contactDistance << std::endl;
-       //     std::cout << "contact impulse " << contactImpulse << std::endl;
+            //     std::cout << "contact position " << contactPosition.ToString().CString() << std::endl;
+            //     std::cout << "contact normal " << contactNormal.ToString().CString() << std::endl;
+            //     std::cout << "contact distance " << contactDistance << std::endl;
+            //     std::cout << "contact impulse " << contactImpulse << std::endl;
         }
 
         std::cout << std::endl;
 
         String a1, a2, b1, b2;
-        
+
         a1 = "Pumpkin";
         b1 = "Bear-P1";
         a2 = "Bear-P1";
@@ -764,7 +764,7 @@ void MayaSpace::HandleCollisionBegin(StringHash eventType, VariantMap& eventData
 
             if (hit1) {
                 String nodeName = hitNode->GetName();
-                Node* pumpkinNode = scene_->GetChild(nodeName, true);
+                Node *pumpkinNode = scene_->GetChild(nodeName, true);
                 player_->life_ += 20;
                 if (pumpkinNode) {
                     pumpkinNode->Remove();
@@ -779,8 +779,8 @@ void MayaSpace::HandleCollisionBegin(StringHash eventType, VariantMap& eventData
 
             }
         }
-  
-        
+
+
         a1 = "Bear-P";
         b1 = "Bear-P1";
         a2 = "Bear-P1";
@@ -791,14 +791,14 @@ void MayaSpace::HandleCollisionBegin(StringHash eventType, VariantMap& eventData
 
         if ((hit3 || hit4) && player_->isReady_) {
 
-        // If hit node is an id more than the player, it's AI
+            // If hit node is an id more than the player, it's AI
 //        if (hitNode->GetID() > character2DNode->GetID() && player_->isReady_) {
             player_->life_ -= 10;
-            auto* body = character2DNode->GetComponent<RigidBody2D>();
-            auto* body2 = hitNode->GetComponent<RigidBody2D>();
+            auto *body = character2DNode->GetComponent<RigidBody2D>();
+            auto *body2 = hitNode->GetComponent<RigidBody2D>();
 
-    //        Vector2 v = body->GetLinearVelocity()*-10.0f;
-    //        float a = body->GetAngularVelocity();
+            //        Vector2 v = body->GetLinearVelocity()*-10.0f;
+            //        float a = body->GetAngularVelocity();
 
             // Clear forces (should be performed by setting linear velocity to zero, but currently doesn't work)
             body->SetLinearVelocity(Vector2::ZERO);
@@ -818,21 +818,18 @@ void MayaSpace::HandleCollisionBegin(StringHash eventType, VariantMap& eventData
             sample2D_->PlaySoundEffect("explosion-sm.wav");
             sample2D_->PlaySoundEffect("bam-motherfucker.wav");
 
-            
 
         }
     }
 
 
     // Handle ropes and ladders climbing
-    if (nodeName == "Climb")
-    {
+    if (nodeName == "Climb") {
         if (player_->isClimbing_) // If transition between rope and top of rope (as we are using split triggers)
             player_->climb2_ = true;
-        else
-        {
+        else {
             player_->isClimbing_ = true;
-            auto* body = character2DNode->GetComponent<RigidBody2D>();
+            auto *body = character2DNode->GetComponent<RigidBody2D>();
             body->SetGravityScale(0.0f); // Override gravity so that the character doesn't fall
             // Clear forces so that the character stops (should be performed by setting linear velocity to zero, but currently doesn't work)
             body->SetLinearVelocity(Vector2(0.0f, 0.0f));
@@ -845,16 +842,15 @@ void MayaSpace::HandleCollisionBegin(StringHash eventType, VariantMap& eventData
     //URHO3D_LOGINFOF("character2DNode=%d", character2DNode->GetID());
 
 
-            auto* body = character2DNode->GetComponent<RigidBody2D>();
-           // body->SetGravityScale(0.0f); // Override gravity so that the character doesn't fall
-            // Clear forces so that the character stops (should be performed by setting linear velocity to zero, but currently doesn't work)
+    auto *body = character2DNode->GetComponent<RigidBody2D>();
+    // body->SetGravityScale(0.0f); // Override gravity so that the character doesn't fall
+    // Clear forces so that the character stops (should be performed by setting linear velocity to zero, but currently doesn't work)
 //            body->SetLinearVelocity(body->GetLinearVelocity()*-1.0f);
 //            body->SetAwake(false);
 //            body->SetAwake(true);
 
 
-    if (nodeName == "hit-body")
-    {
+    if (nodeName == "hit-body") {
         URHO3D_LOGINFOF("HIT BODY=%s", hitNode->GetName());
     }
 
@@ -862,17 +858,15 @@ void MayaSpace::HandleCollisionBegin(StringHash eventType, VariantMap& eventData
         player_->aboveClimbable_ = true;
 
     // Handle coins picking
-    if (nodeName == "Coin")
-    {
+    if (nodeName == "Coin") {
         hitNode->Remove();
         player_->remainingCoins_ -= 1;
-        auto* ui = GetSubsystem<UI>();
-        if (player_->remainingCoins_ == 0)
-        {
-            Text* instructions = static_cast<Text*>(ui->GetRoot()->GetChild("Instructions", true));
+        auto *ui = GetSubsystem<UI>();
+        if (player_->remainingCoins_ == 0) {
+            Text *instructions = static_cast<Text *>(ui->GetRoot()->GetChild("Instructions", true));
             instructions->SetText("!!! Go to the Exit !!!");
         }
-        Text* coinsText = static_cast<Text*>(ui->GetRoot()->GetChild("CoinsText", true));
+        Text *coinsText = static_cast<Text *>(ui->GetRoot()->GetChild("CoinsText", true));
         coinsText->SetText(String(player_->remainingCoins_)); // Update coins UI counter
         sample2D_->PlaySoundEffect("Powerup.wav");
     }
@@ -913,11 +907,10 @@ void MayaSpace::HandleCollisionBegin(StringHash eventType, VariantMap& eventData
     }*/
 
     // Handle exiting the level when all coins have been gathered
-    if (nodeName == "Exit" && player_->remainingCoins_ == 0)
-    {
+    if (nodeName == "Exit" && player_->remainingCoins_ == 0) {
         // Update UI
-        auto* ui = GetSubsystem<UI>();
-        Text* instructions = static_cast<Text*>(ui->GetRoot()->GetChild("Instructions", true));
+        auto *ui = GetSubsystem<UI>();
+        Text *instructions = static_cast<Text *>(ui->GetRoot()->GetChild("Instructions", true));
         instructions->SetText("!!! WELL DONE !!!");
         instructions->SetPosition(IntVector2(0, 0));
         // Put the character outside of the scene and magnify him
@@ -926,12 +919,10 @@ void MayaSpace::HandleCollisionBegin(StringHash eventType, VariantMap& eventData
     }
 
     // Handle falling into lava
-    if (nodeName == "Lava")
-    {
-        auto* body = character2DNode->GetComponent<RigidBody2D>();
+    if (nodeName == "Lava") {
+        auto *body = character2DNode->GetComponent<RigidBody2D>();
         body->ApplyForceToCenter(Vector2(0.0f, 1000.0f), true);
-        if (!character2DNode->GetChild("Emitter", true))
-        {
+        if (!character2DNode->GetChild("Emitter", true)) {
             player_->wounded_ = true;
             sample2D_->SpawnEffect(character2DNode);
             sample2D_->PlaySoundEffect("BigExplosion.wav");
@@ -946,32 +937,32 @@ void MayaSpace::HandleCollisionBegin(StringHash eventType, VariantMap& eventData
 
 void MayaSpace::SetParticleEmitter(int hitId, float contactX, float contactY, int type, float timeStep) {
     // CREATE
-    auto* cache = GetSubsystem<ResourceCache>();
-    ParticleEffect2D* particleEffect; 
+    auto *cache = GetSubsystem<ResourceCache>();
+    ParticleEffect2D *particleEffect;
     Vector2 position;
 
     switch (type) {
         case 0:
-        particleEffect = cache->GetResource<ParticleEffect2D>("Urho2D/sun.pex");
-        position.x_ = contactX;
-        position.y_ = contactY;
-        break;
+            particleEffect = cache->GetResource<ParticleEffect2D>("Urho2D/sun.pex");
+            position.x_ = contactX;
+            position.y_ = contactY;
+            break;
         case 1:
-        particleEffect = cache->GetResource<ParticleEffect2D>("Urho2D/power.pex");
-        position.x_ = contactX;
-        position.y_ = contactY;
-        break;
+            particleEffect = cache->GetResource<ParticleEffect2D>("Urho2D/power.pex");
+            position.x_ = contactX;
+            position.y_ = contactY;
+            break;
     }
 
     if (!particleEffect)
         return;
 
-    for (int i = 0; i < sizeof(particlePool_)/sizeof(*particlePool_); i++) {
+    for (int i = 0; i < sizeof(particlePool_) / sizeof(*particlePool_); i++) {
         if (!particlePool_[i].used) {
             particlePool_[i].used = true;
             particlePool_[i].usedBy = hitId;
             particlePool_[i].node = scene_->CreateChild("GreenSpiral");
-            auto* particleEmitter = particlePool_[i].node->CreateComponent<ParticleEmitter2D>();
+            auto *particleEmitter = particlePool_[i].node->CreateComponent<ParticleEmitter2D>();
             particleEmitter->SetEffect(particleEffect);
             particlePool_[i].node->SetPosition(Vector3(position.x_, position.y_, 0.0));
             particlePool_[i].lastEmit = timeStep;
@@ -987,17 +978,17 @@ void MayaSpace::SetParticleEmitter(int hitId, float contactX, float contactY, in
 
 void MayaSpace::HandleUpdateParticlePool(float timeStep) {
     // CREATE
-    auto* cache = GetSubsystem<ResourceCache>();
+    auto *cache = GetSubsystem<ResourceCache>();
 /*    auto* particleEffect = cache->GetResource<ParticleEffect2D>("Urho2D/sun.pex");
     if (!particleEffect)
         return;
 */
-    for (int i = 0; i < sizeof(particlePool_)/sizeof(*particlePool_); i++) {
+    for (int i = 0; i < sizeof(particlePool_) / sizeof(*particlePool_); i++) {
         if (particlePool_[i].used) {
 
             particlePool_[i].currEmit += timeStep;
 
-            if (particlePool_[i].currEmit-particlePool_[i].lastEmit > particlePool_[i].timeout) {
+            if (particlePool_[i].currEmit - particlePool_[i].lastEmit > particlePool_[i].timeout) {
                 if (particlePool_[i].node) {
                     particlePool_[i].node->Remove();
                     particlePool_[i].used = false;
@@ -1009,24 +1000,21 @@ void MayaSpace::HandleUpdateParticlePool(float timeStep) {
 }
 
 
-void MayaSpace::HandleCollisionEnd(StringHash eventType, VariantMap& eventData)
-{
+void MayaSpace::HandleCollisionEnd(StringHash eventType, VariantMap &eventData) {
     // Get colliding node
-    auto* hitNode = static_cast<Node*>(eventData[PhysicsEndContact2D::P_NODEA].GetPtr());
+    auto *hitNode = static_cast<Node *>(eventData[PhysicsEndContact2D::P_NODEA].GetPtr());
     if (hitNode->GetName() == "Bear-P1")
-        hitNode = static_cast<Node*>(eventData[PhysicsEndContact2D::P_NODEB].GetPtr());
+        hitNode = static_cast<Node *>(eventData[PhysicsEndContact2D::P_NODEB].GetPtr());
     String nodeName = hitNode->GetName();
-    Node* character2DNode = scene_->GetChild("Bear-P1", true);
+    Node *character2DNode = scene_->GetChild("Bear-P1", true);
 
     // Handle leaving a rope or ladder
-    if (nodeName == "Climb")
-    {
+    if (nodeName == "Climb") {
         if (player_->climb2_)
             player_->climb2_ = false;
-        else
-        {
+        else {
             player_->isClimbing_ = false;
-            auto* body = character2DNode->GetComponent<RigidBody2D>();
+            auto *body = character2DNode->GetComponent<RigidBody2D>();
             body->SetGravityScale(1.0f); // Restore gravity
         }
     }
@@ -1035,21 +1023,19 @@ void MayaSpace::HandleCollisionEnd(StringHash eventType, VariantMap& eventData)
         player_->aboveClimbable_ = false;
 
     // Handle leaving a slope
-    if (nodeName == "Slope")
-    {
+    if (nodeName == "Slope") {
         player_->onSlope_ = false;
         // Clear forces (should be performed by setting linear velocity to zero, but currently doesn't work)
-        auto* body = character2DNode->GetComponent<RigidBody2D>();
+        auto *body = character2DNode->GetComponent<RigidBody2D>();
         body->SetLinearVelocity(Vector2::ZERO);
         body->SetAwake(false);
         body->SetAwake(true);
     }
 }
 
-void MayaSpace::HandleUpdate(StringHash eventType, VariantMap& eventData)
-{
+void MayaSpace::HandleUpdate(StringHash eventType, VariantMap &eventData) {
     using namespace Update;
-    auto* input = GetSubsystem<Input>();
+    auto *input = GetSubsystem<Input>();
 
     // Take the frame time step, which is stored as a float
     float timeStep = eventData[P_TIMESTEP].GetFloat();
@@ -1070,18 +1056,18 @@ void MayaSpace::HandleUpdate(StringHash eventType, VariantMap& eventData)
         Vector3 p1 = player_->GetNode()->GetPosition();
         p1.z_ = 0;
         Vector3 p2 = agents_[i]->GetNode()->GetPosition();
-        p2.z_= 0;
+        p2.z_ = 0;
         float delta = p1.DistanceToPoint(p2);
         deltaSum += delta;
     }
 
-    float avgDelta = ((float) deltaSum)/((float) EvolutionManager::getInstance()->getAgents().size());
+    float avgDelta = ((float) deltaSum) / ((float) EvolutionManager::getInstance()->getAgents().size());
     float factor;
 
     if (avgDelta > 5.0f) {
-        factor = 1.0f - avgDelta*0.02f;
+        factor = 1.0f - avgDelta * 0.02f;
     } else {
-        factor = 1.0f + avgDelta*0.02f;
+        factor = 1.0f + avgDelta * 0.02f;
     }
 
     factor = 1.0f;
@@ -1108,10 +1094,9 @@ void MayaSpace::HandleUpdate(StringHash eventType, VariantMap& eventData)
     if (input->GetKeyPress(KEY_F7))
         ReloadScene(false);
 
-    GameController* gameController = GetSubsystem<GameController>();
+    GameController *gameController = GetSubsystem<GameController>();
 
-    if (player_)
-    {
+    if (player_) {
         gameController->UpdateControlInputs(player_->controls_);
 
         // **note** the buttons controls are handled in the character class update fn.
@@ -1119,25 +1104,24 @@ void MayaSpace::HandleUpdate(StringHash eventType, VariantMap& eventData)
         // right stick - camera
         Variant rStick = player_->controls_.extraData_[VAR_AXIS_1];
 
-        if (!rStick.IsEmpty())
-        {
+        if (!rStick.IsEmpty()) {
             Vector2 axisInput = rStick.GetVector2();
             player_->controls_.yaw_ += axisInput.x_ * YAW_SENSITIVITY;
             player_->controls_.pitch_ += axisInput.y_ * YAW_SENSITIVITY;
         }
 
         // Limit pitch
-       // player_->controls_.pitch_ = Clamp(player_->controls_.pitch_, -80.0f, 80.0f);
+        // player_->controls_.pitch_ = Clamp(player_->controls_.pitch_, -80.0f, 80.0f);
         // Set rotation already here so that it's updated every rendering frame instead of every physics frame
-     //   player_->GetNode()->SetRotation(Quaternion(player_->controls_.yaw_, Vector3::UP));
-      //  player_->GetNode()->SetRotation(Quaternion(0.0f, -180.0f-player_->heading_, 0.0f));
+        //   player_->GetNode()->SetRotation(Quaternion(player_->controls_.yaw_, Vector3::UP));
+        //  player_->GetNode()->SetRotation(Quaternion(0.0f, -180.0f-player_->heading_, 0.0f));
 
         player_->GetNode()->SetRotation(Quaternion(0.0f, player_->heading_, 0.0));
-        auto* model_ = player_->GetNode()->GetComponent<AnimatedModel>(true);
+        auto *model_ = player_->GetNode()->GetComponent<AnimatedModel>(true);
 
-        Skeleton& skeleton = model_->GetSkeleton();
-        Bone* rootBone = skeleton.GetRootBone();
-        Bone* startBone = rootBone;
+        Skeleton &skeleton = model_->GetSkeleton();
+        Bone *rootBone = skeleton.GetRootBone();
+        Bone *startBone = rootBone;
 
 
     }
@@ -1151,8 +1135,7 @@ void MayaSpace::HandleUpdate(StringHash eventType, VariantMap& eventData)
     }
 
     // AI
-    if (agents_)
-    {
+    if (agents_) {
         for (int i = 0; i < EvolutionManager::getInstance()->getAgents().size(); i++) {
             // Set rotation already here so that it's updated every rendering frame instead of every physics frame
             agents_[i]->GetNode()->SetRotation(Quaternion(agents_[i]->controls_.yaw_, Vector3::UP));
@@ -1160,7 +1143,11 @@ void MayaSpace::HandleUpdate(StringHash eventType, VariantMap& eventData)
             //ai_[i]->GetNode()->SetRotation(Quaternion(-90.0f, ai_[i]->heading_+180.0f, 0.0f));
             agents_[i]->GetNode()->SetRotation(Quaternion(0.0f, agents_[i]->heading_, 0.0));
 
-        }
+            // Get the billboard scene nodes
+            PODVector<Node *> billboardNodes;
+            //agents_[i]->genotypeNode_->GetChildrenWithComponent<BillboardSet>(billboardNodes);
+            scene_->GetChildrenWithComponent<BillboardSet>(billboardNodes);
+
 
 /*
         static int _sndCnt = 0;
@@ -1172,48 +1159,42 @@ void MayaSpace::HandleUpdate(StringHash eventType, VariantMap& eventData)
         if (_sndCnt > 5) {
             sample2D_->PlaySoundEffect("enemy01-laugh.wav");
         }*/
+
+
+
+
+
+            const float BILLBOARD_ROTATION_SPEED = 50.0f;
+
+            // Rotate the individual billboards within the billboard sets, then recommit to make the changes visible
+            for (unsigned i = 0; i < billboardNodes.Size(); ++i) {
+                auto *billboardObject = billboardNodes[i]->GetComponent<BillboardSet>();
+
+                for (unsigned j = 0; j < billboardObject->GetNumBillboards(); ++j) {
+                    Billboard *bb = billboardObject->GetBillboard(j);
+                    //            bb->rotation_ += BILLBOARD_ROTATION_SPEED * timeStep;
+                    Vector3 aiPos = agents_[i]->GetNode()->GetPosition();
+                    bb->position_ = Vector3(aiPos.x_, aiPos.y_, 0.0f);
+                    //       bb->position_ = Vector3(player_->GetNode()->GetPosition().x_, player_->GetNode()->GetPosition().y_, -5.0f);
+
+
+                }
+
+                billboardObject->Commit();
+            }
+        }
     }
+
 
     // Update player powerbar
-    IntVector2 v = powerbarBkgP1Sprite_->GetSize();    
-    int power = int(((player_->life_)/100.0f)*(float)v.x_);
+    IntVector2 v = powerbarBkgP1Sprite_->GetSize();
+    int power = int(((player_->life_) / 100.0f) * (float) v.x_);
     powerbarP1Sprite_->SetSize(power, v.y_);
-
-
-    // Get the billboard scene nodes
-    PODVector<Node*> billboardNodes;
-    scene_->GetChildrenWithComponent<BillboardSet>(billboardNodes);
-
-    const float BILLBOARD_ROTATION_SPEED = 50.0f;
-
-    // Rotate the individual billboards within the billboard sets, then recommit to make the changes visible
-    for (unsigned i = 0; i < billboardNodes.Size(); ++i)
-    {
-        auto* billboardObject = billboardNodes[i]->GetComponent<BillboardSet>();
-
-        for (unsigned j = 0; j < billboardObject->GetNumBillboards(); ++j)
-        {
-            Billboard* bb = billboardObject->GetBillboard(j);
-//            bb->rotation_ += BILLBOARD_ROTATION_SPEED * timeStep;
-            Vector3 aiPos = agents_[i]->GetNode()->GetPosition();
-            bb->position_ = Vector3(aiPos.x_ + (i * 0.3f), aiPos.y_, 0.0f);
-       //       bb->position_ = Vector3(player_->GetNode()->GetPosition().x_, player_->GetNode()->GetPosition().y_, -5.0f);
-
-            
-        }
-
-        billboardObject->Commit();
-    }
-
-
-
-//    text->SetText("Test");
-//    te
 
     char str[40];
 
     Vector3 pos = player_->GetNode()->GetPosition();
-    sprintf (str, "%f,%f,%f", pos.x_, pos.y_, pos.z_);
+    sprintf(str, "%f,%f,%f", pos.x_, pos.y_, pos.z_);
     int i = 0;
     std::string playerInfo;
     playerInfo.clear();
@@ -1222,7 +1203,7 @@ void MayaSpace::HandleUpdate(StringHash eventType, VariantMap& eventData)
 
     i++;
     Vector3 vel = player_->currState_.moveDir;
-    sprintf (str, "%f,%f,%f", vel.x_, vel.y_, vel.z_);
+    sprintf(str, "%f,%f,%f", vel.x_, vel.y_, vel.z_);
 
     playerInfo.clear();
     playerInfo.append("Player velocity (x,y,z) -> ").append(str);
@@ -1230,7 +1211,7 @@ void MayaSpace::HandleUpdate(StringHash eventType, VariantMap& eventData)
 
     i++;
 //    Vector3 vel = player_
-    sprintf (str, "%d,%d,%d", player_->currState_.onGround, player_->currState_.jump, player_->currState_.kick);
+    sprintf(str, "%d,%d,%d", player_->currState_.onGround, player_->currState_.jump, player_->currState_.kick);
 
     playerInfo.clear();
     playerInfo.append("Player state (onGround,jump,kick) -> ").append(str);
@@ -1239,36 +1220,35 @@ void MayaSpace::HandleUpdate(StringHash eventType, VariantMap& eventData)
 
     i++;
     playerInfo.clear();
-    sprintf (str, "%d", EvolutionManager::getInstance()->getGenerationCount());
+    sprintf(str, "%d", EvolutionManager::getInstance()->getGenerationCount());
     playerInfo.append("Evolution Manager: Generation -> ").append(str);
     debugText_[i]->SetText(playerInfo.c_str());
 
 
     i++;
     playerInfo.clear();
-    sprintf (str, "%d", EvolutionManager::getInstance()->populationSize);
+    sprintf(str, "%d", EvolutionManager::getInstance()->populationSize);
     playerInfo.append("Evolution Manager: populationSize -> ").append(str);
     debugText_[i]->SetText(playerInfo.c_str());
 
     i++;
     playerInfo.clear();
-    sprintf (str, "%f", EvolutionManager::getInstance()->getAgents()[0]->genotype->evaluation);
+    sprintf(str, "%f", EvolutionManager::getInstance()->getAgents()[0]->genotype->evaluation);
     playerInfo.append("Evolution Manager: agent[0]->genotype->evaluation -> ").append(str);
     debugText_[i]->SetText(playerInfo.c_str());
 
     i++;
     playerInfo.clear();
-    sprintf (str, "%.2f, %.2f, %.2f", EvolutionManager::getInstance()->getAgents()[0]->getPosition().x_,
-             EvolutionManager::getInstance()->getAgents()[0]->getPosition().y_,
-             EvolutionManager::getInstance()->getAgents()[0]->getPosition().z_);
+    sprintf(str, "%.2f, %.2f, %.2f", EvolutionManager::getInstance()->getAgents()[0]->getPosition().x_,
+            EvolutionManager::getInstance()->getAgents()[0]->getPosition().y_,
+            EvolutionManager::getInstance()->getAgents()[0]->getPosition().z_);
     playerInfo.append("Evolution Manager: agent[0]->position -> ").append(str);
     debugText_[i]->SetText(playerInfo.c_str());
 
 
-
     i++;
     playerInfo.clear();
-    sprintf (str, "%d", EvolutionManager::getInstance()->agentsAliveCount);
+    sprintf(str, "%d", EvolutionManager::getInstance()->agentsAliveCount);
     playerInfo.append("Evolution Manager: agentsAliveCount -> ").append(str);
     debugText_[i]->SetText(playerInfo.c_str());
 
@@ -1277,43 +1257,41 @@ void MayaSpace::HandleUpdate(StringHash eventType, VariantMap& eventData)
 
 }
 
-void MayaSpace::HandlePostUpdate(StringHash eventType, VariantMap& eventData)
-{
+void MayaSpace::HandlePostUpdate(StringHash eventType, VariantMap &eventData) {
     if (!player_)
         return;
 
-    Node* character2DNode = player_->GetNode();
-    cameraNode_->SetPosition(Vector3(character2DNode->GetPosition().x_, character2DNode->GetPosition().y_, -10.0f)); // Camera tracks character
+    Node *character2DNode = player_->GetNode();
+    cameraNode_->SetPosition(Vector3(character2DNode->GetPosition().x_, character2DNode->GetPosition().y_,
+                                     -10.0f)); // Camera tracks character
 }
 
-void MayaSpace::HandlePostRenderUpdate(StringHash eventType, VariantMap& eventData)
-{
+void MayaSpace::HandlePostRenderUpdate(StringHash eventType, VariantMap &eventData) {
     // Mesh and bones do not match -> bones are too big
     // Scale down bone
 //    player_->
-    auto* model_ = player_->GetNode()->GetComponent<AnimatedModel>(true);
-            //node_->GetComponent<AnimatedModel>(true);
+    auto *model_ = player_->GetNode()->GetComponent<AnimatedModel>(true);
+    //node_->GetComponent<AnimatedModel>(true);
 
 
-  //  if (!model_ || !animation_)
-  //      return;
+    //  if (!model_ || !animation_)
+    //      return;
 
-    Skeleton& skeleton = model_->GetSkeleton();
-    Bone* rootBone = skeleton.GetRootBone();
-    Bone* startBone = rootBone;
+    Skeleton &skeleton = model_->GetSkeleton();
+    Bone *rootBone = skeleton.GetRootBone();
+    Bone *startBone = rootBone;
 
     if (!rootBone)
         return;
 
 //    startBone->initialScale_(Vector3(0.01f, 0.01f, 0.01f));
 
-    if (drawDebug_)
-    {
-        auto* physicsWorld = scene_->GetComponent<PhysicsWorld2D>();
+    if (drawDebug_) {
+        auto *physicsWorld = scene_->GetComponent<PhysicsWorld2D>();
         physicsWorld->DrawDebugGeometry();
 
-        Node* tileMapNode = scene_->GetChild("TileMap", true);
-        auto* map = tileMapNode->GetComponent<TileMap3D>();
+        Node *tileMapNode = scene_->GetChild("TileMap", true);
+        auto *map = tileMapNode->GetComponent<TileMap3D>();
         map->DrawDebugGeometry(scene_->GetComponent<DebugRenderer>(), false);
 
         // bones. Note that debug geometry has to be separately requested each frame. Disable depth test so that we can see the
@@ -1322,65 +1300,61 @@ void MayaSpace::HandlePostRenderUpdate(StringHash eventType, VariantMap& eventDa
     }
 }
 
-void MayaSpace::ReloadScene(bool reInit)
-{
+void MayaSpace::ReloadScene(bool reInit) {
     String filename = sample2D_->demoFilename_;
     if (!reInit)
         filename += "InGame";
 
-    File loadFile(context_, GetSubsystem<FileSystem>()->GetProgramDir() + "Data/Scenes/" + filename + ".xml", FILE_READ);
+    File loadFile(context_, GetSubsystem<FileSystem>()->GetProgramDir() + "Data/Scenes/" + filename + ".xml",
+                  FILE_READ);
     scene_->LoadXML(loadFile);
     // After loading we have to reacquire the weak pointer to the Character2D component, as it has been recreated
     // Simply find the character's scene node by name as there's only one of them
-    Node* character2DNode = scene_->GetChild("Bear-P1", true);
+    Node *character2DNode = scene_->GetChild("Bear-P1", true);
     if (character2DNode)
         player_ = character2DNode->GetComponent<Character2D>();
 
     // Set what number to use depending whether reload is requested from 'PLAY' button (reInit=true) or 'F7' key (reInit=false)
     int lifes = player_->remainingLifes_;
     int coins = player_->remainingCoins_;
-    if (reInit)
-    {
+    if (reInit) {
         lifes = LIFES;
         coins = player_->maxCoins_;
     }
 
     // Update lifes UI
-    auto* ui = GetSubsystem<UI>();
-    Text* lifeText = static_cast<Text*>(ui->GetRoot()->GetChild("LifeText", true));
+    auto *ui = GetSubsystem<UI>();
+    Text *lifeText = static_cast<Text *>(ui->GetRoot()->GetChild("LifeText", true));
     lifeText->SetText(String(lifes));
 
     // Update coins UI
-    Text* coinsText = static_cast<Text*>(ui->GetRoot()->GetChild("CoinsText", true));
+    Text *coinsText = static_cast<Text *>(ui->GetRoot()->GetChild("CoinsText", true));
     coinsText->SetText(String(coins));
 }
 
-void MayaSpace::HandlePlayButton(StringHash eventType, VariantMap& eventData)
-{
+void MayaSpace::HandlePlayButton(StringHash eventType, VariantMap &eventData) {
 //    sample2D_->PlaySoundEffect("enemy01-laugh.wav");
 //    sample2D_->PlaySoundEffect("BAY-r1.wav");
 
     // Remove fullscreen UI and unfreeze the scene
-    auto* ui = GetSubsystem<UI>();
-    if (static_cast<Text*>(ui->GetRoot()->GetChild("FullUI", true)))
-    {
+    auto *ui = GetSubsystem<UI>();
+    if (static_cast<Text *>(ui->GetRoot()->GetChild("FullUI", true))) {
         ui->GetRoot()->GetChild("FullUI", true)->Remove();
         scene_->SetUpdateEnabled(true);
-    }
-    else
+    } else
         // Reload scene
         ReloadScene(true);
 
     // Hide Instructions and Play/Exit buttons
-    Text* instructionText = static_cast<Text*>(ui->GetRoot()->GetChild("Instructions", true));
+    Text *instructionText = static_cast<Text *>(ui->GetRoot()->GetChild("Instructions", true));
     instructionText->SetText("");
-    Button* exitButton = static_cast<Button*>(ui->GetRoot()->GetChild("ExitButton", true));
+    Button *exitButton = static_cast<Button *>(ui->GetRoot()->GetChild("ExitButton", true));
     exitButton->SetVisible(false);
-    Button* playButton = static_cast<Button*>(ui->GetRoot()->GetChild("PlayButton", true));
+    Button *playButton = static_cast<Button *>(ui->GetRoot()->GetChild("PlayButton", true));
     playButton->SetVisible(false);
 
     // Hide mouse cursor
-    auto* input = GetSubsystem<Input>();
+    auto *input = GetSubsystem<Input>();
     input->SetMouseVisible(false);
 
 }

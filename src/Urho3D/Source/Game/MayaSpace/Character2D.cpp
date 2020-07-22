@@ -63,6 +63,7 @@ Character2D::Character2D(Context* context) :
     // Set true once hit ground
     isReady_ = false;
     doJump_ = true;
+
 }
 
 void Character2D::RegisterObject(Context* context)

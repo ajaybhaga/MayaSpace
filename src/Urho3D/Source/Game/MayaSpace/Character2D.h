@@ -116,4 +116,7 @@ public:
     float lastMove_;
     float currMove_;
 
+    SharedPtr<Node> genotypeNode_; // Scene node displaying genotype
+    SharedPtr<Node> powerbarNode_; // Scene node displaying powerbar
+
 };
