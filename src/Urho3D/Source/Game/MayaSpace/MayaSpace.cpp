@@ -581,7 +581,7 @@ void MayaSpace::CreateScene() {
         //Node* gtNode = scene_->CreateChild("Genotype");
         //pbNode->SetPosition(Vector3(3.5f+Random(-2.0f,2.0f), 20.0f, 0.0f));
 
-        agents_[i]->genotypeNode_->SetPosition(Vector3(0.0f, 0.25f, 0.0f));
+        agents_[i]->genotypeNode_->SetPosition(Vector3(-0.24f, 0.25f, 0.0f));
 //        pbNode->SetScale(Vector3(0.5f,0.5f,0.5f));
         auto *billboardObject = agents_[i]->genotypeNode_->CreateComponent<BillboardSet>();
         billboardObject->SetNumBillboards(NUM_BILLBOARDS);
@@ -594,7 +594,7 @@ void MayaSpace::CreateScene() {
             Billboard *bb = billboardObject->GetBillboard(j);
 
 //            bb->size_ = Vector2((256.0f/8.0f)*0.06f, (256.0f/144.0f)*0.06f);
-            bb->size_ = Vector2((8.0f) * 0.005f, (72.0f) * 0.005f);
+            bb->size_ = Vector2((1.0f) * 0.05f, (0.1f) * 0.05f);
 
             bb->rotation_ = 90.0f; //Random() * 360.0f;
             bb->enabled_ = true;
@@ -1168,13 +1168,17 @@ void MayaSpace::HandleUpdate(StringHash eventType, VariantMap &eventData) {
 
             // Rotate the individual billboards within the billboard sets, then recommit to make the changes visible
             for (unsigned i = 0; i < billboardNodes.Size(); ++i) {
+
+                // Retrieve billboard set
                 auto *billboardObject = billboardNodes[i]->GetComponent<BillboardSet>();
+
+                // Check which billboard set
 
                 for (unsigned j = 0; j < billboardObject->GetNumBillboards(); ++j) {
                     Billboard *bb = billboardObject->GetBillboard(j);
-                    //            bb->rotation_ += BILLBOARD_ROTATION_SPEED * timeStep;
+                  //  bb->rotation_ += BILLBOARD_ROTATION_SPEED * timeStep;
                     Vector3 aiPos = agents_[i]->GetNode()->GetPosition();
-                    bb->position_ = Vector3(aiPos.x_, aiPos.y_, 0.0f);
+                    bb->position_ = Vector3(aiPos.x_ + (j * 0.02), aiPos.y_, 0.0f);
                     //       bb->position_ = Vector3(player_->GetNode()->GetPosition().x_, player_->GetNode()->GetPosition().y_, -5.0f);
 
 
