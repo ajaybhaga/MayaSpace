@@ -113,15 +113,15 @@ void EvolutionManager::startEvolution() {
     // and an output layer with 2 neurons.
 
     // Input layer
-    ffnTopology[0] = 5;
+    ffnTopology[0] = 9;
 
     // Hidden layers
-    ffnTopology[1] = 4;
-    ffnTopology[2] = 3;
+    ffnTopology[1] = 10;
+    ffnTopology[2] = 8;
 
     // Output layer
-    ffnTopology[3] = 2;
-    ffnTopology[4] = 2;
+    ffnTopology[3] = 4;
+    ffnTopology[4] = 4;
 
     // Create neural network to determine parameter count (only used for config setting sized same as agent ffn)
     NeuralNetwork* nn = new NeuralNetwork(ffnTopology, NUM_NEURAL_LAYERS);

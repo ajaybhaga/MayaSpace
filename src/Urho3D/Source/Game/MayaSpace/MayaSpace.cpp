@@ -605,9 +605,36 @@ void MayaSpace::CreateScene() {
             // After modifying the billboards, they need to be "committed" so that the BillboardSet updates its internals
             billboardObject->Commit();
         }
-    }
 
-    // Generate physics collision shapes from the tmx file's objects located in "Physics" (top) layer
+    // Powerbar
+
+    agents_[i]->powerbarNode_->SetPosition(Vector3(0.0, 0.25f, 0.0f));
+    billboardObject = agents_[i]->powerbarNode_->CreateComponent<BillboardSet>();
+    billboardObject->SetNumBillboards(1);
+    billboardObject->SetMaterial(cache->GetResource<Material>("Materials/PowerBar.xml"));
+    billboardObject->SetSorted(true);
+
+    // Draw billboard for each genotype parameter -> alpha based on value
+
+    // Single billboard for power meter
+    for (unsigned j = 0; j < 1; ++j) {
+        Billboard *bb = billboardObject->GetBillboard(j);
+
+//            bb->size_ = Vector2((256.0f/8.0f)*0.06f, (256.0f/144.0f)*0.06f);
+        bb->size_ = Vector2((1.0f) * 0.05f, (0.1f) * 0.05f);
+
+        bb->rotation_ = 90.0f; //Random() * 360.0f;
+        bb->enabled_ = true;
+
+//            bb->uv_ = Rect(left,top,right,bottom);
+        bb->uv_ = Rect(0.0, 0.0, 1.0, 1.0);
+
+        // After modifying the billboards, they need to be "committed" so that the BillboardSet updates its internals
+        billboardObject->Commit();
+    }
+}
+
+// Generate physics collision shapes from the tmx file's objects located in "Physics" (top) layer
     TileMapLayer3D *tileMapLayer = tileMap->GetLayer(tileMap->GetNumLayers() - 1);
     sample2D_->CreateCollisionShapesFromTMXObjects(tileMapNode, tileMapLayer, info);
 
@@ -1161,31 +1188,38 @@ void MayaSpace::HandleUpdate(StringHash eventType, VariantMap &eventData) {
         }*/
 
 
+                const float BILLBOARD_ROTATION_SPEED = 50.0f;
 
+                // Rotate the individual billboards within the billboard sets, then recommit to make the changes visible
+                for (unsigned i = 0; i < billboardNodes.Size(); ++i) {
 
+                    // Retrieve billboard set
+                    auto *billboardObject = billboardNodes[i]->GetComponent<BillboardSet>();
 
-            const float BILLBOARD_ROTATION_SPEED = 50.0f;
+                    bool updateSize = false;
+                    // Check which billboard set, set size
+                    if (i == 0) {
+                        updateSize = true;
+                    }
 
-            // Rotate the individual billboards within the billboard sets, then recommit to make the changes visible
-            for (unsigned i = 0; i < billboardNodes.Size(); ++i) {
+                    for (unsigned j = 0; j < billboardObject->GetNumBillboards(); ++j) {
+                        Billboard *bb = billboardObject->GetBillboard(j);
+                        //  bb->rotation_ += BILLBOARD_ROTATION_SPEED * timeStep;
+                        if (agents_[i]) {
+                            Vector3 aiPos = agents_[i]->GetNode()->GetPosition();
+                            bb->position_ = Vector3(aiPos.x_ + (j * 0.02), aiPos.y_, 0.0f);
 
-                // Retrieve billboard set
-                auto *billboardObject = billboardNodes[i]->GetComponent<BillboardSet>();
+                            if (updateSize)
+                                bb->size_ = Vector2((0.1f) * 0.05f, (1.0f) * 0.05f);
 
-                // Check which billboard set
+                            //       bb->position_ = Vector3(player_->GetNode()->GetPosition().x_, player_->GetNode()->GetPosition().y_, -5.0f);
+                        }
 
-                for (unsigned j = 0; j < billboardObject->GetNumBillboards(); ++j) {
-                    Billboard *bb = billboardObject->GetBillboard(j);
-                  //  bb->rotation_ += BILLBOARD_ROTATION_SPEED * timeStep;
-                    Vector3 aiPos = agents_[i]->GetNode()->GetPosition();
-                    bb->position_ = Vector3(aiPos.x_ + (j * 0.02), aiPos.y_, 0.0f);
-                    //       bb->position_ = Vector3(player_->GetNode()->GetPosition().x_, player_->GetNode()->GetPosition().y_, -5.0f);
+                    }
 
-
+                    billboardObject->Commit();
                 }
 
-                billboardObject->Commit();
-            }
         }
     }
 
