@@ -583,15 +583,63 @@ void MayaSpace::CreateScene() {
 
         agents_[i]->genotypeNode_->SetPosition(Vector3(-0.24f, 0.25f, 0.0f));
 //        pbNode->SetScale(Vector3(0.5f,0.5f,0.5f));
-        auto *billboardObject = agents_[i]->genotypeNode_->CreateComponent<BillboardSet>();
-        billboardObject->SetNumBillboards(NUM_BILLBOARDS);
-        billboardObject->SetMaterial(cache->GetResource<Material>("Materials/Genotype.xml"));
-        billboardObject->SetSorted(true);
+        agents_[i]->genotypeBBSet_ = agents_[i]->genotypeNode_->CreateComponent<BillboardSet>();
+        agents_[i]->genotypeBBSet_->SetNumBillboards(NUM_BILLBOARDS);
+        agents_[i]->genotypeBBSet_->SetMaterial(cache->GetResource<Material>("Materials/Genotype.xml"));
+        agents_[i]->genotypeBBSet_->SetSorted(true);
 
         // Draw billboard for each genotype parameter -> alpha based on value
 
         for (unsigned j = 0; j < NUM_BILLBOARDS; ++j) {
-            Billboard *bb = billboardObject->GetBillboard(j);
+            Billboard *bb = agents_[i]->genotypeBBSet_->GetBillboard(j);
+
+            // Get genotype parameters
+            for (int g = 0; g < EvolutionManager::getInstance()->getAgents()[i]->genotype->getParameterCount(); g++) {
+                float parameter = EvolutionManager::getInstance()->getAgents()[i]->genotype->getParameter(g);
+
+                // Set alpha based on parameter
+               //bb->color_ = Urho3D::Color(parameter, parameter, parameter);
+
+                //URHO3D_LOGINFOF("Agent [%d]: genotype parameter[%d] -> %f", i, g, parameter);
+
+                //float fx = 0.5;
+                //	float fy = fx / (m_i_width / m_i_height);
+                //	m_bb->size_ = Vector2(fx, fy);
+
+                // Diminish height of genotype billboard by parameter value
+                bb->size_ = Vector2((1.0f) * 0.05f * parameter, (0.1f) * 0.05f);
+            }
+
+//            bb->size_ = Vector2((256.0f/8.0f)*0.06f, (256.0f/144.0f)*0.06f);
+        //    bb->size_ = Vector2((1.0f) * 0.05f, (0.1f) * 0.05f);
+
+            //float fx = 0.5;
+            //	float fy = fx / (m_i_width / m_i_height);
+            //	m_bb->size_ = Vector2(fx, fy);
+
+            bb->rotation_ = 90.0f; //Random() * 360.0f;
+            bb->enabled_ = true;
+
+//            bb->uv_ = Rect(left,top,right,bottom);
+            bb->uv_ = Rect(0.0, 0.0, 1.0, 1.0);
+
+            // After modifying the billboards, they need to be "committed" so that the BillboardSet updates its internals
+            agents_[i]->genotypeBBSet_->Commit();
+        }
+
+        // Powerbar
+
+        agents_[i]->powerbarNode_->SetPosition(Vector3(0.0, 0.25f, 0.0f));
+        agents_[i]->powerbarBBSet_ = agents_[i]->powerbarNode_->CreateComponent<BillboardSet>();
+        agents_[i]->powerbarBBSet_->SetNumBillboards(1);
+        agents_[i]->powerbarBBSet_->SetMaterial(cache->GetResource<Material>("Materials/PowerBar.xml"));
+        agents_[i]->powerbarBBSet_->SetSorted(true);
+
+        // Draw billboard for each genotype parameter -> alpha based on value
+
+        // Single billboard for power meter
+        for (unsigned j = 0; j < 1; ++j) {
+            Billboard *bb = agents_[i]->powerbarBBSet_->GetBillboard(j);
 
 //            bb->size_ = Vector2((256.0f/8.0f)*0.06f, (256.0f/144.0f)*0.06f);
             bb->size_ = Vector2((1.0f) * 0.05f, (0.1f) * 0.05f);
@@ -603,36 +651,9 @@ void MayaSpace::CreateScene() {
             bb->uv_ = Rect(0.0, 0.0, 1.0, 1.0);
 
             // After modifying the billboards, they need to be "committed" so that the BillboardSet updates its internals
-            billboardObject->Commit();
+            agents_[i]->powerbarBBSet_->Commit();
         }
-
-    // Powerbar
-
-    agents_[i]->powerbarNode_->SetPosition(Vector3(0.0, 0.25f, 0.0f));
-    billboardObject = agents_[i]->powerbarNode_->CreateComponent<BillboardSet>();
-    billboardObject->SetNumBillboards(1);
-    billboardObject->SetMaterial(cache->GetResource<Material>("Materials/PowerBar.xml"));
-    billboardObject->SetSorted(true);
-
-    // Draw billboard for each genotype parameter -> alpha based on value
-
-    // Single billboard for power meter
-    for (unsigned j = 0; j < 1; ++j) {
-        Billboard *bb = billboardObject->GetBillboard(j);
-
-//            bb->size_ = Vector2((256.0f/8.0f)*0.06f, (256.0f/144.0f)*0.06f);
-        bb->size_ = Vector2((1.0f) * 0.05f, (0.1f) * 0.05f);
-
-        bb->rotation_ = 90.0f; //Random() * 360.0f;
-        bb->enabled_ = true;
-
-//            bb->uv_ = Rect(left,top,right,bottom);
-        bb->uv_ = Rect(0.0, 0.0, 1.0, 1.0);
-
-        // After modifying the billboards, they need to be "committed" so that the BillboardSet updates its internals
-        billboardObject->Commit();
     }
-}
 
 // Generate physics collision shapes from the tmx file's objects located in "Physics" (top) layer
     TileMapLayer3D *tileMapLayer = tileMap->GetLayer(tileMap->GetNumLayers() - 1);
@@ -1170,12 +1191,6 @@ void MayaSpace::HandleUpdate(StringHash eventType, VariantMap &eventData) {
             //ai_[i]->GetNode()->SetRotation(Quaternion(-90.0f, ai_[i]->heading_+180.0f, 0.0f));
             agents_[i]->GetNode()->SetRotation(Quaternion(0.0f, agents_[i]->heading_, 0.0));
 
-            // Get the billboard scene nodes
-            PODVector<Node *> billboardNodes;
-            //agents_[i]->genotypeNode_->GetChildrenWithComponent<BillboardSet>(billboardNodes);
-            scene_->GetChildrenWithComponent<BillboardSet>(billboardNodes);
-
-
 /*
         static int _sndCnt = 0;
         float r = Random(-0.0f,5.0f);
@@ -1187,38 +1202,50 @@ void MayaSpace::HandleUpdate(StringHash eventType, VariantMap &eventData) {
             sample2D_->PlaySoundEffect("enemy01-laugh.wav");
         }*/
 
+            // Update billboards (genotype, powerbar)
 
-                const float BILLBOARD_ROTATION_SPEED = 50.0f;
+            const float BILLBOARD_ROTATION_SPEED = 50.0f;
 
-                // Rotate the individual billboards within the billboard sets, then recommit to make the changes visible
-                for (unsigned i = 0; i < billboardNodes.Size(); ++i) {
+            // Genotype
 
-                    // Retrieve billboard set
-                    auto *billboardObject = billboardNodes[i]->GetComponent<BillboardSet>();
+            // Rotate the individual billboards within the billboard sets, then recommit to make the changes visible
+            for (unsigned j = 0; j < agents_[i]->genotypeBBSet_->GetNumBillboards(); ++j) {
+                Billboard *bb = agents_[i]->genotypeBBSet_->GetBillboard(j);
+                //  bb->rotation_ += BILLBOARD_ROTATION_SPEED * timeStep;
+                if (agents_[i]) {
+                    Vector3 aiPos = agents_[i]->GetNode()->GetPosition();
+                    bb->position_ = Vector3(aiPos.x_ + (j * 0.02), aiPos.y_, 0.0f);
 
-                    bool updateSize = false;
-                    // Check which billboard set, set size
-                    if (i == 0) {
-                        updateSize = true;
-                    }
+                    // Already set size in initialization (based on parameter)
+                    //bb->size_ = Vector2((1.0f) * 0.05f, (0.1f) * 0.05f);
 
-                    for (unsigned j = 0; j < billboardObject->GetNumBillboards(); ++j) {
-                        Billboard *bb = billboardObject->GetBillboard(j);
-                        //  bb->rotation_ += BILLBOARD_ROTATION_SPEED * timeStep;
-                        if (agents_[i]) {
-                            Vector3 aiPos = agents_[i]->GetNode()->GetPosition();
-                            bb->position_ = Vector3(aiPos.x_ + (j * 0.02), aiPos.y_, 0.0f);
 
-                            if (updateSize)
-                                bb->size_ = Vector2((0.1f) * 0.05f, (1.0f) * 0.05f);
-
-                            //       bb->position_ = Vector3(player_->GetNode()->GetPosition().x_, player_->GetNode()->GetPosition().y_, -5.0f);
-                        }
-
-                    }
-
-                    billboardObject->Commit();
+                    //       bb->position_ = Vector3(player_->GetNode()->GetPosition().x_, player_->GetNode()->GetPosition().y_, -5.0f);
                 }
+
+            }
+
+            agents_[i]->genotypeBBSet_->Commit();
+
+
+            // Powerbar
+
+            // Rotate the individual billboards within the billboard sets, then recommit to make the changes visible
+            for (unsigned j = 0; j < agents_[i]->powerbarBBSet_->GetNumBillboards(); ++j) {
+                Billboard *bb = agents_[i]->powerbarBBSet_->GetBillboard(j);
+                //  bb->rotation_ += BILLBOARD_ROTATION_SPEED * timeStep;
+                if (agents_[i]) {
+                    Vector3 aiPos = agents_[i]->GetNode()->GetPosition();
+                    bb->position_ = Vector3(aiPos.x_ + (j * 0.02), aiPos.y_+0.2f, 0.0f);
+
+                    bb->size_ = Vector2((0.4f) * 0.05f, (4.0f) * 0.05f);
+
+                    //       bb->position_ = Vector3(player_->GetNode()->GetPosition().x_, player_->GetNode()->GetPosition().y_, -5.0f);
+                }
+
+            }
+
+            agents_[i]->powerbarBBSet_->Commit();
 
         }
     }

@@ -24,6 +24,7 @@
 
 #include <Urho3D/Input/Controls.h>
 #include <Urho3D/Scene/LogicComponent.h>
+#include <Urho3D/Graphics/BillboardSet.h>
 
 // All Urho3D classes reside in namespace Urho3D
 using namespace Urho3D;
@@ -117,6 +118,9 @@ public:
     float currMove_;
 
     SharedPtr<Node> genotypeNode_; // Scene node displaying genotype
+    SharedPtr<BillboardSet> genotypeBBSet_; // Billboard set for genotype
+
     SharedPtr<Node> powerbarNode_; // Scene node displaying powerbar
+    SharedPtr<BillboardSet> powerbarBBSet_; // Billboard set for powerbar
 
 };
