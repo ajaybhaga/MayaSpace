@@ -136,15 +136,14 @@ void EvolutionManager::startEvolution() {
     /*
      * Output Map:
      *
-     *  1: x acc
-     *  2: y acc
-     *  3: z acc
-     *  4: action state
+     *  1: x acc (horizontal)
+     *  2: y acc (vertical)
+     *  3: action state
      */
 
     // Output layer
-    ffnTopology[3] = 4;
-    ffnTopology[4] = 4;
+    ffnTopology[3] = 3;
+    ffnTopology[4] = 3;
 
     // Create neural network to determine parameter count (only used for config setting sized same as agent ffn)
     NeuralNetwork *nn = new NeuralNetwork(ffnTopology, NUM_NEURAL_LAYERS);

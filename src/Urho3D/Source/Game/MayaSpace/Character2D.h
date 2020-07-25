@@ -44,7 +44,7 @@ struct PlayerState {
     Vector3 moveDir;
 };
 
-/// Character2D component controling Imp behavior.
+/// Character2D component controlling Imp behavior.
 class Character2D : public LogicComponent
 {
     URHO3D_OBJECT(Character2D, LogicComponent);

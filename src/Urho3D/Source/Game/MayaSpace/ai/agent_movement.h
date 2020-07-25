@@ -46,6 +46,11 @@ private:
 
     // Horizontal = engine force
     double horizontalInput;
+    // Vertical = jumping force
+    double verticalInput;
+    // Action
+    double action;
+
 public:
     double getHorizontalInput() const;
 
@@ -55,10 +60,6 @@ public:
 
     void setVerticalInput(double verticalInput);
 
-private:
-
-    // Vertical = turning force
-    double verticalInput;
 };
 
 #endif //EANN_SIMPLE_AGENT_MOVEMENT_H

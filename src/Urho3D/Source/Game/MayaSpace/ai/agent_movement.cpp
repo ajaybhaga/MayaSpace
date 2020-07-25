@@ -43,6 +43,21 @@ void AgentMovement::applyInput(float deltaTime) {
         horizontalInput = -1;
     }
 
+    if (verticalInput == 1) {
+        // Jump
+    }
+    if (verticalInput == -1) {
+        // Crouch (or stand)
+    }
+
+    if (horizontalInput == 1) {
+        // Right
+    }
+    if (horizontalInput == -1) {
+        // Left
+    }
+
+/*
     // Agent can only accelerate further if velocity is lower than engineForce * MAX_VEL
     bool canAccelerate = true;
     if (verticalInput < 0) {
@@ -63,15 +78,18 @@ void AgentMovement::applyInput(float deltaTime) {
         }
     }
 
+ */
     // Set rotation
-    this->rotation = agentController->agent->getRotation();
-    this->rotation *= (float)-horizontalInput * TURN_SPEED * deltaTime;
+  //  this->rotation = agentController->agent->getRotation();
+  //  this->rotation *= (float)-horizontalInput * TURN_SPEED * deltaTime;
 }
 
 void AgentMovement::setInputs(double *input) {
 
+    // 4 outputs (horizontal, vertical, action)
     horizontalInput = input[0];
     verticalInput = input[1];
+    action = input[2];
 }
 
 // Apply the current velocity to the position of the agent.
@@ -93,7 +111,7 @@ void AgentMovement::applyVelocity(float deltaTime) {
 */
 
     // Update position
-    this->agentController->agent->setPosition(Urho3D::Vector3(this->agentController->agent->getPosition() + (velocity * deltaTime)));
+   // this->agentController->agent->setPosition(Urho3D::Vector3(this->agentController->agent->getPosition() + (velocity * deltaTime)));
 }
 
 // Apply some friction to the velocity.
