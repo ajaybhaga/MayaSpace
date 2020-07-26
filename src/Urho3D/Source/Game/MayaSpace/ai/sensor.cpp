@@ -8,8 +8,8 @@
 
 // TODO: Add sensor types (multiple types can diversify the mutation process).
 
-Sensor::Sensor(Agent *agent) {
-    this->agent = agent;
+Sensor::Sensor(int index) {
+    agentIndex = index;
 }
 
 Sensor::~Sensor() {
@@ -64,7 +64,12 @@ CollisionSphere Sensor::getCollisionSphere(const Vector3 &position,
 
 void Sensor::update() {
     // Update stored position derived from agent position
-    this->center = agent->getPosition() + this->offset;
+//    if (EvolutionManager::getInstance()->getAgents()[agentIndex]) {
+        this->center = EvolutionManager::getInstance()->getAgents()[agentIndex]->getPosition() + this->offset;
+//    } else {
+        // Only update with offset, until we create the agent pool
+ //       this->center = this->offset;
+ //   }
 
 //    std::vector<Agent*> agents = EvolutionManager::getInstance()->getAgents();
 //    std::vector<AgentController*> controllers = EvolutionManager::getInstance()->getAgentControllers();
@@ -144,10 +149,6 @@ void Sensor::hide() {
 // Shows the visual representation of the sensor
 void Sensor::show() {
     visibility = true;
-}
-
-Agent *Sensor::getAgent() const {
-    return agent;
 }
 
 const Urho3D::Vector3 &Sensor::getTarget() const {

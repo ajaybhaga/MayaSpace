@@ -13,14 +13,14 @@ class EvolutionManager;
 //class MathHelper;
 //Vector3 translateGLToWindowCoordinates(GLdouble x, GLdouble y, GLdouble z)
 
-AgentController::AgentController(Agent *agent) {
-    this->agent = agent;
+AgentController::AgentController(int index) {
+    this->agentIndex = index;
     this->movement = new AgentMovement(this);
     this->fsm = new AgentFSM();
 
     int numSensors = 3;
     for (int i = 0; i < numSensors; i++) {
-        Sensor *s = new Sensor(agent);
+        Sensor *s = new Sensor(agentIndex);
         sensors.emplace_back(*s);
     }
 
@@ -32,11 +32,6 @@ AgentController::AgentController(Agent *agent) {
 
     sensors[2].setOffset(Urho3D::Vector3(0.0f, 0.0f, 0.0f));
     sensors[2].setDirection(Urho3D::Vector3(Urho3D::Vector3(0.0f, 0.0f, 1.0f)));
-
-    // Update sensors with initial values
-    for (int i = 0; i < numSensors; i++) {
-        sensors[i].update();
-    }
 
         /*
         sensors[1].setCenter(Vector3(agent->getPosition()+Vector3(0.1f, 0.0f, 0.0f)));
@@ -56,9 +51,6 @@ AgentController::AgentController(Agent *agent) {
  }
 
 AgentController::~AgentController() {
-    if (this->agent) {
-        delete[] this->agent;
-    }
 
     if (this->movement) {
         delete[] this->movement;
@@ -94,7 +86,7 @@ void AgentController::restart() {
         sensors[i].show();
     }
 
-    this->agent->reset();
+    EvolutionManager::getInstance()->getAgents()[agentIndex]->reset();
 }
 
 void AgentController::update(float duration) {
@@ -108,7 +100,7 @@ void AgentController::update(float duration) {
     }
 
     // Process sensor inputs through ffn
-    double *controlInputs = this->agent->ffn->processInputs(sensorOutput);
+    double *controlInputs = EvolutionManager::getInstance()->getAgents()[agentIndex]->ffn->processInputs(sensorOutput);
 
     // Resultant data from sensor processing is used for controlling the agent movement
 
@@ -136,7 +128,7 @@ void AgentController::die() {
         sensors[i].hide();
     }
 
-    agent->kill();
+    EvolutionManager::getInstance()->getAgents()[agentIndex]->kill();
 }
 
 void AgentController::checkpointCaptured() {
@@ -144,15 +136,15 @@ void AgentController::checkpointCaptured() {
 }
 
 float AgentController::getCurrentCompletionReward() {
-    if (agent)
-        return agent->genotype->evaluation;
+    if (EvolutionManager::getInstance()->getAgents()[agentIndex])
+        return EvolutionManager::getInstance()->getAgents()[agentIndex]->genotype->evaluation;
     else
         return -1.0;
 }
 
 void AgentController::setCurrentCompletionReward(float reward) {
-    if (agent)
-        agent->genotype->evaluation = reward;
+    if (EvolutionManager::getInstance()->getAgents()[agentIndex])
+        EvolutionManager::getInstance()->getAgents()[agentIndex]->genotype->evaluation = reward;
 }
 
 float AgentController::getTimeSinceLastCheckpoint() const {

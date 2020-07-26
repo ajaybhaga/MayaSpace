@@ -7,14 +7,14 @@
 #include <string>
 #include <stdlib.h>     /* abs */
 #include "../util/math_helper.h"
+#include "agent.h"
 #include <Urho3D/Math/Vector3.h>
 #include <Urho3D/Math/Quaternion.h>
-#include "agent.h"
 
 // Class representing a sensor reading the distance to the nearest obstacle in a specified direction.
 class Sensor {
 public:
-    Sensor(Agent *agent);
+    Sensor(int index);
     ~Sensor();
 
     void start();
@@ -23,7 +23,6 @@ public:
     void show();
 
     const Urho3D::Vector3 &getDirection() const;
-    Agent *getAgent() const;
     const Urho3D::Vector3 &getOffset() const;
     void setOffset(const Urho3D::Vector3 &offset);
     void setDirection(const Urho3D::Vector3 &direction);
@@ -48,6 +47,9 @@ private:
     const float MAX_DIST = 10.0f;
     const float MIN_DIST = 0.01f;
 
+    // Agent index
+    int agentIndex;
+
     // Offset from center of agent
     Urho3D::Vector3 offset;
     // Sensor center
@@ -55,7 +57,6 @@ private:
     // Sensor target
     Urho3D::Vector3 target;
 
-    Agent *agent;
     // Sensor direction
     Urho3D::Vector3 direction;
 

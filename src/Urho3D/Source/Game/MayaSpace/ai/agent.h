@@ -5,8 +5,7 @@
 // Based on design of Samuel Arzt (March 2017)
 //
 
-#ifndef EANN_SIMPLE_AGENT_H
-#define EANN_SIMPLE_AGENT_H
+#pragma once
 
 #include "../shared_libs.h"
 #include "../util/event.h"
@@ -65,5 +64,3 @@ private:
     Urho3D::Vector3 colour;
 
 };
-
-#endif //EANN_SIMPLE_AGENT_H

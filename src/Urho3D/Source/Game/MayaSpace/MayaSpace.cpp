@@ -177,18 +177,6 @@ void MayaSpace::InitEvolutionSpriteGenerator() {
 
 }
 
-void MayaSpace::UpdateGeneticAlgorithm(float timeStep) {
-    // Iterate through agent controllers and apply update
-    std::vector<Agent *> agents = EvolutionManager::getInstance()->getAgents();
-    std::vector<AgentController *> controllers = EvolutionManager::getInstance()->getAgentControllers();
-
-    for (int i = 0; i < controllers.size(); i++) {
-        AgentController *controller = controllers[i];
-        controller->update(timeStep);
-        // Set agent evaluation (affects fitness calculation)
-        controller->setCurrentCompletionReward(controller->getCurrentCompletionReward() + Random(0.0f, 1.0f));
-    }
-}
 
 void MayaSpace::ShowEvolutionManagerStats() {
     std::vector<Agent *> agents = EvolutionManager::getInstance()->getAgents();
@@ -1088,9 +1076,6 @@ void MayaSpace::HandleUpdate(StringHash eventType, VariantMap &eventData) {
     // Take the frame time step, which is stored as a float
     float timeStep = eventData[P_TIMESTEP].GetFloat();
     HandleUpdateParticlePool(timeStep);
-
-    // Update Genetic Algorithm
-    MayaSpace::UpdateGeneticAlgorithm(timeStep);
 
     float zoom_ = cameraNode_->GetComponent<Camera>()->GetZoom();
     float deltaSum;

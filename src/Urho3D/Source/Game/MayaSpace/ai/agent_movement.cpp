@@ -94,10 +94,14 @@ void AgentMovement::setInputs(double *input) {
 
 // Apply the current velocity to the position of the agent.
 void AgentMovement::applyVelocity(float deltaTime) {
-    Urho3D::Vector3 direction = Urho3D::Vector3(0, 1, 0);
-    Urho3D::Quaternion currRot = this->agentController->agent->getRotation();
 
-    this->agentController->agent->setRotation(rotation);
+
+
+
+    Urho3D::Vector3 direction = Urho3D::Vector3(0, 1, 0);
+    Urho3D::Quaternion currRot = EvolutionManager::getInstance()->getAgents()[agentController->agentIndex]->getRotation();
+
+    EvolutionManager::getInstance()->getAgents()[agentController->agentIndex]->setRotation(rotation);
 
     Urho3D::Quaternion dirQ = Urho3D::Quaternion(0.0f, 90.0f, 0.0f);
     ;

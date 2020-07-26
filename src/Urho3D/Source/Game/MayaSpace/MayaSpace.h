@@ -95,9 +95,6 @@ private:
     // Init Genetic Algorithm sprite generator
     void InitEvolutionSpriteGenerator();
 
-    // Update Genetic Algorithm
-    void UpdateGeneticAlgorithm(float timeStep);
-
     // Display Genetic Algorithm Evolution Manager statistics
     void ShowEvolutionManagerStats();
 

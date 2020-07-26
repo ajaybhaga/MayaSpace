@@ -5,8 +5,7 @@
 // Based on design of Samuel Arzt (March 2017)
 //
 
-#ifndef EANN_SIMPLE_AGENT_CONTROLLER_H
-#define EANN_SIMPLE_AGENT_CONTROLLER_H
+#pragma once
 
 #include "genotype.h"
 #include "neural_layer.h"
@@ -25,7 +24,7 @@ class Sensor;
 class AgentController {
 public:
 
-    AgentController(Agent *agent);
+    AgentController(int index);
     ~AgentController();
 
     void awake();
@@ -39,7 +38,7 @@ public:
     void setCurrentCompletionReward(float reward);
     const std::vector<Sensor> &getSensors() const;
 
-    Agent *agent;
+    int agentIndex; // Agent index of the evolution manager agents array
     AgentMovement *movement;
     AgentFSM *fsm;
 
@@ -52,11 +51,9 @@ public:
 private:
     // Maximum delay in seconds between the collection of two checkpoints until this agent dies.
     const float MAX_CHECKPOINT_DELAY = 7;
-    std::vector<Sensor> sensors;
+    std::vector<Sensor> sensors; // Vector of sensors
     float timeSinceLastCheckpoint = 0.0;
     long startTime;
     long lastTime = 0;
 
 };
-
-#endif //EANN_SIMPLE_AGENT_CONTROLLER_H

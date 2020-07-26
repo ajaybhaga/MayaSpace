@@ -37,6 +37,7 @@
 
 
 #include <Urho3D/DebugNew.h>
+#include <MayaSpace/ai/agent.h>
 #include "GameController.h"
 
 
@@ -331,6 +332,20 @@ PlayerState Character2D::HandleController(float timeStep)
     // Reset state
     currState_.jump = false;
     currState_.walk = false;
+
+
+    // TODO: Reduce to singular update
+    // Iterate through agent controllers and apply update
+    std::vector<Agent *> agents = EvolutionManager::getInstance()->getAgents();
+    std::vector<AgentController *> controllers = EvolutionManager::getInstance()->getAgentControllers();
+
+    for (int i = 0; i < controllers.size(); i++) {
+        AgentController *controller = controllers[i];
+        controller->update(timeStep);
+        // Set agent evaluation (affects fitness calculation)
+        controller->setCurrentCompletionReward(controller->getCurrentCompletionReward() + Random(0.0f, 1.0f));
+    }
+
 
     // Let kick stay for 2 seconds
     if (currMove_-currState_.lastKick > 2.0f) {

@@ -327,10 +327,10 @@ void EvolutionManager::startEvaluation(std::vector<Genotype *> currentPopulation
     for (int i = 0; i < currentPopulation.size(); i++) {
 
         Agent *agent = new Agent(currentPopulation[i], MathHelper::softSignFunction, ffnTopology);
-        AgentController *agentController = new AgentController(agent);
+        AgentController *agentController = new AgentController(i);
         agents.emplace_back(agent);
         agentControllers.emplace_back(agentController);
-        agentController->agent->agentDied += onAgentDied;
+        agent->agentDied += onAgentDied;
         agentsAliveCount++;
     }
 
