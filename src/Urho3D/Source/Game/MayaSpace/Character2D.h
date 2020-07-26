@@ -62,8 +62,9 @@ public:
     void HandleWoundedState(float timeStep);
     /// Handle death of the player.
     void HandleDeath();
-    /// Handle controller
-    PlayerState HandleController(float timeStep);
+    /// Handle controllers
+    PlayerState HandleP1Controller(float timeStep);
+    PlayerState HandleAIController(float timeStep);
 
     // Previous state
     PlayerState prevState_;
@@ -116,6 +117,8 @@ public:
     bool chooseMove_;
     float lastMove_;
     float currMove_;
+
+    int agentIndex;
 
     SharedPtr<Node> genotypeNode_; // Scene node displaying genotype
     SharedPtr<BillboardSet> genotypeBBSet_; // Billboard set for genotype

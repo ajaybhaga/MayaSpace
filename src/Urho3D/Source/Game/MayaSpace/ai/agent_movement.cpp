@@ -57,7 +57,13 @@ void AgentMovement::applyInput(float deltaTime) {
         // Left
     }
 
-/*
+
+    char buf[255];
+    sprintf(buf, "Agent [%d] -> FFN Calculated [O1=%f, O2=%f, O3=%f, O4=%f]",
+                    agentController->agentIndex, horizontalInput, verticalInput, action);
+    std::cout << "[" << currentDateTime() << "]: " << buf << std::endl
+              << std::flush;
+    /*
     // Agent can only accelerate further if velocity is lower than engineForce * MAX_VEL
     bool canAccelerate = true;
     if (verticalInput < 0) {
@@ -95,9 +101,6 @@ void AgentMovement::setInputs(double *input) {
 // Apply the current velocity to the position of the agent.
 void AgentMovement::applyVelocity(float deltaTime) {
 
-
-
-
     Urho3D::Vector3 direction = Urho3D::Vector3(0, 1, 0);
     Urho3D::Quaternion currRot = EvolutionManager::getInstance()->getAgents()[agentController->agentIndex]->getRotation();
 
@@ -115,7 +118,8 @@ void AgentMovement::applyVelocity(float deltaTime) {
 */
 
     // Update position
-   // this->agentController->agent->setPosition(Urho3D::Vector3(this->agentController->agent->getPosition() + (velocity * deltaTime)));
+    Agent* agent = EvolutionManager::getInstance()->getAgents()[agentController->agentIndex];
+    agent->setPosition(agent->getPosition() * (velocity * deltaTime));
 }
 
 // Apply some friction to the velocity.

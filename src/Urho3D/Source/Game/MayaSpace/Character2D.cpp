@@ -44,19 +44,18 @@
 #include "Character2D.h"
 
 // Character2D logic component
-Character2D::Character2D(Context* context) :
-    LogicComponent(context),
-    wounded_(false),
-    killed_(false),
-    timer_(0.0f),
-    maxCoins_(0),
-    remainingCoins_(0),
-    remainingLifes_(3),
-    isClimbing_(false),
-    climb2_(false),
-    aboveClimbable_(false),
-    onSlope_(false)
-{
+Character2D::Character2D(Context *context) :
+        LogicComponent(context),
+        wounded_(false),
+        killed_(false),
+        timer_(0.0f),
+        maxCoins_(0),
+        remainingCoins_(0),
+        remainingLifes_(3),
+        isClimbing_(false),
+        climb2_(false),
+        aboveClimbable_(false),
+        onSlope_(false) {
     // Face model forward (right)
     heading_ = 270.0f;
     life_ = 100;
@@ -67,8 +66,7 @@ Character2D::Character2D(Context* context) :
 
 }
 
-void Character2D::RegisterObject(Context* context)
-{
+void Character2D::RegisterObject(Context *context) {
     context->RegisterFactory<Character2D>();
 
     // These macros register the class attributes to the Context for automatic load / save handling.
@@ -85,37 +83,41 @@ void Character2D::RegisterObject(Context* context)
     URHO3D_ATTRIBUTE("Is On Slope", bool, onSlope_, false, AM_DEFAULT);
 }
 
-void Character2D::Update(float timeStep)
-{
+void Character2D::Update(float timeStep) {
     // Handle wounded/killed states
     if (killed_)
         return;
 
-    if (wounded_)
-    {
+    if (wounded_) {
         HandleWoundedState(timeStep);
         return;
     }
 
     // Set temporary variables
-    auto* body = GetComponent<RigidBody2D>();
-    auto* animatedModel = GetComponent<AnimatedModel>();
+    auto *body = GetComponent<RigidBody2D>();
+    auto *animatedModel = GetComponent<AnimatedModel>();
 
     // Collision detection (AABB query)
     Vector2 characterHalfSize = Vector2(0.05f, 0.05f);
-    auto* physicsWorld = GetScene()->GetComponent<PhysicsWorld2D>();
-    PODVector<RigidBody2D*> collidingBodies;
-    physicsWorld->GetRigidBodies(collidingBodies, Rect(node_->GetWorldPosition2D() - characterHalfSize - Vector2(0.0f, 0.1f), node_->GetWorldPosition2D() + characterHalfSize));
+    auto *physicsWorld = GetScene()->GetComponent<PhysicsWorld2D>();
+    PODVector<RigidBody2D *> collidingBodies;
+    physicsWorld->GetRigidBodies(collidingBodies,
+                                 Rect(node_->GetWorldPosition2D() - characterHalfSize - Vector2(0.0f, 0.1f),
+                                      node_->GetWorldPosition2D() + characterHalfSize));
 
     if (collidingBodies.Size() > 1 && !isClimbing_) {
         currState_.onGround = true;
     }
 
-    
+
 //    URHO3D_LOGINFOF("CHAR[%d] POS [x=%f, y=%f]", id_, node_->GetWorldPosition2D().x_,node_->GetWorldPosition2D().y_);
 
     // Handle controller to update character state
-    currState_ = HandleController(timeStep);
+    if (isAI_) {
+        currState_ = HandleAIController(timeStep);
+    } else {
+        currState_ = HandleP1Controller(timeStep);
+    }
 
     // Player mechanics
     if (currState_.onGround) {
@@ -140,14 +142,14 @@ void Character2D::Update(float timeStep)
         heading_ = 90.0f;
         //  Update rotation of model to back
         if (heading_ < 90.0f) { heading_ += 2.4f; };
-        if (heading_ > 90.0f) { heading_ -= 2.4f; };      
+        if (heading_ > 90.0f) { heading_ -= 2.4f; };
     }
 
     bool idle = (!currState_.walk && !currState_.jump);
 
     // Set animation state
-    auto* cache = GetSubsystem<ResourceCache>();
-    auto* model = node_->GetComponent<AnimatedModel>(true);
+    auto *cache = GetSubsystem<ResourceCache>();
+    auto *model = node_->GetComponent<AnimatedModel>(true);
 
     String walkAnimStr = "";
     String idleAnimStr = "";
@@ -165,11 +167,11 @@ void Character2D::Update(float timeStep)
             walkAnimStr = "Models/spriteBase/Models/Movements.ani";
 
             idleAnimStr = jumpAnimStr = attackAnimStr = walkAnimStr;
-          //  walkAnimStr = "Models/spritePlayerA/sprite1_0008_Walking0010008_Walking001.ani";
+            //  walkAnimStr = "Models/spritePlayerA/sprite1_0008_Walking0010008_Walking001.ani";
 //            idleAnimStr = "Models/spritePlayerA/sprite1_0008_Walking0010008_Walking001.ani";
- //           jumpAnimStr = "Models/spritePlayerA/sprite1_0008_Walking0010018_DanceTurns001.ani";
-  //          attackAnimStr = "Models/spritePlayerA/sprite1_0008_Walking0010017_WushuKicks001.ani";
-        break;
+            //           jumpAnimStr = "Models/spritePlayerA/sprite1_0008_Walking0010018_DanceTurns001.ani";
+            //          attackAnimStr = "Models/spritePlayerA/sprite1_0008_Walking0010017_WushuKicks001.ani";
+            break;
         case 2:
 //            walkAnimStr = "Models/spriteBase/Models/0008_Walking001_0008_Walking001_0018_DanceTurns001_0008_Walking.ani";
             walkAnimStr = "Models/spriteBase/Models/Movements.ani";
@@ -179,15 +181,15 @@ void Character2D::Update(float timeStep)
             // walkAnimStr = "Models/spritePlayerA/sprite1_0008_Walking0010008_Walking001.ani";
 //            idleAnimStr = "Models/spritePlayerA/sprite1_0008_Walking0010008_Walking001.ani";
 //            jumpAnimStr = "Models/spritePlayerA/sprite1_0008_Walking0010018_DanceTurns001.ani";
- //           attackAnimStr = "Models/spritePlayerA/sprite1_0008_Walking0010017_WushuKicks001.ani";
-        break;
+            //           attackAnimStr = "Models/spritePlayerA/sprite1_0008_Walking0010017_WushuKicks001.ani";
+            break;
 
     }
 
-    auto* walkAnimation = cache->GetResource<Animation>(walkAnimStr);
-    auto* idleAnimation = cache->GetResource<Animation>(idleAnimStr);
-    auto* jumpAnimation = cache->GetResource<Animation>(jumpAnimStr);
-    auto* kickAnimation = cache->GetResource<Animation>(attackAnimStr);
+    auto *walkAnimation = cache->GetResource<Animation>(walkAnimStr);
+    auto *idleAnimation = cache->GetResource<Animation>(idleAnimStr);
+    auto *jumpAnimation = cache->GetResource<Animation>(jumpAnimStr);
+    auto *kickAnimation = cache->GetResource<Animation>(attackAnimStr);
 
     // model->RemoveAllAnimationStates(); // -> this clears the timesteps also
 
@@ -201,8 +203,7 @@ void Character2D::Update(float timeStep)
     if (currState_.walk) {
 
         // The state would fail to create (return null) if the animation was not found
-        if (walkState_)
-        {
+        if (walkState_) {
             // Enable full blending weight and looping
             walkState_->SetWeight(1.0f);
             walkState_->AddTime(timeStep);
@@ -212,8 +213,7 @@ void Character2D::Update(float timeStep)
     } else {
 
         // The state would fail to create (return null) if the animation was not found
-        if (walkState_)
-        {
+        if (walkState_) {
             // Enable full blending weight and looping
             walkState_->SetWeight(0.0f);
             walkState_->SetTime(0.0f);
@@ -297,25 +297,25 @@ void Character2D::Update(float timeStep)
     }*/
 
     // Move character
-    if (!currState_.moveDir.Equals(Vector3::ZERO) || currState_.jump)
-    {
+    if (!currState_.moveDir.Equals(Vector3::ZERO) || currState_.jump) {
 
         //URHO3D_LOGINFOF("AI[%d] MOVE DIR [x=%f, y=%f, z=%f]", id_, currState_.moveDir.x_,currState_.moveDir.y_, currState_.moveDir.z_);
 
 //        if (onSlope_)
-  //          body->ApplyForceToCenter(moveDir * MOVE_SPEED / 2, true); // When climbing a slope, apply force (todo: replace by setting linear velocity to zero when will work)
-    //    else
+        //          body->ApplyForceToCenter(moveDir * MOVE_SPEED / 2, true); // When climbing a slope, apply force (todo: replace by setting linear velocity to zero when will work)
+        //    else
 
-        node_->Translate(Vector3(currState_.moveDir.x_, currState_.moveDir.y_, currState_.moveDir.z_) * timeStep * 1.8f);
+        node_->Translate(
+                Vector3(currState_.moveDir.x_, currState_.moveDir.y_, currState_.moveDir.z_) * timeStep * 1.8f);
 
         // Snap character back to z = 0
         Vector3 pos = node_->GetPosition();
 
-      //  node_->SetPosition(Vector3(pos.x_, pos.y_, 0.0f));
+        //  node_->SetPosition(Vector3(pos.x_, pos.y_, 0.0f));
 
 //                node_->SetPosition(Vector3(-10.0f, 0.0f, 0.0f));
-    //    node_->SetScale(0.0024f);
-    //     node_->SetScale(0.4f);
+        //    node_->SetScale(0.0024f);
+        //     node_->SetScale(0.4f);
 
 
         if (currState_.jump)
@@ -323,9 +323,8 @@ void Character2D::Update(float timeStep)
     }
 }
 
-PlayerState Character2D::HandleController(float timeStep)
-{
-    auto* input = GetSubsystem<Input>();
+PlayerState Character2D::HandleP1Controller(float timeStep) {
+    auto *input = GetSubsystem<Input>();
 
     // Store previous state
     prevState_ = currState_;
@@ -333,22 +332,110 @@ PlayerState Character2D::HandleController(float timeStep)
     currState_.jump = false;
     currState_.walk = false;
 
+    // Let kick stay for 2 seconds
+    if (currMove_ - currState_.lastKick > 2.0f) {
+        currState_.kick = false;
+    }
+    currState_.moveDir = Vector3::ZERO;
 
-    // TODO: Reduce to singular update
+    currMove_ += timeStep;
+//    URHO3D_LOGINFOF("[%f] ai[%d] -> diff time = %f", timeStep, id_,  currMove_-lastMove_);
+
+    if (timeStep > 0) {
+        // GAME CONTROLS
+
+        // Jump. Must release jump control between jumps
+        if (controls_.IsDown(BUTTON_A) || input->GetKeyDown('J')) {
+            doJump_ = true;
+        }
+
+        if (controls_.IsDown(BUTTON_X) || input->GetKeyDown('R')) {
+            currState_.kick = true;
+
+            // Progress animation
+            auto *model = node_->GetComponent<AnimatedModel>(true);
+            if (model->GetNumAnimationStates()) {
+                AnimationState *state = model->GetAnimationStates()[0];
+                state->AddTime(timeStep);
+            }
+
+        }
+
+        // Dpad
+        if (controls_.IsDown(BUTTON_DPAD_UP)) {
+        }
+
+        if (controls_.IsDown(BUTTON_DPAD_DOWN)) {
+        }
+
+        if (controls_.IsDown(BUTTON_DPAD_RIGHT)) {
+        }
+
+        if (input->GetKeyDown('A') || input->GetKeyDown(KEY_LEFT) || controls_.IsDown(BUTTON_DPAD_LEFT)) {
+            walkState_->AddTime(timeStep);
+
+            forward_ = false;
+            currState_.walk = true;
+        }
+
+        if (input->GetKeyDown('D') || input->GetKeyDown(KEY_RIGHT) || controls_.IsDown(BUTTON_DPAD_RIGHT)) {
+/*                auto *model = node_->GetComponent<AnimatedModel>(true);
+                if (model->GetNumAnimationStates()) {
+                    AnimationState *state = model->GetAnimationStates()[0];
+                    state->AddTime(timeStep);
+
+                }
+*/
+            walkState_->AddTime(timeStep);
+
+            forward_ = true;
+            currState_.walk = true;
+        }
+
+        // Jump
+        if ((currState_.onGround || aboveClimbable_) &&
+            (input->GetKeyPress('W') || input->GetKeyPress(KEY_UP) || controls_.IsDown(BUTTON_A)))
+            currState_.jump = true;
+
+        // END GAME CONTROLS
+
+
+        if (currState_.walk) {
+            // Update movement direction
+            currState_.moveDir = currState_.moveDir - Vector3::FORWARD;
+        }
+    }
+
+    // Return player state
+    return currState_;
+}
+
+PlayerState Character2D::HandleAIController(float timeStep) {
+    auto *input = GetSubsystem<Input>();
+
+    // Store previous state
+    prevState_ = currState_;
+    // Reset state
+    currState_.jump = false;
+    currState_.walk = false;
+
+    // TODO: Connect to Agent Movement which has calculated inputs
+
     // Iterate through agent controllers and apply update
     std::vector<Agent *> agents = EvolutionManager::getInstance()->getAgents();
     std::vector<AgentController *> controllers = EvolutionManager::getInstance()->getAgentControllers();
 
-    for (int i = 0; i < controllers.size(); i++) {
-        AgentController *controller = controllers[i];
+    if (!controllers.empty()) {
+        // Get agent controller
+        AgentController *controller = controllers[agentIndex];
+        // Process sensor inputs through ffn and apply calculated inputs
         controller->update(timeStep);
         // Set agent evaluation (affects fitness calculation)
         controller->setCurrentCompletionReward(controller->getCurrentCompletionReward() + Random(0.0f, 1.0f));
     }
 
-
     // Let kick stay for 2 seconds
-    if (currMove_-currState_.lastKick > 2.0f) {
+    if (currMove_ - currState_.lastKick > 2.0f) {
         currState_.kick = false;
     }
     currState_.moveDir = Vector3::ZERO;
@@ -500,10 +587,9 @@ PlayerState Character2D::HandleController(float timeStep)
     return currState_;
 }
 
-void Character2D::HandleWoundedState(float timeStep)
-{
-    auto* body = GetComponent<RigidBody2D>();
-   // auto* animatedSprite = GetComponent<AnimatedSprite2D>();
+void Character2D::HandleWoundedState(float timeStep) {
+    auto *body = GetComponent<RigidBody2D>();
+    // auto* animatedSprite = GetComponent<AnimatedSprite2D>();
 
 /*
     // Play "hit" animation in loop
@@ -513,8 +599,7 @@ void Character2D::HandleWoundedState(float timeStep)
     // Update timer
     timer_ += timeStep;
 
-    if (timer_ > 2.0f)
-    {
+    if (timer_ > 2.0f) {
         // Reset timer
         timer_ = 0.0f;
 
@@ -528,16 +613,15 @@ void Character2D::HandleWoundedState(float timeStep)
 
         // Update lifes UI and counter
         remainingLifes_ -= 1;
-        auto* ui = GetSubsystem<UI>();
-        Text* lifeText = static_cast<Text*>(ui->GetRoot()->GetChild("LifeText", true));
+        auto *ui = GetSubsystem<UI>();
+        Text *lifeText = static_cast<Text *>(ui->GetRoot()->GetChild("LifeText", true));
         lifeText->SetText(String(remainingLifes_)); // Update lifes UI counter
 
         // Reset wounded state
         wounded_ = false;
 
         // Handle death
-        if (remainingLifes_ == 0)
-        {
+        if (remainingLifes_ == 0) {
             HandleDeath();
             return;
         }
@@ -550,23 +634,22 @@ void Character2D::HandleWoundedState(float timeStep)
     }
 }
 
-void Character2D::HandleDeath()
-{
-    auto* body = GetComponent<RigidBody2D>();
-   // auto* animatedSprite = GetComponent<AnimatedSprite2D>();
+void Character2D::HandleDeath() {
+    auto *body = GetComponent<RigidBody2D>();
+    // auto* animatedSprite = GetComponent<AnimatedSprite2D>();
 
     // Set state to 'killed'
     killed_ = true;
 
     // Update UI elements
-    auto* ui = GetSubsystem<UI>();
-    Text* instructions = static_cast<Text*>(ui->GetRoot()->GetChild("Instructions", true));
+    auto *ui = GetSubsystem<UI>();
+    Text *instructions = static_cast<Text *>(ui->GetRoot()->GetChild("Instructions", true));
     instructions->SetText("!!! GAME OVER !!!");
-    static_cast<Text*>(ui->GetRoot()->GetChild("ExitButton", true))->SetVisible(true);
-    static_cast<Text*>(ui->GetRoot()->GetChild("PlayButton", true))->SetVisible(true);
+    static_cast<Text *>(ui->GetRoot()->GetChild("ExitButton", true))->SetVisible(true);
+    static_cast<Text *>(ui->GetRoot()->GetChild("PlayButton", true))->SetVisible(true);
 
     // Show mouse cursor so that we can click
-    auto* input = GetSubsystem<Input>();
+    auto *input = GetSubsystem<Input>();
     input->SetMouseVisible(true);
 
     // Put character outside of the scene and magnify him
@@ -575,6 +658,6 @@ void Character2D::HandleDeath()
     node_->SetScale(1.2f);
 
     // Play death animation once
-   /* if (animatedSprite->GetAnimation() != "dead2")
-        animatedSprite->SetAnimation("dead2");*/
+    /* if (animatedSprite->GetAnimation() != "dead2")
+         animatedSprite->SetAnimation("dead2");*/
 }

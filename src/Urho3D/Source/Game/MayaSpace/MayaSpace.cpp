@@ -508,6 +508,7 @@ void MayaSpace::CreateScene() {
         // Create AI player character
         modelNode = sample2D_->CreateCharacter(info, 0.0f, Vector3(3.5f + Random(-2.0f, 2.0f), 16.0f, 0.0f), 0.1f, 2);
         agents_[i] = modelNode->CreateComponent<Character2D>(); // Create a logic component to handle character behavior
+        agents_[i]->agentIndex = i;
         String name = String("AI-Bear-P") + String(i);
         agents_[i]->GetNode()->SetName(name.CString());
         agents_[i]->isAI_ = true;
